@@ -10,18 +10,27 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { deepBlue: '#1D4ED8' }
+                    colors: { deepBlue: '#1D4ED8' },
+                    animation: {
+                        'fade-in': 'fadeIn 2s ease-out forwards'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
                 }
             }
         }
-        // 2초 후 로그인 화면으로 이동
+        // 4초 후 로그인 화면으로 이동
         setTimeout(() => {
             window.location.href = 'login.html';
-        }, 2000);
+        }, 4000);
     </script>
 </head>
 <body class="bg-deepBlue flex items-center justify-center h-screen">
-    <div class="text-white text-center animate-bounce">
+    <div class="text-white text-center animate-fade-in">
         <div class="bg-white/20 p-4 rounded-full inline-block mb-4 backdrop-blur-sm">
             <i data-lucide="shield-check" class="w-16 h-16 text-white"></i>
         </div>

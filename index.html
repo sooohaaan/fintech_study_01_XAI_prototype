@@ -25,12 +25,12 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
     <!-- Header -->
-    <header class="bg-white p-4 sticky top-0 z-20 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-2 text-deepBlue font-bold text-xl">
+    <header class="bg-white h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm relative px-4">
+        <div class="flex items-center gap-2 text-deepBlue font-bold text-xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <i data-lucide="shield-check" class="w-6 h-6"></i>
             <span>TrustFin</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2" onclick="toggleMenu()">
             <span id="userNameDisplay" class="text-sm font-bold text-gray-700"></span>
             <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
                 <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
@@ -97,6 +97,38 @@
         </a>
     </nav>
 
+    <!-- Side Menu Drawer -->
+    <div id="sideMenu" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="toggleMenu()"></div>
+        
+        <!-- Drawer Content -->
+        <div id="sideMenuDrawer" class="absolute right-0 top-0 h-full w-72 bg-white shadow-2xl p-6 flex flex-col transform transition-transform duration-300 translate-x-full">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="font-bold text-xl text-gray-900">내 정보</h2>
+                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
+                    <i data-lucide="x" class="w-6 h-6 text-gray-500"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 space-y-2">
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-gray-500"></i>
+                    <span class="font-medium text-gray-700">회원 정보 수정</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    <i data-lucide="settings" class="w-5 h-5 text-gray-500"></i>
+                    <span class="font-medium text-gray-700">앱 설정</span>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="flex items-center justify-center gap-2 w-full border border-gray-200 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-50 transition mt-4">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>로그아웃</span>
+            </button>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
 
@@ -137,6 +169,28 @@
 
             document.getElementById('totalBalance').innerText = total.toLocaleString();
         });
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const drawer = document.getElementById('sideMenuDrawer');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                // 애니메이션 적용을 위해 약간의 지연
+                setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => menu.classList.add('hidden'), 300);
+            }
+        }
+
+        function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('trustFinPersona');
+                localStorage.removeItem('trustFinUserData');
+                window.location.href = 'login.html';
+            }
+        }
     </script>
 
     <!-- PWA Configuration -->
