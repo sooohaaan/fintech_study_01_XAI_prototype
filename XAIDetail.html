@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustFin - AI 상세 리포트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 데이터 참조를 위해 로직 파일 연결 -->
+    <script src="RecommendLogic.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#1D4ED8',
+                        electricPurple: '#7C3AED',
+                        softPurple: '#F3E8FF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Progress Bar 애니메이션을 위한 트랜지션 설정 */
+        .progress-bar {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-20">
+
+    <!-- Header -->
+    <header class="bg-white p-4 shadow-sm sticky top-0 z-10 border-b border-gray-100">
+        <div class="max-w-md mx-auto flex items-center gap-4">
+            <button onclick="history.back()" class="hover:bg-gray-100 p-1 rounded transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900">AI 상세 리포트</h1>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-5">
+        
+        <!-- 1. Selected Product Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-3 text-deepBlue">
+                <i data-lucide="building-2" class="w-8 h-8"></i>
+            </div>
+            <h2 id="bankName" class="text-xl font-bold text-gray-900">은행명 로딩중</h2>
+            <p id="productName" class="text-gray-500">상품명 로딩중</p>
+        </div>
+
+        <!-- 2. User Input Summary (Transparency) -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
+            <div class="flex items-center gap-2 mb-3 border-b border-gray-100 pb-2">
+                <i data-lucide="user-check" class="w-4 h-4 text-deepBlue"></i>
+                <span class="text-sm font-bold text-gray-700">분석 기준 데이터</span>
+            </div>
+            <div class="grid grid-cols-2 gap-y-2 text-sm">
+                <div class="text-gray-500">연소득</div>
+                <div id="userIncome" class="font-medium text-right text-gray-900">-</div>
+                <div class="text-gray-500">신용점수</div>
+                <div id="userCredit" class="font-medium text-right text-gray-900">-</div>
+                <div class="text-gray-500">고용형태</div>
+                <div id="userJob" class="font-medium text-right text-gray-900">-</div>
+            </div>
+        </div>
+
+        <!-- 3. XAI Analysis (Progress Bars) -->
+        <div class="space-y-6 mb-8">
+            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-electricPurple"></i>
+                상세 분석 결과
+            </h3>
+
+            <!-- Factor 1: Credit Score -->
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="font-medium text-gray-700">신용점수 영향도</span>
+                    <span id="scoreText-credit" class="text-deepBlue font-bold">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div id="bar-credit" class="progress-bar bg-deepBlue h-2.5 rounded-full w-0"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">신용점수가 상품의 기준을 상회하여 긍정적입니다.</p>
+            </div>
+
+            <!-- Factor 2: Income Stability -->
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="font-medium text-gray-700">소득 안정성</span>
+                    <span id="scoreText-income" class="text-deepBlue font-bold">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div id="bar-income" class="progress-bar bg-deepBlue h-2.5 rounded-full w-0"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">연소득 대비 대출 한도 비율이 적절합니다.</p>
+            </div>
+
+            <!-- Factor 3: Job Type Match -->
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="font-medium text-gray-700">직군 적합도</span>
+                    <span id="scoreText-job" class="text-electricPurple font-bold">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div id="bar-job" class="progress-bar bg-electricPurple h-2.5 rounded-full w-0"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">해당 상품이 선호하는 직군 그룹에 속합니다.</p>
+            </div>
+        </div>
+
+        <!-- 4. Comprehensive Opinion (Purple Box) -->
+        <div class="bg-softPurple border border-electricPurple rounded-xl p-5 relative">
+            <div class="absolute -top-3 left-4 bg-electricPurple text-white text-xs px-2 py-1 rounded">
+                AI 종합 의견
+            </div>
+            <p id="aiOpinion" class="text-gray-800 text-sm leading-relaxed mt-2">
+                분석 중입니다...
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Bottom Fixed Button -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 max-w-md mx-auto">
+        <button class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95">
+            이 상품으로 대출 신청하기
+        </button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 데이터 로드
+            const userDataStr = localStorage.getItem('trustFinUserData');
+            const selectedProductId = localStorage.getItem('selectedProductId');
+
+            if (!userDataStr || !selectedProductId) {
+                alert('잘못된 접근입니다.');
+                location.href = 'Index.html';
+                return;
+            }
+
+            const user = JSON.parse(userDataStr);
+            
+            // RecommendLogic.js의 loanProducts 배열에서 상품 찾기
+            const product = loanProducts.find(p => p.id === selectedProductId);
+
+            // 2. UI 업데이트 (기본 정보)
+            document.getElementById('bankName').innerText = product.bankName;
+            document.getElementById('productName').innerText = product.productName;
+            
+            // 사용자 요약 정보 업데이트
+            document.getElementById('userIncome').innerText = `${parseInt(user.income).toLocaleString()}만원`;
+            document.getElementById('userCredit').innerText = `${user.creditScore}점`;
+            
+            const jobMap = {
+                'regular': '정규직', 'contract': '계약직', 
+                'business_owner': '개인사업자', 'freelancer': '프리랜서', 'unemployed': '기타'
+            };
+            document.getElementById('userJob').innerText = jobMap[user.employmentType] || '기타';
+
+            // 3. XAI 분석 로직 및 애니메이션 실행
+            // (실제로는 복잡한 서버 로직이지만, 여기서는 시뮬레이션 값을 계산합니다)
+            
+            // 점수 계산 (0~100)
+            let creditScorePercent = Math.min(100, (user.creditScore / 1000) * 100 + 10); // 기본 점수 보정
+            let incomePercent = Math.min(100, (user.income / 8000) * 100 + 20);
+            
+            // 직군 적합도는 상품 태그와 매칭
+            let jobPercent = 60; // 기본
+            if (product.tags.includes('직장인우대') && user.employmentType === 'regular') jobPercent = 95;
+            if (product.tags.includes('사업자전용') && user.employmentType === 'business_owner') jobPercent = 95;
+            
+            // 애니메이션 실행 (약간의 딜레이 후 너비 변경)
+            setTimeout(() => {
+                setProgressBar('credit', creditScorePercent);
+                setProgressBar('income', incomePercent);
+                setProgressBar('job', jobPercent);
+            }, 300);
+
+            // 4. 종합 의견 생성 (Dynamic Text Generation)
+            const opinionText = generateOpinion(user, product, creditScorePercent);
+            document.getElementById('aiOpinion').innerHTML = opinionText;
+        });
+
+        // Progress Bar 설정 함수
+        function setProgressBar(id, percent) {
+            const bar = document.getElementById(`bar-${id}`);
+            const text = document.getElementById(`scoreText-${id}`);
+            
+            // 너비 설정 (CSS Transition 작동)
+            bar.style.width = `${percent}%`;
+            
+            // 숫자 카운트 업 효과
+            let current = 0;
+            const interval = setInterval(() => {
+                if (current >= percent) clearInterval(interval);
+                else {
+                    current++;
+                    text.innerText = `${current}%`;
+                }
+            }, 15); // 속도 조절
+        }
+
+        // 종합 의견 텍스트 생성기
+        function generateOpinion(user, product, creditScorePercent) {
+            let text = `고객님의 <strong>신용점수(${user.creditScore}점)</strong>는 
+                <span class="text-deepBlue font-bold">${product.bankName}</span>의 심사 기준에 
+                매우 부합합니다.<br><br>`;
+
+            if (creditScorePercent > 80) {
+                text += `특히 신용도가 높아 <strong>우대 금리 적용 가능성</strong>이 높으며, `;
+            } else {
+                text += `현재 소득 수준을 고려했을 때 <strong>안정적인 상환 능력</strong>이 인정되어, `;
+            }
+
+            text += `다른 상품 대비 승인 확률이 <strong>약 15% 더 높게</strong> 분석되었습니다.`;
+            
+            return text;
+        }
+    </script>
+</body>
+</html>

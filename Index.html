@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustFin - AI 대출 추천 서비스</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Config for Specific Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#1D4ED8', // 신뢰감을 주는 Deep Blue
+                        electricPurple: '#7C3AED', // XAI 포인트 컬러
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-deepBlue text-white p-4 shadow-md">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                <h1 class="text-xl font-bold tracking-wide">TrustFin</h1>
+            </div>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded text-white">AI Beta</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto mt-8 p-6">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">맞춤형 대출 진단</h2>
+            <p class="text-gray-500 text-sm">AI가 고객님의 데이터를 분석하여<br>최적의 상품과 승인 확률을 투명하게 공개합니다.</p>
+        </div>
+
+        <!-- Input Form -->
+        <form id="loanForm" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
+            
+            <!-- 연소득 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">연소득 (만원)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="banknote" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <input type="number" id="income" required placeholder="예: 5000" 
+                        class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-deepBlue focus:border-deepBlue outline-none transition">
+                </div>
+            </div>
+
+            <!-- 신용점수 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">신용점수 (KCB 기준)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="credit-card" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <input type="number" id="creditScore" required placeholder="예: 850" min="0" max="1000"
+                        class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-deepBlue focus:border-deepBlue outline-none transition">
+                </div>
+            </div>
+
+            <!-- 대출 목적 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">대출 목적</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="target" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <select id="loanPurpose" required
+                        class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-deepBlue focus:border-deepBlue outline-none transition bg-white appearance-none">
+                        <option value="" disabled selected>목적을 선택해주세요</option>
+                        <option value="house">주택 구입/전세</option>
+                        <option value="business">사업 자금</option>
+                        <option value="living">생활 안정 자금</option>
+                        <option value="invest">투자</option>
+                        <option value="refinance">대환 대출</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 고용 형태 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">고용 형태</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <select id="employmentType" required
+                        class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-deepBlue focus:border-deepBlue outline-none transition bg-white appearance-none">
+                        <option value="" disabled selected>고용 형태를 선택해주세요</option>
+                        <option value="regular">정규직 근로자</option>
+                        <option value="contract">계약직/파견직</option>
+                        <option value="business_owner">개인 사업자</option>
+                        <option value="freelancer">프리랜서</option>
+                        <option value="unemployed">무직/기타</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" 
+                class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition transform active:scale-95 flex justify-center items-center gap-2">
+                <span>AI 분석 시작하기</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+
+        </form>
+        
+        <p class="text-center text-xs text-gray-400 mt-6">
+            입력하신 정보는 암호화되어 처리되며,<br>신용등급 조회 이력에 남지 않습니다.
+        </p>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Handle Form Submission
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 1. 데이터 수집
+            const userData = {
+                income: document.getElementById('income').value,
+                creditScore: document.getElementById('creditScore').value,
+                loanPurpose: document.getElementById('loanPurpose').value,
+                employmentType: document.getElementById('employmentType').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // 2. LocalStorage에 저장 (다음 페이지에서 사용)
+            localStorage.setItem('trustFinUserData', JSON.stringify(userData));
+
+            // 3. 결과 페이지로 이동 (실제 파일이 있다면 result.html로 변경)
+            // 현재는 데모를 위해 알림 후 이동하는 척만 합니다.
+            console.log("저장된 데이터:", userData);
+            
+            // 실제 구현 시 주석 해제:
+            window.location.href = 'Result.html'; 
+        });
+    </script>
+</body>
+</html>

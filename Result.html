@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustFin - 분석 결과</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 로직 파일 연결 -->
+    <script src="RecommendLogic.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#1D4ED8',
+                        electricPurple: '#7C3AED',
+                        softBlue: '#EFF6FF'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-10">
+
+    <!-- Header (Back Button Included) -->
+    <header class="bg-deepBlue text-white p-4 shadow-md sticky top-0 z-10">
+        <div class="max-w-md mx-auto flex items-center gap-4">
+            <button onclick="history.back()" class="hover:bg-white/20 p-1 rounded transition">
+                <i data-lucide="arrow-left" class="w-6 h-6"></i>
+            </button>
+            <h1 class="text-lg font-bold">AI 분석 결과</h1>
+        </div>
+    </header>
+
+    <!-- Loading State (초기 로딩 시뮬레이션용) -->
+    <div id="loading" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center hidden">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-deepBlue mb-4"></div>
+        <p class="text-deepBlue font-medium animate-pulse">고객님의 데이터를 분석 중입니다...</p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto mt-6 p-4">
+        
+        <!-- Summary Header -->
+        <div class="mb-6">
+            <h2 class="text-xl font-bold text-gray-900">
+                <span class="text-deepBlue">4개</span>의 상품이 매칭되었습니다.
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">AI가 승인 확률과 금리 적합성을 분석했습니다.</p>
+        </div>
+
+        <!-- Result List Container -->
+        <div id="resultList" class="space-y-4">
+            <!-- JavaScript로 카드가 여기에 삽입됩니다 -->
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            const loadingEl = document.getElementById('loading');
+            const listEl = document.getElementById('resultList');
+
+            // 1. 로딩 애니메이션 시뮬레이션 (0.8초)
+            loadingEl.classList.remove('hidden');
+            
+            setTimeout(() => {
+                loadingEl.classList.add('hidden');
+                renderResults();
+            }, 800);
+
+            // 2. 결과 렌더링 함수
+            function renderResults() {
+                // RecommendLogic.js의 함수 호출
+                const recommendations = getRecommendations();
+
+                if (recommendations.length === 0) {
+                    listEl.innerHTML = `<div class="text-center p-10 text-gray-400">입력된 정보가 없습니다.<br>다시 시도해주세요.</div>`;
+                    return;
+                }
+
+                // 카드 생성
+                listEl.innerHTML = recommendations.map((item, index) => `
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition relative overflow-hidden">
+                        
+                        <!-- Best Badge (1등만) -->
+                        ${index === 0 ? `<div class="absolute top-0 left-0 bg-deepBlue text-white text-xs px-3 py-1 rounded-br-xl font-bold">Best Match</div>` : ''}
+
+                        <div class="flex justify-between items-start mb-4 ${index === 0 ? 'mt-2' : ''}">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900">${item.bankName}</h3>
+                                <p class="text-sm text-gray-500">${item.productName}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-xs text-gray-400 mb-1">AI 매칭 점수</span>
+                                <span class="text-2xl font-extrabold text-deepBlue">${item.matchScore}</span>
+                                <span class="text-sm text-gray-400">/100</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-softBlue rounded-xl p-4 mb-4">
+                            <div class="text-center w-1/2 border-r border-blue-200">
+                                <p class="text-xs text-gray-500 mb-1">예상 금리</p>
+                                <p class="text-lg font-bold text-deepBlue">${item.finalRate}%</p>
+                            </div>
+                            <div class="text-center w-1/2">
+                                <p class="text-xs text-gray-500 mb-1">최대 한도</p>
+                                <p class="text-lg font-bold text-gray-900">${(item.finalLimit / 10000).toFixed(0)}억 ${item.finalLimit % 10000}만원</p>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="flex gap-2 mb-5">
+                            ${item.tags.map(tag => `<span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">${tag}</span>`).join('')}
+                        </div>
+
+                        <!-- CTA Button: XAI Report -->
+                        <button onclick="goToDetail('${item.id}')" 
+                            class="w-full border-2 border-electricPurple text-electricPurple font-bold py-3 rounded-xl hover:bg-purple-50 transition flex justify-center items-center gap-2 group">
+                            <i data-lucide="sparkles" class="w-4 h-4 group-hover:scale-110 transition"></i>
+                            <span>AI 분석 리포트 보기</span>
+                        </button>
+                    </div>
+                `).join('');
+                
+                // 아이콘 다시 렌더링 (동적 생성된 요소)
+                lucide.createIcons();
+            }
+        });
+
+        // 상세 페이지 이동 함수
+        function goToDetail(productId) {
+            // 선택한 상품 ID 저장
+            localStorage.setItem('selectedProductId', productId);
+            // 상세 페이지로 이동 (다음 단계 파일)
+            window.location.href = 'XAIDetail.html';
+        }
+    </script>
+</body>
+</html>
