@@ -24,7 +24,7 @@
 *   입력된 데이터는 `localStorage`에 저장되어 다음 단계로 전달됩니다.
 *   Tailwind CSS를 활용한 깔끔한 폼 디자인과 유효성 검사가 적용되었습니다.
 
-### 2. `recommendLogic.js` (로직)
+### 2. `RecommendLogic.js` (로직)
 *   가상의 은행 상품 데이터베이스(DB)를 포함하고 있습니다.
 *   **매칭 알고리즘**: 사용자 입력값(신용점수, 소득 등)과 상품 특성(태그)을 비교하여 `Match Score`를 계산합니다.
 *   소득 구간 및 신용 등급에 따른 금리/한도 보정 로직이 포함되어 있습니다.
@@ -50,7 +50,7 @@
 5.  브라우저에서 데이터 입력 후 전체 흐름을 체험합니다.
 
 ## 🔍 주요 구현 포인트 (Code Highlights)
-*   **데이터 흐름**: `index.html` -> `localStorage` -> `recommendLogic.js` -> `result.html` -> `xai_detail.html`로 이어지는 데이터 파이프라인 구축.
+*   **데이터 흐름**: `index.html` -> `localStorage` -> `RecommendLogic.js` -> `result.html` -> `xai_detail.html`로 이어지는 데이터 파이프라인 구축.
 *   **XAI 시각화**: CSS Transition과 JS `setInterval`을 활용하여 분석 결과가 실시간으로 계산되는 듯한 UX 구현.
 *   **반응형 디자인**: 모바일(Mobile) 환경을 최우선으로 고려한 UI 배치.
 

@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- 로직 파일 연결 -->
-    <script src="recommendLogic.js"></script>
+    <script src="RecommendLogic.js"></script>
 
     <script>
         tailwind.config = {
@@ -47,7 +47,7 @@
         <!-- Summary Header -->
         <div class="mb-6">
             <h2 class="text-xl font-bold text-gray-900">
-                <span class="text-deepBlue">4개</span>의 상품이 매칭되었습니다.
+                <span id="matchCount" class="text-deepBlue">0개</span>의 상품이 매칭되었습니다.
             </h2>
             <p class="text-sm text-gray-500 mt-1">AI가 승인 확률과 금리 적합성을 분석했습니다.</p>
         </div>
@@ -81,9 +81,15 @@
                 const recommendations = getRecommendations();
 
                 if (recommendations.length === 0) {
+                    const matchCountEl = document.getElementById('matchCount');
+                    if (matchCountEl) matchCountEl.textContent = '0개';
                     listEl.innerHTML = `<div class="text-center p-10 text-gray-400">입력된 정보가 없습니다.<br>다시 시도해주세요.</div>`;
                     return;
                 }
+
+                // 매칭 개수 표시
+                const matchCountEl = document.getElementById('matchCount');
+                if (matchCountEl) matchCountEl.textContent = `${recommendations.length}개`;
 
                 // 카드 생성
                 listEl.innerHTML = recommendations.map((item, index) => `
