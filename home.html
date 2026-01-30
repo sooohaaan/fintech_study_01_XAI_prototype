@@ -33,6 +33,12 @@
     </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
+    <!-- Celebration Banner -->
+    <div id="celebrationBanner" class="fixed top-0 left-0 right-0 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 shadow-lg transform -translate-y-full transition-transform duration-500 z-50 flex items-center justify-center gap-2">
+        <i data-lucide="party-popper" class="w-6 h-6"></i>
+        <span class="font-bold">축하합니다! 대출 심사가 완료되었습니다.</span>
+    </div>
+
     <!-- Header -->
     <header class="bg-white h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm relative px-4">
         <div class="flex items-center gap-2 text-deepBlue font-bold text-xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -64,23 +70,27 @@
             </div>
         </div>
 
-        <!-- Loan Section -->
+        <!-- My Spending (New) -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 mb-3">대출</h3>
-            <div class="bg-gradient-to-br from-deepBlue to-electricPurple rounded-2xl p-5 shadow-lg text-white">
-                <div class="flex items-start gap-4 mb-4">
-                    <div class="bg-white/20 p-3 rounded-full text-white backdrop-blur-sm">
-                        <i data-lucide="coins" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-lg">AI 맞춤 대출 추천</h4>
-                        <p class="text-xs text-blue-100 mt-1">내 조건에 딱 맞는 최저 금리 상품을<br>AI가 투명하게 분석해드립니다.</p>
-                    </div>
+            <h3 class="font-bold text-lg text-gray-900 mb-3">내 소비</h3>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-500">이번 달 총 소비</span>
+                    <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">+12%</span>
                 </div>
-                <button onclick="location.href='loan_input.html'" class="w-full bg-white text-deepBlue font-bold py-3 rounded-xl hover:bg-gray-50 transition active:scale-95 flex justify-center items-center gap-2 shadow-sm">
-                    <span>대출받기</span>
-                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                </button>
+                <h2 class="text-2xl font-bold text-gray-900">1,250,000원</h2>
+                <div class="w-full bg-gray-100 rounded-full h-2 mt-4 overflow-hidden">
+                    <div class="bg-electricPurple h-2 rounded-full" style="width: 65%"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">예산 대비 65% 사용</p>
+            </div>
+        </div>
+
+        <!-- Loan Section (Modified) -->
+        <div>
+            <h3 class="font-bold text-lg text-gray-900 mb-3">내 대출</h3>
+            <div id="loanSection">
+                <!-- JS로 내용 교체 -->
             </div>
         </div>
 
@@ -96,7 +106,7 @@
             <i data-lucide="pie-chart" class="w-6 h-6"></i>
             <span class="text-[10px] mt-1 font-medium">자산</span>
         </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
+        <a href="notification.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
             <i data-lucide="bell" class="w-6 h-6"></i>
             <span class="text-[10px] mt-1 font-medium">알림</span>
         </a>
@@ -169,30 +179,41 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 mb-0.5">${acc.bank}</p>
-                                <p class="font-bold text-gray-900">${acc.balance.toLocaleString()}원</p>
+                                <p class="font-bold text-gray-900"><span class="count-up" data-value="${acc.balance}">0</span>원</p>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            // Count Up Animation
-            const totalElement = document.getElementById('totalBalance');
-            const duration = 1500; // 1.5초 동안 애니메이션
-            const startTime = performance.now();
+            // Animation Function
+            function animateCountUp(element, endValue) {
+                const duration = 1500;
+                const startTime = performance.now();
+                const startValue = 0;
 
-            function animateCount(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 3); // Ease-out cubic 효과
-                
-                const currentAmount = Math.floor(total * ease);
-                totalElement.innerText = currentAmount.toLocaleString();
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+                    
+                    const current = Math.floor(startValue + (endValue - startValue) * ease);
+                    element.innerText = current.toLocaleString();
 
-                if (progress < 1) requestAnimationFrame(animateCount);
-                else totalElement.innerText = total.toLocaleString();
+                    if (progress < 1) requestAnimationFrame(update);
+                    else element.innerText = endValue.toLocaleString();
+                }
+                requestAnimationFrame(update);
             }
-            requestAnimationFrame(animateCount);
+
+            // Apply Animation
+            animateCountUp(document.getElementById('totalBalance'), total);
+            
+            document.querySelectorAll('.count-up').forEach(el => {
+                animateCountUp(el, parseInt(el.dataset.value));
+            });
+
+            renderMyLoans();
         });
 
         function toggleMenu() {
@@ -215,6 +236,110 @@
                 localStorage.removeItem('trustFinUserData');
                 window.location.href = 'login.html';
             }
+        }
+
+        function renderMyLoans() {
+            const loanSection = document.getElementById('loanSection');
+            let allLoans = JSON.parse(localStorage.getItem('trustFinMyLoans') || '[]');
+            const persona = JSON.parse(localStorage.getItem('trustFinPersona') || '{}');
+            const currentPersonaId = persona.id;
+
+            const now = Date.now();
+            let dataChanged = false;
+            let showBanner = false;
+
+            // 상태 업데이트 (1분 경과 체크) - 모든 대출 내역 대상
+            allLoans = allLoans.map(loan => {
+                if (loan.status === 'pending') {
+                    if (now - loan.timestamp > 60000) { // 1분(60000ms) 경과
+                        loan.status = 'approved';
+                        dataChanged = true;
+                        if (loan.personaId === currentPersonaId) {
+                            showBanner = true;
+                        }
+                    }
+                }
+                return loan;
+            });
+
+            if (dataChanged) {
+                localStorage.setItem('trustFinMyLoans', JSON.stringify(allLoans));
+                if (showBanner) showCelebrationBanner();
+            }
+
+            // 현재 퍼소나의 대출 내역만 필터링
+            const myLoans = allLoans.filter(loan => loan.personaId === currentPersonaId);
+            const hasPending = myLoans.some(loan => loan.status === 'pending');
+
+            // 렌더링
+            if (myLoans.length === 0) {
+                loanSection.innerHTML = `
+                    <div class="bg-gradient-to-br from-deepBlue to-electricPurple rounded-2xl p-5 shadow-lg text-white">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="bg-white/20 p-3 rounded-full text-white backdrop-blur-sm">
+                                <i data-lucide="coins" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">AI 맞춤 대출 추천</h4>
+                                <p class="text-xs text-blue-100 mt-1">내 조건에 딱 맞는 최저 금리 상품을<br>AI가 투명하게 분석해드립니다.</p>
+                            </div>
+                        </div>
+                        <button onclick="location.href='loan_input.html'" class="w-full bg-white text-deepBlue font-bold py-3 rounded-xl hover:bg-gray-50 transition active:scale-95 flex justify-center items-center gap-2 shadow-sm">
+                            <span>대출받기</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                loanSection.innerHTML = `<div class="space-y-3">` + myLoans.map(loan => {
+                    const isPending = loan.status === 'pending';
+                    const statusText = isPending ? '대출 심사 중' : '대출 심사 완료';
+                    const statusColor = isPending ? 'text-blue-600 bg-blue-50' : 'text-green-600 bg-green-50';
+                    const icon = isPending ? 'loader-2' : 'check-circle-2';
+                    const iconAnim = isPending ? 'animate-spin' : '';
+
+                    return `
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="text-xs font-bold text-gray-500 mb-1 block">${loan.bankName}</span>
+                                    <h4 class="font-bold text-gray-900 text-lg">${loan.productName}</h4>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 rounded ${statusColor} flex items-center gap-1">
+                                    <i data-lucide="${icon}" class="w-3 h-3 ${iconAnim}"></i>
+                                    ${statusText}
+                                </span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5 mt-3 overflow-hidden">
+                                <div class="h-full rounded-full ${isPending ? 'bg-blue-500 w-1/2 animate-pulse' : 'bg-green-500 w-full'}"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2 text-right">
+                                ${isPending ? '잠시만 기다려주세요 (약 1분)' : '심사가 완료되었습니다.'}
+                            </p>
+                        </div>
+                    `;
+                }).join('') + 
+                `<button onclick="location.href='loan_input.html'" class="w-full py-3 text-sm text-gray-500 font-bold hover:text-deepBlue transition flex justify-center items-center gap-1">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>추가 대출 알아보기</span>
+                </button>
+                </div>`;
+            }
+            lucide.createIcons();
+
+            // 심사 중인 항목이 있으면 1초 뒤 재검사
+            if (hasPending) {
+                setTimeout(renderMyLoans, 1000);
+            }
+        }
+
+        function showCelebrationBanner() {
+            const banner = document.getElementById('celebrationBanner');
+            banner.classList.remove('-translate-y-full');
+            
+            setTimeout(() => {
+                banner.classList.add('-translate-y-full');
+            }, 3000);
         }
     </script>
 </body>

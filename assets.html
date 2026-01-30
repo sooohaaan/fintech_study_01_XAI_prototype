@@ -46,7 +46,7 @@
                 <div id="donutChart" class="w-48 h-48 rounded-full relative shadow-inner" style="background: conic-gradient(#1D4ED8 0% 100%);">
                     <div class="absolute inset-0 m-auto w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
                         <p class="text-xs text-gray-400 mb-1">총 자산</p>
-                        <p id="chartTotal" class="font-bold text-gray-900 text-lg">0원</p>
+                        <p class="font-bold text-gray-900 text-lg"><span id="chartTotal">0</span>만원</p>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                         <span class="text-gray-600 text-sm">예적금</span>
                         <span id="depositRatioText" class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">0%</span>
                     </div>
-                    <span id="depositAmount" class="font-bold text-gray-900">0원</span>
+                    <span class="font-bold text-gray-900"><span id="depositAmount">0</span>원</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -66,7 +66,7 @@
                         <span class="text-gray-600 text-sm">투자</span>
                         <span id="investRatioText" class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">0%</span>
                     </div>
-                    <span id="investAmount" class="font-bold text-gray-900">0원</span>
+                    <span class="font-bold text-gray-900"><span id="investAmount">0</span>원</span>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
             <i data-lucide="pie-chart" class="w-6 h-6"></i>
             <span class="text-[10px] mt-1 font-medium">자산</span>
         </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
+        <a href="notification.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
             <i data-lucide="bell" class="w-6 h-6"></i>
             <span class="text-[10px] mt-1 font-medium">알림</span>
         </a>
@@ -149,7 +149,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 mb-0.5">${acc.bank}</p>
-                                <p class="font-bold text-gray-900 text-lg">${acc.balance.toLocaleString()}원</p>
+                                <p class="font-bold text-gray-900 text-lg"><span class="count-up" data-value="${acc.balance}">0</span>원</p>
                             </div>
                         </div>
                         <button onclick="openTransferModal('${acc.bank}')" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 transition">송금</button>
@@ -162,19 +162,45 @@
             const totalAsset = depositTotal + investTotal;
 
             // 상단 총 자산 업데이트
-            document.getElementById('totalAsset').innerText = totalAsset.toLocaleString();
+            animateCountUp(document.getElementById('totalAsset'), totalAsset);
             
             // 도넛 차트 업데이트
             const depositRatio = totalAsset > 0 ? (depositTotal / totalAsset) * 100 : 0;
             const chartEl = document.getElementById('donutChart');
             chartEl.style.background = `conic-gradient(#1D4ED8 0% ${depositRatio}%, #7C3AED ${depositRatio}% 100%)`;
-            document.getElementById('chartTotal').innerText = (totalAsset / 10000).toLocaleString() + '만원';
+            
+            animateCountUp(document.getElementById('chartTotal'), Math.floor(totalAsset / 10000));
 
             // 범례 업데이트
-            document.getElementById('depositAmount').innerText = depositTotal.toLocaleString() + '원';
-            document.getElementById('investAmount').innerText = investTotal.toLocaleString() + '원';
+            animateCountUp(document.getElementById('depositAmount'), depositTotal);
+            animateCountUp(document.getElementById('investAmount'), investTotal);
+            
             document.getElementById('depositRatioText').innerText = Math.round(depositRatio) + '%';
             document.getElementById('investRatioText').innerText = Math.round(100 - depositRatio) + '%';
+            
+            // 리스트 애니메이션
+            document.querySelectorAll('.count-up').forEach(el => {
+                animateCountUp(el, parseInt(el.dataset.value));
+            });
+        }
+
+        function animateCountUp(element, endValue) {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                element.innerText = current.toLocaleString();
+
+                if (progress < 1) requestAnimationFrame(update);
+                else element.innerText = endValue.toLocaleString();
+            }
+            requestAnimationFrame(update);
         }
 
         document.addEventListener('DOMContentLoaded', renderAssets);
@@ -216,6 +242,19 @@
                     // 잔액 차감 및 저장
                     account.balance -= amount;
                     localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+                    // 알림 추가
+                    const now = new Date();
+                    const dateStr = `${now.getMonth() + 1}.${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                    const newNoti = {
+                        type: 'transfer',
+                        title: '송금 완료',
+                        message: `${currentTransferBank} 계좌에서 ${amount.toLocaleString()}원을 송금했습니다.`,
+                        date: dateStr
+                    };
+                    const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+                    notifications.unshift(newNoti);
+                    localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
                     
                     alert(`${amount.toLocaleString()}원을 송금했습니다.`);
                     closeTransferModal();
