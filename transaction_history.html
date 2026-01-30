@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 거래 내역</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+        </button>
+        <h1 id="pageTitle" class="text-lg font-bold text-gray-900 dark:text-white">거래 내역</h1>
+    </header>
+
+    <main class="p-5 max-w-md mx-auto">
+        <!-- Account Info -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 text-center transition-colors">
+            <p id="accountNumber" class="text-xs text-gray-500 dark:text-gray-400 mb-2 tracking-tight hover:text-deepBlue dark:hover:text-blue-400 cursor-pointer transition-colors inline-block" onclick="copyToClipboard(this.innerText, event)">000-000-0000</p>
+            <p id="accountBalance" class="text-2xl font-bold text-deepBlue dark:text-blue-400">0원</p>
+        </div>
+
+        <!-- Search Input -->
+        <div class="mb-4 relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="거래처명 검색" class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 dark:text-white outline-none focus:border-deepBlue transition shadow-sm">
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex gap-2 mb-4">
+            <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm">전체</button>
+            <button onclick="setFilter('deposit')" id="filter-deposit" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">입금</button>
+            <button onclick="setFilter('withdraw')" id="filter-withdraw" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">송금</button>
+            <button onclick="openDateRangeModal()" id="filter-date" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm flex items-center gap-1">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                <span id="dateFilterText">기간</span>
+            </button>
+        </div>
+
+        <!-- Transaction List -->
+        <h3 class="font-bold text-gray-900 dark:text-white mb-4 px-1">최근 거래 내역</h3>
+        <div id="transactionList" class="space-y-0 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+            <!-- JS Rendering -->
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="hidden py-6 text-center">
+            <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-deepBlue dark:text-blue-400"></i>
+        </div>
+    </main>
+
+    <!-- Bottom Fixed Buttons -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
+        <div class="flex gap-3">
+            <button onclick="depositMoney()" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-3 rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition">입금</button>
+            <button onclick="withdrawMoney()" class="flex-1 bg-deepBlue text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-800 transition">송금</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTransactionModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 id="modalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">송금하기</h3>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-500 mb-1">금액</label>
+                <div class="flex items-center border-b-2 border-gray-200 dark:border-gray-600 focus-within:border-deepBlue transition">
+                    <input type="number" id="transactionAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-2 outline-none bg-transparent dark:text-white">
+                    <span class="text-gray-900 dark:text-white font-bold">원</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeTransactionModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button id="modalSubmitBtn" onclick="submitTransactionModal()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Range Modal -->
+    <div id="dateRangeModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeDateRangeModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">조회 기간 설정</h3>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">시작일</label>
+                    <input type="date" id="startDateInput" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-gray-900 dark:text-white outline-none focus:border-deepBlue transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">종료일</label>
+                    <input type="date" id="endDateInput" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-gray-900 dark:text-white outline-none focus:border-deepBlue transition">
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="clearDateRange()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">초기화</button>
+                <button onclick="applyDateRange()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">조회</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeReceiptModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl" id="receiptIcon"></div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="receiptAmount"></h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400" id="receiptDesc"></p>
+            </div>
+
+            <div class="space-y-4 border-t border-gray-100 dark:border-gray-700 pt-6 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">거래일시</span>
+                    <span class="font-bold text-gray-900 dark:text-white" id="receiptDate"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">거래유형</span>
+                    <span class="font-bold text-gray-900 dark:text-white" id="receiptType"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">거래 후 잔액</span>
+                    <span class="font-bold text-gray-900 dark:text-white" id="receiptBalance"></span>
+                </div>
+            </div>
+
+            <button onclick="closeReceiptModal()" class="w-full mt-8 bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let allTransactions = [];
+        let currentFilter = 'all';
+        let isLoading = false;
+        let currentTransactionType = '';
+        let filterStartDate = null;
+        let filterEndDate = null;
+        let searchQuery = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+
+            const bankName = localStorage.getItem('selectedAccountBank');
+            if (!bankName) {
+                alert('계좌 정보를 찾을 수 없습니다.');
+                history.back();
+                return;
+            }
+
+            const persona = JSON.parse(localStorage.getItem('trustFinPersona') || '{}');
+            const account = persona.accounts.find(acc => acc.bank === bankName);
+
+            if (!account) {
+                alert('계좌 정보를 찾을 수 없습니다.');
+                history.back();
+                return;
+            }
+
+            // UI Update
+            document.getElementById('pageTitle').innerText = account.bank;
+            document.getElementById('accountNumber').innerText = account.accountNumber || '';
+            document.getElementById('accountBalance').innerText = `${account.balance.toLocaleString()}원`;
+
+            // Mock Transactions
+            generateMockTransactions(account.balance);
+            renderTransactions();
+
+            // Infinite Scroll Event
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                    loadMoreTransactions();
+                }
+            });
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('transactionModal', closeTransactionModal);
+            initBottomSheetDrag('dateRangeModal', closeDateRangeModal);
+            initBottomSheetDrag('receiptModal', closeReceiptModal);
+        });
+
+        function generateMockTransactions(currentBalance) {
+            const transactions = [];
+            let balance = currentBalance;
+            const titles = ['편의점', '카페', '급여', '송금', '쇼핑', '교통비', '통신비'];
+
+            // Generate 10 mock transactions
+            for (let i = 0; i < 10; i++) {
+                const isDeposit = i === 0 ? false : Math.random() > 0.7; // 첫 거래는 송금으로 가정 (잔액 역산 위해)
+                const amount = Math.floor(Math.random() * 50) * 1000 + 1000;
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                
+                let dateStr;
+                if (i === 0) dateStr = '오늘';
+                else if (i === 1) dateStr = '어제';
+                else dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+
+                transactions.push({
+                    rawDate: date,
+                    date: dateStr,
+                    desc: titles[Math.floor(Math.random() * titles.length)],
+                    amount: amount,
+                    type: isDeposit ? 'deposit' : 'withdraw',
+                    balance: balance
+                });
+
+                // Reverse calculation for previous balance
+                if (isDeposit) balance -= amount;
+                else balance += amount;
+            }
+
+            allTransactions = transactions;
+        }
+
+        function loadMoreTransactions() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const loader = document.getElementById('loadingIndicator');
+            loader.classList.remove('hidden');
+
+            setTimeout(() => {
+                const lastTx = allTransactions[allTransactions.length - 1];
+                let balance = lastTx ? lastTx.balance : 0;
+                const startIdx = allTransactions.length;
+                const titles = ['편의점', '카페', '급여', '송금', '쇼핑', '교통비', '통신비'];
+
+                for (let i = 0; i < 10; i++) {
+                    const isDeposit = Math.random() > 0.7;
+                    const amount = Math.floor(Math.random() * 50) * 1000 + 1000;
+                    const daysAgo = startIdx + i;
+                    const date = new Date();
+                    date.setDate(date.getDate() - daysAgo);
+                    
+                    if (isDeposit) balance -= amount;
+                    else balance += amount;
+
+                    let dateStr;
+                    if (daysAgo === 0) dateStr = '오늘';
+                    else if (daysAgo === 1) dateStr = '어제';
+                    else dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+
+                    allTransactions.push({
+                        rawDate: date,
+                        date: dateStr,
+                        desc: titles[Math.floor(Math.random() * titles.length)],
+                        amount: amount,
+                        type: isDeposit ? 'deposit' : 'withdraw',
+                        balance: balance
+                    });
+                }
+
+                renderTransactions();
+                isLoading = false;
+                loader.classList.add('hidden');
+            }, 1000);
+        }
+
+        function renderTransactions() {
+            const listEl = document.getElementById('transactionList');
+            
+            // 원본 인덱스 보존을 위해 매핑
+            let indexedTransactions = allTransactions.map((tx, i) => ({...tx, originalIndex: i}));
+            
+            let filtered = indexedTransactions;
+            if (currentFilter !== 'all') {
+                filtered = indexedTransactions.filter(tx => tx.type === currentFilter);
+            }
+
+            // Date Filter
+            if (filterStartDate && filterEndDate) {
+                const start = new Date(filterStartDate);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(filterEndDate);
+                end.setHours(23, 59, 59, 999);
+
+                filtered = filtered.filter(tx => {
+                    const txDate = new Date(tx.rawDate);
+                    return txDate >= start && txDate <= end;
+                });
+            }
+
+            // Search Filter
+            if (searchQuery) {
+                filtered = filtered.filter(tx => tx.desc.toLowerCase().includes(searchQuery.toLowerCase()));
+            }
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div class="p-8 text-center text-gray-400 dark:text-gray-500">거래 내역이 없습니다.</div>`;
+                return;
+            }
+
+            let lastYearMonth = '';
+
+            listEl.innerHTML = filtered.map(tx => {
+                const amountClass = tx.type === 'deposit' ? 'text-red-500' : 'text-black dark:text-white';
+                const amountPrefix = tx.type === 'deposit' ? '+' : '-';
+                
+                // 월별 그룹화 로직
+                const txDate = tx.rawDate;
+                const yearMonth = `${txDate.getFullYear()}-${txDate.getMonth()}`;
+                let headerHtml = '';
+
+                if (yearMonth !== lastYearMonth) {
+                    lastYearMonth = yearMonth;
+                    headerHtml = `<div class="sticky top-16 z-10 bg-gray-50/95 dark:bg-gray-700/95 backdrop-blur-sm px-4 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 shadow-sm">${txDate.getMonth() + 1}월</div>`;
+                }
+
+                const category = getCategoryIcon(tx.desc);
+
+                return `
+                    ${headerHtml}
+                    <div onclick="openReceiptModal(${tx.originalIndex})" class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer active:scale-95 transform transition-transform">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full ${category.bg} flex items-center justify-center ${category.text} flex-shrink-0">
+                                <i data-lucide="${category.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-0.5">${tx.date}</p>
+                                <p class="font-bold text-gray-900 dark:text-white">${tx.desc}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold ${amountClass}">${amountPrefix}${tx.amount.toLocaleString()}원</p>
+                            <p class="text-xs text-gray-400">잔액 ${tx.balance.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        function getCategoryIcon(desc) {
+            if (desc.includes('편의점') || desc.includes('쇼핑')) {
+                return { icon: 'shopping-bag', bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400' };
+            } else if (desc.includes('카페')) {
+                return { icon: 'coffee', bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400' };
+            } else if (desc.includes('급여') || desc.includes('송금')) {
+                return { icon: 'banknote', bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-400' };
+            } else if (desc.includes('교통')) {
+                return { icon: 'bus', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400' };
+            } else if (desc.includes('통신')) {
+                return { icon: 'smartphone', bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-600 dark:text-gray-400' };
+            } else {
+                return { icon: 'credit-card', bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-600 dark:text-gray-400' };
+            }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            const buttons = ['all', 'deposit', 'withdraw'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`filter-${btn}`);
+                if (btn === filter) {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm';
+                } else {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm';
+                }
+            });
+            renderTransactions();
+        }
+
+        function openTransactionModal(type) {
+            currentTransactionType = type;
+            const title = type === 'deposit' ? '입금하기' : '송금하기';
+            const btnText = type === 'deposit' ? '입금' : '송금';
+            
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalSubmitBtn').innerText = btnText;
+            document.getElementById('transactionAmount').value = '';
+            
+            const modal = document.getElementById('transactionModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            toggleBackgroundScale(true);
+            setTimeout(() => document.getElementById('transactionAmount').focus(), 100);
+        }
+
+        function closeTransactionModal(animate = true) {
+            const modal = document.getElementById('transactionModal');
+            const content = modal.querySelector('.bg-white');
+            currentTransactionType = '';
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = ''; // 스크롤 잠금 해제
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 잠금 해제
+                toggleBackgroundScale(false);
+            }
+        }
+
+        function submitTransactionModal() {
+            const amountInput = document.getElementById('transactionAmount');
+            const amount = parseInt(amountInput.value);
+            
+            if (!amount || amount <= 0) {
+                alert('올바른 금액을 입력해주세요.');
+                return;
+            }
+            
+            const desc = currentTransactionType === 'deposit' ? '입금' : '송금';
+            processTransaction(amount, currentTransactionType, desc);
+            closeTransactionModal();
+        }
+
+        function depositMoney() {
+            openTransactionModal('deposit');
+        }
+
+        function withdrawMoney() {
+            openTransactionModal('withdraw');
+        }
+
+        function processTransaction(amount, type, desc) {
+            const bankName = localStorage.getItem('selectedAccountBank');
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (!personaData || !bankName) return;
+
+            const persona = JSON.parse(personaData);
+            const account = persona.accounts.find(acc => acc.bank === bankName);
+            if (!account) return;
+
+            if (type === 'withdraw' && account.balance < amount) {
+                alert('잔액이 부족합니다.');
+                return;
+            }
+
+            if (type === 'deposit') account.balance += amount;
+            else account.balance -= amount;
+
+            localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+            // UI 업데이트
+            document.getElementById('accountBalance').innerText = `${account.balance.toLocaleString()}원`;
+            
+            // 거래 내역 리스트에 추가 (화면 갱신용)
+            const now = new Date();
+            const newTx = {
+                rawDate: now,
+                date: '오늘',
+                desc: desc,
+                amount: amount,
+                type: type,
+                balance: account.balance
+            };
+            
+            allTransactions.unshift(newTx);
+            renderTransactions();
+        }
+
+        function openDateRangeModal() {
+            const modal = document.getElementById('dateRangeModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            toggleBackgroundScale(true);
+            
+            // 오늘 날짜를 기본값으로 설정 (값이 없을 때만)
+            if (!document.getElementById('endDateInput').value) {
+                document.getElementById('endDateInput').valueAsDate = new Date();
+            }
+        }
+
+        function closeDateRangeModal(animate = true) {
+            const modal = document.getElementById('dateRangeModal');
+            const content = modal.querySelector('.bg-white');
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = ''; // 스크롤 잠금 해제
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 잠금 해제
+                toggleBackgroundScale(false);
+            }
+        }
+
+        function applyDateRange() {
+            const startInput = document.getElementById('startDateInput').value;
+            const endInput = document.getElementById('endDateInput').value;
+
+            if (!startInput || !endInput) {
+                alert('시작일과 종료일을 모두 선택해주세요.');
+                return;
+            }
+            
+            if (startInput > endInput) {
+                alert('종료일은 시작일보다 빠를 수 없습니다.');
+                return;
+            }
+
+            filterStartDate = startInput;
+            filterEndDate = endInput;
+            
+            // UI 업데이트
+            const btn = document.getElementById('filter-date');
+            btn.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm flex items-center gap-1';
+            document.getElementById('dateFilterText').innerText = `${startInput.slice(5).replace('-','.')}~${endInput.slice(5).replace('-','.')}`;
+
+            closeDateRangeModal();
+            renderTransactions();
+        }
+
+        function clearDateRange() {
+            filterStartDate = null;
+            filterEndDate = null;
+            document.getElementById('startDateInput').value = '';
+            document.getElementById('endDateInput').value = '';
+            
+            // UI 초기화
+            const btn = document.getElementById('filter-date');
+            btn.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm flex items-center gap-1';
+            document.getElementById('dateFilterText').innerText = '기간';
+            
+            closeDateRangeModal();
+            renderTransactions();
+        }
+
+        function handleSearch(query) {
+            searchQuery = query;
+            renderTransactions();
+        }
+
+        function openReceiptModal(index) {
+            const tx = allTransactions[index];
+            const date = new Date(tx.rawDate);
+            const dateStr = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            
+            const category = getCategoryIcon(tx.desc);
+            const iconEl = document.getElementById('receiptIcon');
+            iconEl.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${category.bg} ${category.text}`;
+            iconEl.innerHTML = `<i data-lucide="${category.icon}" class="w-8 h-8"></i>`;
+            
+            document.getElementById('receiptAmount').innerText = `${tx.amount.toLocaleString()}원`;
+            document.getElementById('receiptDesc').innerText = tx.desc;
+            document.getElementById('receiptDate').innerText = dateStr;
+            document.getElementById('receiptType').innerText = tx.type === 'deposit' ? '입금' : '송금';
+            document.getElementById('receiptBalance').innerText = `${tx.balance.toLocaleString()}원`;
+
+            const modal = document.getElementById('receiptModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            toggleBackgroundScale(true);
+            lucide.createIcons();
+        }
+
+        function closeReceiptModal(animate = true) {
+            const modal = document.getElementById('receiptModal');
+            const content = modal.querySelector('.bg-white');
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = ''; // 스크롤 잠금 해제
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 잠금 해제
+                toggleBackgroundScale(false);
+            }
+        }
+    </script>
+</body>
+</html>

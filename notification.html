@@ -6,45 +6,34 @@
     <title>TrustFin - 알림</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        deepBlue: '#1D4ED8',
-                        electricPurple: '#7C3AED',
-                        softBlue: '#EFF6FF'
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
-                    },
-                    animation: {
-                        'swing': 'swing 3s ease-in-out infinite'
-                    },
-                    keyframes: {
-                        swing: {
-                            '0%, 100%': { transform: 'rotate(0deg)' },
-                            '20%': { transform: 'rotate(15deg)' },
-                            '40%': { transform: 'rotate(-10deg)' },
-                            '60%': { transform: 'rotate(5deg)' },
-                            '80%': { transform: 'rotate(-5deg)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="common.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
     <!-- Header -->
-    <header class="bg-white h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm px-4 relative">
-        <h1 class="text-lg font-bold text-gray-900">알림</h1>
-        <button id="markAllReadBtn" onclick="markAllAsRead()" class="absolute right-4 text-xs text-gray-500 font-bold hover:text-deepBlue transition hidden">모두 읽음</button>
+    <header id="normalHeader" class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+        </button>
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">알림</h1>
+        <div class="absolute right-4 flex gap-3">
+            <button id="deleteAllBtn" onclick="deleteAllNotifications()" class="text-xs text-red-500 font-bold hover:text-red-700 transition hidden">모두 지우기</button>
+            <button id="markAllReadBtn" onclick="markAllAsRead()" class="text-xs text-gray-500 font-bold hover:text-deepBlue transition hidden">모두 읽음</button>
+        </div>
+    </header>
+
+    <!-- Selection Mode Header -->
+    <header id="selectionHeader" class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-between shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300 hidden">
+        <div class="flex items-center gap-3">
+            <button onclick="exitSelectionMode()" class="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">취소</button>
+            <button onclick="toggleSelectAll()" id="selectAllBtn" class="text-sm font-bold text-deepBlue dark:text-blue-400">모두 선택</button>
+        </div>
+        <h1 id="selectionCount" class="text-lg font-bold text-gray-900 dark:text-white">0개</h1>
+        <button onclick="deleteSelectedNotifications()" class="text-sm font-bold text-red-500 hover:text-red-700">삭제</button>
     </header>
 
     <!-- Pull to Refresh Indicator -->
     <div id="ptr-indicator" class="fixed top-16 left-0 right-0 flex justify-center items-center h-16 -mt-16 transition-transform z-10 pointer-events-none">
-        <div class="bg-white p-2 rounded-full shadow-md border border-gray-100 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-2 rounded-full shadow-md border border-gray-100 dark:border-gray-700 flex items-center justify-center">
             <i id="ptr-icon" data-lucide="arrow-down" class="w-5 h-5 text-deepBlue"></i>
         </div>
     </div>
@@ -54,33 +43,14 @@
         <!-- Filter Buttons -->
         <div class="flex gap-2 mb-4">
             <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm">전체</button>
-            <button onclick="setFilter('transfer')" id="filter-transfer" class="px-4 py-2 rounded-full text-sm font-bold bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition shadow-sm">입출금</button>
-            <button onclick="setFilter('loan')" id="filter-loan" class="px-4 py-2 rounded-full text-sm font-bold bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition shadow-sm">대출</button>
+            <button onclick="setFilter('unread')" id="filter-unread" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">안 읽음</button>
+            <button onclick="setFilter('transfer')" id="filter-transfer" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">입출금</button>
+            <button onclick="setFilter('loan')" id="filter-loan" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm">대출</button>
         </div>
         <div id="notificationList" class="space-y-3">
             <!-- JS Rendering -->
         </div>
     </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 pb-1">
-        <a href="home.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
-            <i data-lucide="home" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">홈</span>
-        </a>
-        <a href="assets.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
-            <i data-lucide="pie-chart" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">자산</span>
-        </a>
-        <a href="notification.html" class="flex flex-col items-center text-deepBlue w-full h-full justify-center">
-            <i data-lucide="bell" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">알림</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
-            <i data-lucide="menu" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">전체</span>
-        </a>
-    </nav>
 
     <!-- Snackbar -->
     <div id="snackbar" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-4 transition-all duration-300 opacity-0 translate-y-10 z-50 pointer-events-none">
@@ -89,9 +59,8 @@
     </div>
 
     <script>
-        lucide.createIcons();
-
         document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null); // 공통 UI 초기화
             renderNotifications();
         });
 
@@ -103,6 +72,10 @@
         let lastDeletedItem = null;
         let lastDeletedIndex = -1;
         let snackbarTimeout = null;
+        let hasVibrated = false;
+        let isSelectionMode = false;
+        let selectedIndices = new Set();
+        let longPressTimer = null;
         
         // Pull to Refresh 관련 변수
         const ptrIndicator = document.getElementById('ptr-indicator');
@@ -111,9 +84,27 @@
         let ptrDist = 0;
         let isPtrRefreshing = false;
 
+        function getCurrentList() {
+            const allNotifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+            let notifications = allNotifications.map((n, i) => ({...n, originalIndex: i}));
+            
+            if (currentFilter === 'unread') {
+                notifications = notifications.filter(n => !n.read);
+            } else if (currentFilter !== 'all') {
+                notifications = notifications.filter(n => n.type === currentFilter);
+            }
+            return notifications;
+        }
+
         function renderNotifications() {
             const listEl = document.getElementById('notificationList');
             const allNotifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+
+            // 알림이 있는지 확인하여 '모두 지우기' 버튼 제어
+            const hasNotifications = allNotifications.length > 0;
+            const deleteAllBtn = document.getElementById('deleteAllBtn');
+            if (hasNotifications) deleteAllBtn.classList.remove('hidden');
+            else deleteAllBtn.classList.add('hidden');
 
             // 읽지 않은 알림이 있는지 확인하여 버튼 제어
             const hasUnread = allNotifications.some(n => !n.read);
@@ -125,11 +116,8 @@
             }
 
             // 필터링 적용
-            let notifications = allNotifications.map((n, i) => ({...n, originalIndex: i}));
-            if (currentFilter !== 'all') {
-                notifications = notifications.filter(n => n.type === currentFilter);
-            }
-
+            const notifications = getCurrentList();
+            
             if (notifications.length === 0) {
                 listEl.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-64 text-gray-400">
@@ -145,9 +133,18 @@
                 const isRead = noti.read || false;
                 const icon = noti.type === 'transfer' ? 'arrow-right-left' : 'file-check';
                 
-                const containerBg = isRead ? 'bg-gray-50' : 'bg-white';
-                const titleStyle = isRead ? 'font-medium text-gray-500' : 'font-bold text-gray-900';
-                const iconStyle = isRead ? 'bg-gray-200 text-gray-400' : (noti.type === 'transfer' ? 'bg-blue-50 text-deepBlue' : 'bg-purple-50 text-electricPurple');
+                const containerBg = isRead ? 'bg-gray-50 dark:bg-gray-900/50' : 'bg-white dark:bg-gray-800';
+                const titleStyle = isRead ? 'font-medium text-gray-500 dark:text-gray-500' : 'font-bold text-gray-900 dark:text-white';
+                const iconStyle = isRead ? 'bg-gray-200 dark:bg-gray-700 text-gray-400' : (noti.type === 'transfer' ? 'bg-blue-50 dark:bg-blue-900/30 text-deepBlue dark:text-blue-400' : 'bg-purple-50 dark:bg-purple-900/30 text-electricPurple dark:text-purple-400');
+                
+                // 선택 모드일 때 체크박스 표시
+                const checkbox = isSelectionMode ? `
+                    <div class="flex items-center justify-center pr-2">
+                        <div class="w-5 h-5 rounded-full border-2 ${selectedIndices.has(noti.originalIndex) ? 'bg-deepBlue border-deepBlue' : 'border-gray-300 dark:border-gray-600'} flex items-center justify-center transition-colors">
+                            ${selectedIndices.has(noti.originalIndex) ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
+                        </div>
+                    </div>
+                ` : '';
 
                 return `
                     <div class="relative overflow-hidden rounded-xl group select-none">
@@ -157,11 +154,12 @@
                         </div>
                         
                         <!-- 컨텐츠 (앞) -->
-                        <div class="relative ${containerBg} p-4 border border-gray-100 shadow-sm flex gap-4 z-10 transition-transform duration-200 ease-out"
-                             ontouchstart="handleTouchStart(event)"
+                        <div class="relative ${containerBg} p-4 border border-gray-100 dark:border-gray-700 shadow-sm flex gap-4 z-10 transition-transform duration-200 ease-out items-center"
+                             ontouchstart="handleTouchStart(event, ${noti.originalIndex})"
                              ontouchmove="handleTouchMove(event)"
                              ontouchend="handleTouchEnd(event)"
-                             onclick="onNotificationClick('${noti.type}', '${noti.productId || ''}')">
+                             onclick="onNotificationClick('${noti.type}', '${noti.productId || ''}', ${noti.originalIndex})">
+                            ${checkbox}
                             <div class="w-10 h-10 rounded-full ${iconStyle} flex-shrink-0 flex items-center justify-center transition-colors">
                                 <i data-lucide="${icon}" class="w-5 h-5"></i>
                             </div>
@@ -170,7 +168,7 @@
                                     <h3 class="${titleStyle} text-sm transition-colors">${noti.title}</h3>
                                     <span class="text-xs text-gray-400">${noti.date}</span>
                                 </div>
-                                <p class="text-sm text-gray-600 leading-snug">${noti.message}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 leading-snug">${noti.message}</p>
                             </div>
                             ${!isRead ? `<div class="absolute top-4 right-4 w-2 h-2 bg-red-500 rounded-full"></div>` : ''}
                         </div>
@@ -178,17 +176,33 @@
                 `;
             }).join('');
             
+            if (typeof updateNotificationBadge === 'function') updateNotificationBadge();
             lucide.createIcons();
         }
 
-        function handleTouchStart(e) {
+        function handleTouchStart(e, index) {
             isDragging = false;
             startX = e.touches[0].clientX;
             currentSwipeElement = e.currentTarget;
             currentSwipeElement.style.transition = 'none'; // 드래그 중에는 트랜지션 끔
+            hasVibrated = false;
+
+            // 롱프레스 감지 (선택 모드가 아닐 때만)
+            if (!isSelectionMode && index !== undefined) {
+                longPressTimer = setTimeout(() => {
+                    enterSelectionMode(index);
+                    if (navigator.vibrate) navigator.vibrate(50); // 진동 피드백
+                }, 500); // 0.5초 롱프레스
+            }
         }
 
         function handleTouchMove(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            if (isSelectionMode) return; // 선택 모드에서는 스와이프 비활성화
+
             if (!currentSwipeElement) return;
             const currentX = e.touches[0].clientX;
             const diff = currentX - startX;
@@ -198,10 +212,25 @@
             // 왼쪽으로만 스와이프 허용 (최대 -80px)
             if (diff < 0 && diff > -100) {
                 currentSwipeElement.style.transform = `translateX(${diff}px)`;
+
+                // 햅틱 피드백: 삭제 임계값(-50px)을 넘을 때 진동
+                if (diff < -50 && !hasVibrated) {
+                    if (navigator.vibrate) navigator.vibrate(15); // 15ms 짧은 진동
+                    hasVibrated = true;
+                } else if (diff >= -50 && hasVibrated) {
+                    // 임계값 안쪽으로 돌아오면 플래그 리셋
+                    hasVibrated = false;
+                }
             }
         }
 
         function handleTouchEnd(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            if (isSelectionMode) return;
+
             if (!currentSwipeElement) return;
             const currentX = e.changedTouches[0].clientX;
             const diff = currentX - startX;
@@ -217,6 +246,9 @@
         }
 
         function deleteNotification(originalIndex) {
+            // 햅틱 피드백 추가
+            if (navigator.vibrate) navigator.vibrate(15);
+
             const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
             
             // 백업
@@ -244,6 +276,9 @@
 
         function undoDelete() {
             if (lastDeletedItem && lastDeletedIndex > -1) {
+                // 햅틱 피드백 추가
+                if (navigator.vibrate) navigator.vibrate(15);
+
                 const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
                 
                 // 복구
@@ -269,24 +304,47 @@
             renderNotifications();
         }
 
+        function deleteAllNotifications() {
+            const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+            if (notifications.length === 0) return;
+
+            if (confirm('모든 알림을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                if (navigator.vibrate) navigator.vibrate(15);
+                localStorage.setItem('trustFinNotifications', '[]');
+                renderNotifications();
+            }
+        }
+
         function setFilter(filter) {
             currentFilter = filter;
             
             // 버튼 스타일 업데이트
-            const buttons = ['all', 'transfer', 'loan'];
+            const buttons = ['all', 'unread', 'transfer', 'loan'];
             buttons.forEach(btn => {
                 const el = document.getElementById(`filter-${btn}`);
                 if (btn === filter) {
                     el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm';
                 } else {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 transition shadow-sm';
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm';
                 }
             });
             renderNotifications();
         }
 
-        function onNotificationClick(type, productId) {
+        function onNotificationClick(type, productId, index) {
             if (isDragging) return; // 스와이프 중이면 클릭 무시
+
+            if (isSelectionMode) {
+                toggleSelection(index);
+                return;
+            }
+
+            // 알림 읽음 처리
+            const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+            if (notifications[index]) {
+                notifications[index].read = true;
+                localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+            }
 
             if (type === 'loan') {
                 if (productId) {
@@ -295,6 +353,71 @@
                 }
             } else if (type === 'transfer') {
                 window.location.href = 'assets.html';
+            }
+        }
+
+        // 선택 모드 관련 함수
+        function enterSelectionMode(initialIndex) {
+            isSelectionMode = true;
+            selectedIndices.clear();
+            if (initialIndex !== undefined) selectedIndices.add(initialIndex);
+            
+            document.getElementById('normalHeader').classList.add('hidden');
+            document.getElementById('selectionHeader').classList.remove('hidden');
+            updateSelectionUI();
+            renderNotifications();
+        }
+
+        function exitSelectionMode() {
+            isSelectionMode = false;
+            selectedIndices.clear();
+            
+            document.getElementById('normalHeader').classList.remove('hidden');
+            document.getElementById('selectionHeader').classList.add('hidden');
+            renderNotifications();
+        }
+
+        function toggleSelection(index) {
+            if (selectedIndices.has(index)) {
+                selectedIndices.delete(index);
+            } else {
+                selectedIndices.add(index);
+            }
+            updateSelectionUI();
+            renderNotifications();
+        }
+
+        function updateSelectionUI() {
+            document.getElementById('selectionCount').innerText = `${selectedIndices.size}개`;
+            
+            // 모두 선택 버튼 텍스트 업데이트
+            const currentList = getCurrentList();
+            const allSelected = currentList.length > 0 && currentList.every(n => selectedIndices.has(n.originalIndex));
+            const btn = document.getElementById('selectAllBtn');
+            if (btn) btn.innerText = allSelected ? '선택 해제' : '모두 선택';
+        }
+
+        function toggleSelectAll() {
+            const currentList = getCurrentList();
+            const allSelected = currentList.length > 0 && currentList.every(n => selectedIndices.has(n.originalIndex));
+            
+            if (allSelected) {
+                currentList.forEach(n => selectedIndices.delete(n.originalIndex));
+            } else {
+                currentList.forEach(n => selectedIndices.add(n.originalIndex));
+            }
+            updateSelectionUI();
+            renderNotifications();
+        }
+
+        function deleteSelectedNotifications() {
+            if (selectedIndices.size === 0) return;
+            
+            if (confirm(`${selectedIndices.size}개의 알림을 삭제하시겠습니까?`)) {
+                const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+                const newNotifications = notifications.filter((_, index) => !selectedIndices.has(index));
+                localStorage.setItem('trustFinNotifications', JSON.stringify(newNotifications));
+                exitSelectionMode();
             }
         }
 

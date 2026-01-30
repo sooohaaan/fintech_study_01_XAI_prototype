@@ -5,31 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TrustFin - 로그인</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { deepBlue: '#1D4ED8', electricPurple: '#7C3AED' }
-                }
-            }
-        }
-    </script>
+    <script src="common.js"></script>
 </head>
-<body class="bg-gray-50 h-screen flex flex-col justify-center items-center p-6 select-none">
+<body class="bg-gray-50 dark:bg-gray-900 h-screen flex flex-col justify-center items-center p-6 select-none transition-colors duration-300">
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
-            <h2 class="text-3xl font-bold text-gray-900">환영합니다!</h2>
-            <p class="mt-2 text-gray-600">체험할 페르소나를 선택해주세요.</p>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">환영합니다!</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">체험할 페르소나를 선택해주세요.</p>
         </div>
         
         <div class="space-y-4">
             <!-- Persona 1 -->
-            <button onclick="selectPersona(1)" class="w-full bg-white p-6 rounded-2xl shadow-md border border-gray-100 hover:border-deepBlue hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group relative overflow-hidden">
+            <button onclick="selectPersona(1)" class="w-full bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 hover:border-deepBlue dark:hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-deepBlue"></div>
                 <div class="flex justify-between items-center">
                     <div>
                         <span class="text-xs font-bold text-deepBlue bg-blue-50 px-2 py-1 rounded">Persona 1</span>
-                        <h3 class="text-lg font-bold text-gray-900 mt-2">사회초년생 김철수 (29세)</h3>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mt-2">사회초년생 김철수 (29세)</h3>
                         <p class="text-sm text-gray-500 mt-1">연봉 2,600만원 / 신용 820점</p>
                     </div>
                     <div class="text-gray-300 group-hover:text-deepBlue transition text-2xl">→</div>
@@ -37,12 +29,12 @@
             </button>
 
             <!-- Persona 2 -->
-            <button onclick="selectPersona(2)" class="w-full bg-white p-6 rounded-2xl shadow-md border border-gray-100 hover:border-electricPurple hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group relative overflow-hidden">
+            <button onclick="selectPersona(2)" class="w-full bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 hover:border-electricPurple dark:hover:border-purple-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-electricPurple"></div>
                 <div class="flex justify-between items-center">
                     <div>
                         <span class="text-xs font-bold text-electricPurple bg-purple-50 px-2 py-1 rounded">Persona 2</span>
-                        <h3 class="text-lg font-bold text-gray-900 mt-2">경력직 이영희 (32세)</h3>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mt-2">경력직 이영희 (32세)</h3>
                         <p class="text-sm text-gray-500 mt-1">연봉 4,600만원 / 신용 950점</p>
                     </div>
                     <div class="text-gray-300 group-hover:text-electricPurple transition text-2xl">→</div>
@@ -52,6 +44,10 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme(); // common.js의 테마 초기화 함수 호출
+        });
+
         function selectPersona(id) {
             let persona = {};
             if (id === 1) {
@@ -59,7 +55,7 @@
                     id: 'persona1',
                     name: '김철수', age: 29, job: 'regular', income: 2600, creditScore: 820,
                     accounts: [
-                        { bank: '국민은행', balance: 5000000 }
+                        { bank: '국민은행', balance: 5000000, accountNumber: '123-456-7890' }
                     ]
                 };
             } else {
@@ -67,9 +63,9 @@
                     id: 'persona2',
                     name: '이영희', age: 32, job: 'regular', income: 4600, creditScore: 950,
                     accounts: [
-                        { bank: '국민은행', balance: 30000000 },
-                        { bank: '신한은행', balance: 5000000 },
-                        { bank: '하나은행', balance: 500000 }
+                        { bank: '국민은행', balance: 30000000, accountNumber: '123-456-1111' },
+                        { bank: '신한은행', balance: 5000000, accountNumber: '110-222-333333' },
+                        { bank: '하나은행', balance: 500000, accountNumber: '333-444-555555' }
                     ]
                 };
             }

@@ -8,23 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- 데이터 참조를 위해 로직 파일 연결 -->
     <script src="RecommendLogic.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        deepBlue: '#1D4ED8',
-                        electricPurple: '#7C3AED',
-                        softPurple: '#F3E8FF',
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="common.js"></script>
     <style>
         /* Progress Bar 애니메이션을 위한 트랜지션 설정 */
         .progress-bar {
@@ -32,48 +16,51 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans pb-40 select-none">
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
 
     <!-- Header -->
-    <header class="bg-white p-4 shadow-sm sticky top-0 z-10 border-b border-gray-100">
+    <header class="bg-white dark:bg-gray-800 p-4 shadow-sm dark:shadow-gray-900/50 sticky top-0 z-10 border-b border-gray-100 dark:border-gray-700 transition-colors">
         <div class="max-w-md mx-auto flex items-center gap-4">
-            <button onclick="history.back()" class="hover:bg-gray-100 p-3 rounded transition">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700"></i>
+            <button onclick="history.back()" class="hover:bg-gray-100 dark:hover:bg-gray-700 p-3 rounded transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
             </button>
-            <h1 class="text-lg font-bold text-gray-900">AI 상세 리포트</h1>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">AI 상세 리포트</h1>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-5">
         
         <!-- 1. Selected Product Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-3 text-deepBlue">
-                <i data-lucide="building-2" class="w-8 h-8"></i>
+        <div class="flex flex-col items-center mb-8">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                    <img id="bankLogo" src="" onerror="handleImageError(this)" class="w-full h-full object-cover" alt="bank">
+                </div>
+                <h2 id="bankName" class="text-xl font-bold text-gray-900 dark:text-white">은행명 로딩중</h2>
             </div>
-            <h2 id="bankName" class="text-xl font-bold text-gray-900">은행명 로딩중</h2>
             <p id="productName" class="text-gray-500">상품명 로딩중</p>
         </div>
 
         <!-- 2. User Input Summary (Transparency) -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
-            <div class="flex items-center gap-2 mb-3 border-b border-gray-100 pb-2">
-                <i data-lucide="user-check" class="w-4 h-4 text-deepBlue"></i>
-                <span class="text-sm font-bold text-gray-700">분석 기준 데이터</span>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 mb-6 transition-colors">
+            <div class="flex items-center gap-2 mb-3 border-b border-gray-100 dark:border-gray-700 pb-2">
+                <i data-lucide="user-check" class="w-4 h-4 text-deepBlue dark:text-blue-400"></i>
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">분석 기준 데이터</span>
             </div>
             <div class="grid grid-cols-2 gap-y-2 text-sm">
                 <div class="text-gray-500">연소득</div>
-                <div id="userIncome" class="font-medium text-right text-gray-900">-</div>
+                <div id="userIncome" class="font-medium text-right text-gray-900 dark:text-white">-</div>
                 <div class="text-gray-500">신용점수</div>
-                <div id="userCredit" class="font-medium text-right text-gray-900">-</div>
+                <div id="userCredit" class="font-medium text-right text-gray-900 dark:text-white">-</div>
                 <div class="text-gray-500">고용형태</div>
-                <div id="userJob" class="font-medium text-right text-gray-900">-</div>
+                <div id="userJob" class="font-medium text-right text-gray-900 dark:text-white">-</div>
             </div>
         </div>
 
         <!-- 3. XAI Analysis (Progress Bars) -->
         <div class="space-y-6 mb-8">
-            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                 <i data-lucide="bar-chart-2" class="w-5 h-5 text-electricPurple"></i>
                 상세 분석 결과
             </h3>
@@ -81,10 +68,10 @@
             <!-- Factor 1: Credit Score -->
             <div>
                 <div class="flex justify-between text-sm mb-1">
-                    <span class="font-medium text-gray-700">신용점수 영향도</span>
-                    <span id="scoreText-credit" class="text-deepBlue font-bold">0%</span>
+                    <span class="font-medium text-gray-700 dark:text-gray-300">신용점수 영향도</span>
+                    <span id="scoreText-credit" class="text-deepBlue dark:text-blue-400 font-bold">0%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div id="bar-credit" class="progress-bar bg-deepBlue h-2.5 rounded-full w-0"></div>
                 </div>
                 <p class="text-xs text-gray-400 mt-1">신용점수가 상품의 기준을 상회하여 긍정적입니다.</p>
@@ -93,10 +80,10 @@
             <!-- Factor 2: Income Stability -->
             <div>
                 <div class="flex justify-between text-sm mb-1">
-                    <span class="font-medium text-gray-700">소득 안정성</span>
-                    <span id="scoreText-income" class="text-deepBlue font-bold">0%</span>
+                    <span class="font-medium text-gray-700 dark:text-gray-300">소득 안정성</span>
+                    <span id="scoreText-income" class="text-deepBlue dark:text-blue-400 font-bold">0%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div id="bar-income" class="progress-bar bg-deepBlue h-2.5 rounded-full w-0"></div>
                 </div>
                 <p class="text-xs text-gray-400 mt-1">연소득 대비 대출 한도 비율이 적절합니다.</p>
@@ -105,10 +92,10 @@
             <!-- Factor 3: Job Type Match -->
             <div>
                 <div class="flex justify-between text-sm mb-1">
-                    <span class="font-medium text-gray-700">직군 적합도</span>
-                    <span id="scoreText-job" class="text-electricPurple font-bold">0%</span>
+                    <span class="font-medium text-gray-700 dark:text-gray-300">직군 적합도</span>
+                    <span id="scoreText-job" class="text-electricPurple dark:text-purple-400 font-bold">0%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div id="bar-job" class="progress-bar bg-electricPurple h-2.5 rounded-full w-0"></div>
                 </div>
                 <p class="text-xs text-gray-400 mt-1">해당 상품이 선호하는 직군 그룹에 속합니다.</p>
@@ -116,11 +103,11 @@
         </div>
 
         <!-- 4. Comprehensive Opinion (Purple Box) -->
-        <div class="bg-softPurple border border-electricPurple rounded-xl p-5 relative">
-            <div class="absolute -top-3 left-4 bg-electricPurple text-white text-xs px-2 py-1 rounded">
+        <div class="bg-softPurple dark:bg-purple-900/20 border border-electricPurple dark:border-purple-500 rounded-xl p-5 relative transition-colors">
+            <div class="absolute -top-3 left-4 bg-electricPurple dark:bg-purple-600 text-white text-xs px-2 py-1 rounded">
                 AI 종합 의견
             </div>
-            <p id="aiOpinion" class="text-gray-800 text-sm leading-relaxed mt-2">
+            <p id="aiOpinion" class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed mt-2">
                 분석 중입니다...
             </p>
         </div>
@@ -128,20 +115,22 @@
     </main>
 
     <!-- Bottom Fixed Button -->
-    <div class="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-4 max-w-md mx-auto z-40">
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
         <button onclick="showCompleteModal()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95">
             이 상품으로 대출 신청하기
         </button>
     </div>
+    </div>
 
     <!-- Complete Modal -->
-    <div id="completeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-2xl relative z-10">
-            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue">
+    <div id="completeModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeCompleteModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md text-center shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400">
                 <i data-lucide="check-circle" class="w-8 h-8"></i>
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">신청 완료</h2>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">신청 완료</h2>
             <p class="text-gray-500 text-sm mb-6">대출 신청이 성공적으로 접수되었습니다.<br>심사 결과는 곧 알림으로 전송됩니다.</p>
             <button onclick="confirmLoan()" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
                 확인
@@ -150,9 +139,9 @@
     </div>
 
     <script>
-        lucide.createIcons();
-
         document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null); // 공통 UI 초기화 (하단 탭 선택 안함)
+
             // 1. 데이터 로드
             const userDataStr = localStorage.getItem('trustFinUserData');
             const selectedProductId = localStorage.getItem('selectedProductId');
@@ -176,6 +165,7 @@
             // 2. UI 업데이트 (기본 정보)
             document.getElementById('bankName').innerText = product.bankName;
             document.getElementById('productName').innerText = product.productName;
+            document.getElementById('bankLogo').src = getBankLogoUrl(product.bankName);
             
             // 사용자 요약 정보 업데이트
             document.getElementById('userIncome').innerText = `${parseInt(user.income).toLocaleString()}만원`;
@@ -209,6 +199,9 @@
             // 4. 종합 의견 생성 (Dynamic Text Generation)
             const opinionText = generateOpinion(user, product, creditScorePercent);
             document.getElementById('aiOpinion').innerHTML = opinionText;
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('completeModal', closeCompleteModal);
         });
 
         // Progress Bar 설정 함수
@@ -233,7 +226,7 @@
         // 종합 의견 텍스트 생성기
         function generateOpinion(user, product, creditScorePercent) {
             let text = `고객님의 <strong>신용점수(${user.creditScore}점)</strong>는 
-                <span class="text-deepBlue font-bold">${product.bankName}</span>의 심사 기준에 
+                <span class="text-deepBlue dark:text-blue-400 font-bold">${product.bankName}</span>의 심사 기준에 
                 매우 부합합니다.<br><br>`;
 
             if (creditScorePercent > 80) {
@@ -248,8 +241,33 @@
         }
 
         function showCompleteModal() {
-            document.getElementById('completeModal').classList.remove('hidden');
+            const modal = document.getElementById('completeModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            toggleBackgroundScale(true);
             lucide.createIcons();
+        }
+
+        function closeCompleteModal(animate = true) {
+            const modal = document.getElementById('completeModal');
+            const content = modal.querySelector('.bg-white');
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = ''; // 스크롤 잠금 해제
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 잠금 해제
+                toggleBackgroundScale(false);
+            }
         }
 
         function confirmLoan() {
@@ -289,26 +307,6 @@
             location.href = 'home.html';
         }
     </script>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 pb-1">
-        <a href="home.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-deepBlue">
-            <i data-lucide="home" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">홈</span>
-        </a>
-        <a href="assets.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-deepBlue">
-            <i data-lucide="pie-chart" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">자산</span>
-        </a>
-        <a href="notification.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-deepBlue">
-            <i data-lucide="bell" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">알림</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-deepBlue">
-            <i data-lucide="menu" class="w-6 h-6"></i>
-            <span class="text-[10px] mt-1 font-medium">전체</span>
-        </a>
-    </nav>
 
     <!-- PWA Configuration -->
     <!-- <link rel="manifest" href="manifest.json"> -->

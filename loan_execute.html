@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 대출 실행</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="RecommendLogic.js"></script>
+    <script src="common.js"></script>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+        </button>
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">대출 실행</h1>
+    </header>
+
+    <main class="p-5 max-w-md mx-auto">
+        
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600 dark:text-green-400">
+                <i data-lucide="check" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">심사가 완료되었습니다</h2>
+            <p class="text-gray-500 dark:text-gray-400">고객님을 위한 최종 조건입니다.</p>
+        </div>
+
+        <!-- Result Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                    <img id="bankLogo" src="" onerror="handleImageError(this)" class="w-full h-full object-cover" alt="bank">
+                </div>
+                <div>
+                    <p id="bankName" class="text-sm text-gray-500 dark:text-gray-400">은행명</p>
+                    <h3 id="productName" class="font-bold text-gray-900 dark:text-white text-lg">상품명</h3>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between items-end border-b border-gray-100 dark:border-gray-700 pb-4">
+                    <span class="text-gray-500 dark:text-gray-400 font-medium">대출 한도</span>
+                    <span class="text-2xl font-bold text-deepBlue dark:text-blue-400"><span id="finalLimit">0</span>만원</span>
+                </div>
+                <div class="flex justify-between items-end">
+                    <span class="text-gray-500 dark:text-gray-400 font-medium">적용 금리</span>
+                    <span class="text-2xl font-bold text-electricPurple dark:text-purple-400"><span id="finalRate">0.0</span>%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-5 space-y-3 text-sm mb-8">
+            <div class="flex justify-between">
+                <span class="text-gray-500 dark:text-gray-400">대출 기간</span>
+                <span class="font-bold text-gray-900 dark:text-white">3년 (36개월)</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500 dark:text-gray-400">상환 방식</span>
+                <span class="font-bold text-gray-900 dark:text-white">원리금균등분할상환</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500 dark:text-gray-400">중도상환수수료</span>
+                <span class="font-bold text-gray-900 dark:text-white">면제</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Fixed Button -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
+        <button onclick="executeLoan()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
+            <span>대출금 입금받기</span>
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+    </div>
+    </div>
+
+    <!-- Deposit Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeSuccessModal()"></div>
+        <div id="successModalContent" class="bg-white dark:bg-gray-800 rounded-t-2xl p-8 w-full max-w-md text-center shadow-2xl relative z-10 transform translate-y-full transition-transform duration-300">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600 dark:text-green-400">
+                <i data-lucide="check" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">입금 완료!</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">
+                신청하신 대출금이 입금되었습니다.<br>
+                <span class="text-deepBlue dark:text-blue-400 font-bold text-lg mt-2 block"><span id="successAmount">0</span>원</span>
+            </p>
+            <button onclick="location.href='assets.html'" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+
+            // localStorage에서 선택된 대출 신청 정보 가져오기
+            const loanAppStr = localStorage.getItem('currentLoanApplication');
+            if (!loanAppStr) {
+                alert('잘못된 접근입니다.');
+                location.href = 'home.html';
+                return;
+            }
+
+            const loanApp = JSON.parse(loanAppStr);
+            
+            // RecommendLogic을 사용하여 최종 금리/한도 재계산 (시뮬레이션)
+            // 실제로는 서버에서 확정된 값을 받아와야 함
+            const recommendations = getRecommendations(); // RecommendLogic.js 함수
+            const productInfo = recommendations.find(p => p.id === loanApp.id);
+
+            if (productInfo) {
+                document.getElementById('bankName').innerText = productInfo.bankName;
+                document.getElementById('productName').innerText = productInfo.productName;
+                document.getElementById('bankLogo').src = getBankLogoUrl(productInfo.bankName);
+                document.getElementById('finalLimit').innerText = productInfo.finalLimit.toLocaleString();
+                document.getElementById('finalRate').innerText = productInfo.finalRate;
+            } else {
+                // 상품 정보가 없을 경우 기본값 (예외 처리)
+                document.getElementById('bankName').innerText = loanApp.bankName;
+                document.getElementById('productName').innerText = loanApp.productName;
+                document.getElementById('bankLogo').src = getBankLogoUrl(loanApp.bankName);
+                document.getElementById('finalLimit').innerText = "3,000";
+                document.getElementById('finalRate').innerText = "5.5";
+            }
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('successModal', closeSuccessModal);
+        });
+
+        function executeLoan() {
+            if (!confirm('대출을 실행하시겠습니까?\n입출금 계좌로 대출금이 입금됩니다.')) return;
+
+            const loanAppStr = localStorage.getItem('currentLoanApplication');
+            const loanApp = JSON.parse(loanAppStr);
+            const limitText = document.getElementById('finalLimit').innerText.replace(/,/g, '');
+            const loanAmount = parseInt(limitText) * 10000; // 만원 단위 -> 원 단위 변환
+
+            // 1. 대출 상태 변경 (pending/approved -> active)
+            let myLoans = JSON.parse(localStorage.getItem('trustFinMyLoans') || '[]');
+            myLoans = myLoans.map(loan => {
+                if (loan.timestamp === loanApp.timestamp) {
+                    return { ...loan, status: 'active' };
+                }
+                return loan;
+            });
+            localStorage.setItem('trustFinMyLoans', JSON.stringify(myLoans));
+
+            // 2. 자산(계좌 잔액) 업데이트
+            let persona = JSON.parse(localStorage.getItem('trustFinPersona'));
+            if (persona && persona.accounts && persona.accounts.length > 0) {
+                // 첫 번째 계좌에 입금
+                persona.accounts[0].balance += loanAmount;
+                localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+                // 자산 페이지 강조 효과를 위한 플래그 저장
+                localStorage.setItem('newDepositAmount', loanAmount);
+            }
+
+            // 3. 알림 추가
+            const now = new Date();
+            const dateStr = `${now.getMonth() + 1}.${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const newNoti = {
+                type: 'transfer', // 입금 알림
+                title: '대출금 입금 완료',
+                message: `${loanApp.bankName} 대출금 ${parseInt(limitText).toLocaleString()}만원이 입금되었습니다.`,
+                date: dateStr,
+                read: false
+            };
+            const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+            notifications.unshift(newNoti);
+            localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+
+            // 4. 완료 처리 및 이동
+            showSuccessModal(loanAmount);
+        }
+
+        function showSuccessModal(amount) {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('successModalContent');
+            const amountEl = document.getElementById('successAmount');
+            
+            amountEl.innerText = amount.toLocaleString();
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            toggleBackgroundScale(true);
+            
+            // 애니메이션 효과
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+            
+            lucide.createIcons();
+        }
+
+        function closeSuccessModal(animate = true) {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('successModalContent');
+            
+            if (animate) {
+                // 기존 translate-y-full 제거 (애니메이션 클래스 사용 위해)
+                content.classList.remove('translate-y-full'); 
+                content.classList.remove('animate-slide-up'); // 혹시 남아있다면 제거
+                content.classList.add('animate-slide-down');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = ''; // 스크롤 잠금 해제
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 잠금 해제
+                toggleBackgroundScale(false);
+            }
+        }
+    </script>
+</body>
+</html>
