@@ -38,18 +38,36 @@
             <h2 class="text-3xl font-bold text-gray-900"><span id="totalAsset">0</span>원</h2>
         </div>
 
-        <!-- Asset Graph (Simple Bar) -->
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-            <h3 class="font-bold text-gray-900 mb-4">자산 구성</h3>
-            <div class="flex h-4 rounded-full overflow-hidden mb-2">
-                <div class="bg-deepBlue w-full h-full"></div>
-            </div>
-            <div class="flex justify-between text-xs text-gray-500">
-                <div class="flex items-center gap-1">
-                    <div class="w-2 h-2 rounded-full bg-deepBlue"></div>
-                    <span>예적금</span>
+        <!-- Asset Graph (Donut Chart) -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 class="font-bold text-gray-900 mb-6">자산 구성</h3>
+            
+            <div class="flex items-center justify-center mb-8">
+                <div id="donutChart" class="w-48 h-48 rounded-full relative shadow-inner" style="background: conic-gradient(#1D4ED8 0% 100%);">
+                    <div class="absolute inset-0 m-auto w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+                        <p class="text-xs text-gray-400 mb-1">총 자산</p>
+                        <p id="chartTotal" class="font-bold text-gray-900 text-lg">0원</p>
+                    </div>
                 </div>
-                <span id="totalAssetSub">0원</span>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-deepBlue"></div>
+                        <span class="text-gray-600 text-sm">예적금</span>
+                        <span id="depositRatioText" class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">0%</span>
+                    </div>
+                    <span id="depositAmount" class="font-bold text-gray-900">0원</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-electricPurple"></div>
+                        <span class="text-gray-600 text-sm">투자</span>
+                        <span id="investRatioText" class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">0%</span>
+                    </div>
+                    <span id="investAmount" class="font-bold text-gray-900">0원</span>
+                </div>
             </div>
         </div>
 
@@ -83,10 +101,34 @@
         </a>
     </nav>
 
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeTransferModal()"></div>
+        <div class="bg-white rounded-2xl p-6 w-80 shadow-2xl relative z-10 transform transition-all scale-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-1">송금하기</h3>
+            <p id="transferBankName" class="text-sm text-gray-500 mb-4">은행 계좌에서 출금</p>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-500 mb-1">보낼 금액</label>
+                <div class="flex items-center border-b-2 border-gray-200 focus-within:border-deepBlue transition">
+                    <input type="number" id="transferAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-2 outline-none bg-transparent">
+                    <span class="text-gray-900 font-bold">원</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-xl bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 transition">취소</button>
+                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">보내기</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
 
-        document.addEventListener('DOMContentLoaded', () => {
+        let currentTransferBank = '';
+
+        function renderAssets() {
             const personaData = localStorage.getItem('trustFinPersona');
             if (!personaData) {
                 location.href = 'login.html';
@@ -95,10 +137,10 @@
 
             const persona = JSON.parse(personaData);
             const assetListEl = document.getElementById('assetList');
-            let total = 0;
+            let depositTotal = 0;
 
             assetListEl.innerHTML = persona.accounts.map(acc => {
-                total += acc.balance;
+                depositTotal += acc.balance;
                 return `
                     <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center">
                         <div class="flex items-center gap-4">
@@ -110,14 +152,77 @@
                                 <p class="font-bold text-gray-900 text-lg">${acc.balance.toLocaleString()}원</p>
                             </div>
                         </div>
-                        <button class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 transition">송금</button>
+                        <button onclick="openTransferModal('${acc.bank}')" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 transition">송금</button>
                     </div>
                 `;
             }).join('');
 
-            document.getElementById('totalAsset').innerText = total.toLocaleString();
-            document.getElementById('totalAssetSub').innerText = total.toLocaleString() + '원';
-        });
+            // 가상 투자 자산 생성 (예적금의 40% 수준)
+            const investTotal = Math.floor(depositTotal * 0.4);
+            const totalAsset = depositTotal + investTotal;
+
+            // 상단 총 자산 업데이트
+            document.getElementById('totalAsset').innerText = totalAsset.toLocaleString();
+            
+            // 도넛 차트 업데이트
+            const depositRatio = totalAsset > 0 ? (depositTotal / totalAsset) * 100 : 0;
+            const chartEl = document.getElementById('donutChart');
+            chartEl.style.background = `conic-gradient(#1D4ED8 0% ${depositRatio}%, #7C3AED ${depositRatio}% 100%)`;
+            document.getElementById('chartTotal').innerText = (totalAsset / 10000).toLocaleString() + '만원';
+
+            // 범례 업데이트
+            document.getElementById('depositAmount').innerText = depositTotal.toLocaleString() + '원';
+            document.getElementById('investAmount').innerText = investTotal.toLocaleString() + '원';
+            document.getElementById('depositRatioText').innerText = Math.round(depositRatio) + '%';
+            document.getElementById('investRatioText').innerText = Math.round(100 - depositRatio) + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderAssets);
+
+        // 모달 관련 함수
+        function openTransferModal(bankName) {
+            currentTransferBank = bankName;
+            document.getElementById('transferBankName').innerText = `${bankName} 계좌에서 출금`;
+            document.getElementById('transferAmount').value = '';
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+            currentTransferBank = '';
+        }
+
+        function submitTransfer() {
+            const amountInput = document.getElementById('transferAmount');
+            const amount = parseInt(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                alert('올바른 금액을 입력해주세요.');
+                return;
+            }
+
+            // 데이터 업데이트
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                const account = persona.accounts.find(acc => acc.bank === currentTransferBank);
+
+                if (account) {
+                    if (account.balance < amount) {
+                        alert('잔액이 부족합니다.');
+                        return;
+                    }
+                    
+                    // 잔액 차감 및 저장
+                    account.balance -= amount;
+                    localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+                    
+                    alert(`${amount.toLocaleString()}원을 송금했습니다.`);
+                    closeTransferModal();
+                    renderAssets(); // 화면 갱신
+                }
+            }
+        }
     </script>
 </body>
 </html>
