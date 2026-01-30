@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 대출 상담</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#1D4ED8',
+                        electricPurple: '#7C3AED',
+                        softBlue: '#EFF6FF'
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
+    <!-- Header -->
+    <header class="bg-white p-4 sticky top-0 z-20 flex items-center gap-4 shadow-sm">
+        <button onclick="history.back()" class="hover:bg-gray-100 p-2 rounded transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700"></i>
+        </button>
+        <h1 class="text-lg font-bold text-gray-900">대출 상담</h1>
+    </header>
+
+    <!-- Main Form -->
+    <main class="p-5 max-w-md mx-auto space-y-6">
+        
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">고객님께 딱 맞는<br>상품을 찾아드릴게요.</h1>
+            <p class="text-gray-500 mt-2 text-sm">기본 정보를 확인해주세요.</p>
+        </div>
+
+        <form id="infoForm" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-5">
+            
+            <!-- Income -->
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">연소득 (만원)</label>
+                <input type="number" id="income" placeholder="예: 5000" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition placeholder-gray-300" required>
+            </div>
+
+            <!-- Credit Score -->
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">신용점수 (0~1000)</label>
+                <input type="number" id="creditScore" placeholder="예: 850" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition placeholder-gray-300" required>
+            </div>
+
+            <!-- Employment Type -->
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">고용 형태</label>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="employmentType" value="regular" class="peer sr-only" checked>
+                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                            직장인
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="employmentType" value="business_owner" class="peer sr-only">
+                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                            사업자
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="employmentType" value="freelancer" class="peer sr-only">
+                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                            프리랜서
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="employmentType" value="unemployed" class="peer sr-only">
+                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                            기타
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </form>
+
+        <!-- Action Button -->
+        <button type="button" onclick="startAnalysis()" class="w-full bg-deepBlue text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
+            <span>무료로 금리 분석하기</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // 페이지 로드 시 퍼소나 데이터 자동 입력
+        document.addEventListener('DOMContentLoaded', () => {
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                
+                // 값 자동 입력
+                if (persona.income) document.getElementById('income').value = persona.income;
+                if (persona.creditScore) document.getElementById('creditScore').value = persona.creditScore;
+                
+                // 고용 형태 선택
+                if (persona.job) {
+                    const radios = document.getElementsByName('employmentType');
+                    for (const radio of radios) {
+                        if (radio.value === persona.job) {
+                            radio.checked = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        function startAnalysis() {
+            const income = document.getElementById('income').value;
+            const creditScore = document.getElementById('creditScore').value;
+            const employmentType = document.querySelector('input[name="employmentType"]:checked').value;
+
+            if (!income || !creditScore) {
+                alert('모든 정보를 입력해주세요.');
+                return;
+            }
+
+            const userData = { income, creditScore, employmentType };
+            localStorage.setItem('trustFinUserData', JSON.stringify(userData));
+            window.location.href = 'result.html';
+        }
+    </script>
+</body>
+</html>

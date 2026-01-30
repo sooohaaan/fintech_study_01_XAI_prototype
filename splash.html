@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { deepBlue: '#1D4ED8' }
+                }
+            }
+        }
+        // 2초 후 로그인 화면으로 이동
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    </script>
+</head>
+<body class="bg-deepBlue flex items-center justify-center h-screen">
+    <div class="text-white text-center animate-bounce">
+        <div class="bg-white/20 p-4 rounded-full inline-block mb-4 backdrop-blur-sm">
+            <i data-lucide="shield-check" class="w-16 h-16 text-white"></i>
+        </div>
+        <h1 class="text-3xl font-bold tracking-wider">TrustFin</h1>
+        <p class="text-blue-200 mt-2 text-sm font-light">투명한 금융의 시작</p>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 로그인</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { deepBlue: '#1D4ED8', electricPurple: '#7C3AED' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 h-screen flex flex-col justify-center items-center p-6 select-none">
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900">환영합니다!</h2>
+            <p class="mt-2 text-gray-600">체험할 페르소나를 선택해주세요.</p>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- Persona 1 -->
+            <button onclick="selectPersona(1)" class="w-full bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-deepBlue hover:shadow-md transition text-left group relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-deepBlue"></div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-deepBlue bg-blue-50 px-2 py-1 rounded">Persona 1</span>
+                        <h3 class="text-lg font-bold text-gray-900 mt-2">사회초년생 김철수 (29세)</h3>
+                        <p class="text-sm text-gray-500 mt-1">연봉 2,600만원 / 신용 820점</p>
+                    </div>
+                    <div class="text-gray-300 group-hover:text-deepBlue transition text-2xl">→</div>
+                </div>
+            </button>
+
+            <!-- Persona 2 -->
+            <button onclick="selectPersona(2)" class="w-full bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-electricPurple hover:shadow-md transition text-left group relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-electricPurple"></div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-electricPurple bg-purple-50 px-2 py-1 rounded">Persona 2</span>
+                        <h3 class="text-lg font-bold text-gray-900 mt-2">경력직 이영희 (32세)</h3>
+                        <p class="text-sm text-gray-500 mt-1">연봉 4,600만원 / 신용 950점</p>
+                    </div>
+                    <div class="text-gray-300 group-hover:text-electricPurple transition text-2xl">→</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function selectPersona(id) {
+            let persona = {};
+            if (id === 1) {
+                persona = {
+                    name: '김철수', age: 29, job: 'regular', income: 2600, creditScore: 820,
+                    accounts: [
+                        { bank: '국민은행', balance: 5000000 }
+                    ]
+                };
+            } else {
+                persona = {
+                    name: '이영희', age: 32, job: 'regular', income: 4600, creditScore: 950,
+                    accounts: [
+                        { bank: '국민은행', balance: 30000000 },
+                        { bank: '신한은행', balance: 5000000 },
+                        { bank: '하나은행', balance: 500000 }
+                    ]
+                };
+            }
+            // 선택한 페르소나 저장 후 홈으로 이동
+            localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
