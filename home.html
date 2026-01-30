@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 홈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#1D4ED8',
+                        electricPurple: '#7C3AED',
+                        softBlue: '#EFF6FF'
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
+    <!-- Header -->
+    <header class="bg-white h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm relative px-4">
+        <div class="flex items-center gap-2 text-deepBlue font-bold text-xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+            <span>TrustFin</span>
+        </div>
+        <div class="flex items-center gap-3 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2" onclick="toggleMenu()">
+            <span id="userNameDisplay" class="text-sm font-bold text-gray-700"></span>
+            <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="p-5 max-w-md mx-auto space-y-6">
+        
+        <!-- Total Balance -->
+        <div class="bg-deepBlue text-white rounded-2xl p-6 shadow-lg shadow-blue-200">
+            <p class="text-blue-200 text-sm font-medium mb-1">총 보유 자산</p>
+            <h2 class="text-3xl font-bold"><span id="totalBalance">0</span>원</h2>
+        </div>
+
+        <!-- Account List -->
+        <div>
+            <h3 class="font-bold text-lg text-gray-900 mb-3">내 계좌</h3>
+            <div id="accountList" class="space-y-3">
+                <!-- JS로 계좌 목록 렌더링 -->
+            </div>
+        </div>
+
+        <!-- Loan Section -->
+        <div>
+            <h3 class="font-bold text-lg text-gray-900 mb-3">대출</h3>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="bg-softBlue p-3 rounded-full text-deepBlue">
+                        <i data-lucide="coins" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900">AI 맞춤 대출 추천</h4>
+                        <p class="text-xs text-gray-500 mt-1">내 조건에 딱 맞는 최저 금리 상품을<br>AI가 투명하게 분석해드립니다.</p>
+                    </div>
+                </div>
+                <button onclick="location.href='loan_input.html'" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
+                    <span>대출받기</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 pb-1">
+        <a href="home.html" class="flex flex-col items-center text-deepBlue w-full h-full justify-center">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">홈</span>
+        </a>
+        <a href="assets.html" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
+            <i data-lucide="pie-chart" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">자산</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
+            <i data-lucide="bell" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">알림</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-400 w-full h-full justify-center hover:text-gray-600">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">전체</span>
+        </a>
+    </nav>
+
+    <!-- Side Menu Drawer -->
+    <div id="sideMenu" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="toggleMenu()"></div>
+        
+        <!-- Drawer Content -->
+        <div id="sideMenuDrawer" class="absolute right-0 top-0 h-full w-72 bg-white shadow-2xl p-6 flex flex-col transform transition-transform duration-300 translate-x-full">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="font-bold text-xl text-gray-900">내 정보</h2>
+                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
+                    <i data-lucide="x" class="w-6 h-6 text-gray-500"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 space-y-2">
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-gray-500"></i>
+                    <span class="font-medium text-gray-700">회원 정보 수정</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    <i data-lucide="settings" class="w-5 h-5 text-gray-500"></i>
+                    <span class="font-medium text-gray-700">앱 설정</span>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="flex items-center justify-center gap-2 w-full border border-gray-200 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-50 transition mt-4">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>로그아웃</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로그인된 퍼소나 정보 가져오기
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (!personaData) {
+                // 로그인 정보 없으면 로그인 페이지로 이동
+                location.href = 'login.html';
+                return;
+            }
+
+            const persona = JSON.parse(personaData);
+            
+            // 사용자 이름 표시
+            document.getElementById('userNameDisplay').innerText = `${persona.name}님`;
+
+            // 계좌 목록 렌더링 및 총 자산 계산
+            const accountListEl = document.getElementById('accountList');
+            let total = 0;
+
+            accountListEl.innerHTML = persona.accounts.map(acc => {
+                total += acc.balance;
+                return `
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+                                <img src="https://via.placeholder.com/40?text=${acc.bank[0]}" class="rounded-full opacity-50" alt="bank">
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 mb-0.5">${acc.bank}</p>
+                                <p class="font-bold text-gray-900">${acc.balance.toLocaleString()}원</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('totalBalance').innerText = total.toLocaleString();
+        });
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const drawer = document.getElementById('sideMenuDrawer');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                // 애니메이션 적용을 위해 약간의 지연
+                setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => menu.classList.add('hidden'), 300);
+            }
+        }
+
+        function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('trustFinPersona');
+                localStorage.removeItem('trustFinUserData');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
