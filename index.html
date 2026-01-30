@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TrustFin - 홈</title>
+    <title>TrustFin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        deepBlue: '#1D4ED8',
-                        electricPurple: '#7C3AED',
-                        softBlue: '#EFF6FF'
+                    colors: { deepBlue: '#1D4ED8' },
+                    animation: {
+                        'fade-in': 'fadeIn 2s ease-out forwards'
                     },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
                     }
                 }
             }
         }
+        // 4초 후 로그인 화면으로 이동
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 4000);
     </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
@@ -29,6 +35,10 @@
         <div class="flex items-center gap-2 text-deepBlue font-bold text-xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <i data-lucide="shield-check" class="w-6 h-6"></i>
             <span>TrustFin</span>
+<body class="bg-deepBlue flex items-center justify-center h-screen">
+    <div class="text-white text-center animate-fade-in">
+        <div class="bg-white/20 p-4 rounded-full inline-block mb-4 backdrop-blur-sm">
+            <i data-lucide="shield-check" class="w-16 h-16 text-white"></i>
         </div>
         <div class="flex items-center gap-3 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2" onclick="toggleMenu()">
             <span id="userNameDisplay" class="text-sm font-bold text-gray-700"></span>
@@ -127,6 +137,8 @@
                 <span>로그아웃</span>
             </button>
         </div>
+        <h1 class="text-3xl font-bold tracking-wider">TrustFin</h1>
+        <p class="text-blue-200 mt-2 text-sm font-light">투명한 금융의 시작</p>
     </div>
 
     <script>
@@ -200,5 +212,6 @@
         navigator.serviceWorker.register('service-worker.js');
       }
     </script> -->
+    <script>lucide.createIcons();</script>
 </body>
 </html>
