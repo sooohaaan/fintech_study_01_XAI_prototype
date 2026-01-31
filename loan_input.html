@@ -69,16 +69,73 @@
                     </label>
                 </div>
             </div>
+
+            <!-- Account Selection -->
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">입금 받을 계좌</label>
+                <select id="accountSelect" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition bg-transparent rounded-none">
+                </select>
+            </div>
+
+            <!-- Terms Agreement -->
+            <div class="pt-4 border-t border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">약관 및 동의</h3>
+                </div>
+                <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+                    <div onclick="toggleAllTerms()" class="p-4 border-b border-gray-200 flex items-center gap-3 cursor-pointer hover:bg-gray-100 transition">
+                        <div id="checkAll" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center transition-colors">
+                            <i data-lucide="check" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <span class="font-bold text-gray-900">약관 전체 동의</span>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div onclick="openTermModal(0)" class="flex items-center gap-3 cursor-pointer">
+                            <div id="check0" onclick="toggleTerm(0); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                                <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">[필수] 서비스 이용약관</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                        </div>
+                        <div onclick="openTermModal(1)" class="flex items-center gap-3 cursor-pointer">
+                            <div id="check1" onclick="toggleTerm(1); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                                <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">[필수] 개인정보 수집 및 이용</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                        </div>
+                        <div onclick="openTermModal(2)" class="flex items-center gap-3 cursor-pointer">
+                            <div id="check2" onclick="toggleTerm(2); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                                <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">[필수] 제3자 정보 제공 동의</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
     </main>
 
     <!-- Bottom Fixed Button -->
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 max-w-md mx-auto z-40">
-        <button type="button" onclick="startAnalysis()" class="w-full bg-deepBlue text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
-            <span>무료로 금리 분석하기</span>
-            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        <button id="analyzeBtn" type="button" onclick="startAnalysis()" disabled class="w-full bg-gray-300 text-gray-500 font-bold text-lg py-4 rounded-xl shadow-none transition-all flex justify-center items-center gap-2 cursor-not-allowed">
+            <span>약관에 동의해주세요</span>
         </button>
+    </div>
+
+    <!-- Term Detail Modal -->
+    <div id="termModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTermModal()"></div>
+        <div class="bg-white rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[80vh] flex flex-col">
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 flex-shrink-0"></div>
+            <h3 id="termTitle" class="text-lg font-bold text-gray-900 mb-4 flex-shrink-0">약관 제목</h3>
+            <div id="termContent" class="flex-1 overflow-y-auto text-sm text-gray-600 leading-relaxed mb-4 pr-2 whitespace-pre-line">
+                약관 내용...
+            </div>
+            <button onclick="agreeCurrentTerm()" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition flex-shrink-0">동의하고 닫기</button>
+        </div>
     </div>
 
     <script>
@@ -94,6 +151,14 @@
                 if (persona.income) document.getElementById('income').value = persona.income;
                 if (persona.creditScore) document.getElementById('creditScore').value = persona.creditScore;
                 
+                // 계좌 목록 렌더링
+                const accountSelect = document.getElementById('accountSelect');
+                if (persona.accounts && persona.accounts.length > 0) {
+                    accountSelect.innerHTML = persona.accounts.map(acc => 
+                        `<option value="${acc.accountNumber}">${acc.bank} (${acc.accountNumber})</option>`
+                    ).join('');
+                }
+
                 // 고용 형태 선택
                 if (persona.job) {
                     const radios = document.getElementsByName('employmentType');
@@ -104,19 +169,148 @@
                     }
                 }
             }
+            
+            // 이전에 입력한 데이터가 있다면 불러오기 (수정 모드)
+            const userDataStr = localStorage.getItem('trustFinUserData');
+            if (userDataStr) {
+                const userData = JSON.parse(userDataStr);
+                if (userData.income) document.getElementById('income').value = userData.income;
+                if (userData.creditScore) document.getElementById('creditScore').value = userData.creditScore;
+                if (userData.employmentType) {
+                    const radios = document.getElementsByName('employmentType');
+                    for (const radio of radios) {
+                        if (radio.value === userData.employmentType) {
+                            radio.checked = true;
+                        }
+                    }
+                }
+                if (userData.selectedAccount && document.getElementById('accountSelect')) {
+                    document.getElementById('accountSelect').value = userData.selectedAccount;
+                }
+            }
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('termModal', closeTermModal);
         });
+
+        let termsAgreed = [false, false, false];
+        let currentTermIndex = -1;
+
+        function toggleAllTerms() {
+            const allChecked = termsAgreed.every(t => t);
+            const newState = !allChecked;
+            termsAgreed = termsAgreed.map(() => newState);
+            updateTermUI();
+        }
+
+        function toggleTerm(index) {
+            termsAgreed[index] = !termsAgreed[index];
+            updateTermUI();
+        }
+
+        function updateTermUI() {
+            const allChecked = termsAgreed.every(t => t);
+            
+            // 전체 동의 체크박스
+            const checkAll = document.getElementById('checkAll');
+            if (allChecked) {
+                checkAll.classList.remove('border-gray-300');
+                checkAll.classList.add('bg-deepBlue', 'border-deepBlue');
+            } else {
+                checkAll.classList.add('border-gray-300');
+                checkAll.classList.remove('bg-deepBlue', 'border-deepBlue');
+            }
+
+            // 개별 체크박스
+            termsAgreed.forEach((checked, i) => {
+                const el = document.getElementById(`check${i}`);
+                if (checked) {
+                    el.classList.remove('border-gray-300', 'bg-white');
+                    el.classList.add('bg-deepBlue', 'border-deepBlue');
+                } else {
+                    el.classList.add('border-gray-300', 'bg-white');
+                    el.classList.remove('bg-deepBlue', 'border-deepBlue');
+                }
+            });
+
+            // 버튼 상태 업데이트
+            const btn = document.getElementById('analyzeBtn');
+            if (allChecked) {
+                btn.disabled = false;
+                btn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                btn.classList.add('bg-deepBlue', 'text-white', 'shadow-lg', 'hover:bg-blue-800', 'active:scale-95');
+                btn.innerHTML = `<span>무료로 금리 분석하기</span><i data-lucide="arrow-right" class="w-5 h-5"></i>`;
+                lucide.createIcons();
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                btn.classList.remove('bg-deepBlue', 'text-white', 'shadow-lg', 'hover:bg-blue-800', 'active:scale-95');
+                btn.innerHTML = `<span>약관에 동의해주세요</span>`;
+            }
+        }
+
+        const termsData = [
+            {
+                title: "서비스 이용약관",
+                content: "제1조 (목적)\n본 약관은 TrustFin(이하 '회사')이 제공하는 대출 비교 및 추천 서비스(이하 '서비스')의 이용 조건 및 절차, 회사와 회원의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.\n\n제2조 (용어의 정의)\n1. '회원'이란 본 약관에 동의하고 회사가 제공하는 서비스를 이용하는 자를 말합니다.\n2. '서비스'란 회사가 이용자의 금융 정보를 바탕으로 최적의 대출 상품을 추천해주는 서비스를 말합니다.\n\n제3조 (약관의 효력 및 변경)\n본 약관은 서비스를 이용하고자 하는 모든 회원에게 효력이 발생합니다."
+            },
+            {
+                title: "개인정보 수집 및 이용",
+                content: "1. 수집하는 개인정보 항목\n- 필수항목: 성명, 연소득, 신용점수, 고용형태, 보유 계좌 정보\n\n2. 개인정보의 수집 및 이용 목적\n- 대출 상품 추천 및 금리/한도 시뮬레이션\n- 서비스 이용에 따른 본인 확인\n\n3. 보유 및 이용 기간\n- 회원 탈퇴 시까지 또는 법령에 따른 보존 기간까지\n\n귀하는 개인정보 수집 및 이용에 거부할 권리가 있으나, 동의 거부 시 서비스 이용이 제한될 수 있습니다."
+            },
+            {
+                title: "제3자 정보 제공 동의",
+                content: "회사는 다음과 같이 개인정보를 제3자에게 제공하고 있습니다.\n\n1. 제공받는 자\n- 제휴 금융사 (우리은행, 카카오뱅크, 토스뱅크, 현대캐피탈 등)\n\n2. 제공하는 항목\n- 연소득, 신용점수, 고용형태\n\n3. 제공받는 자의 이용 목적\n- 대출 한도 및 금리 조회, 대출 심사\n\n4. 보유 및 이용 기간\n- 제공 목적 달성 시까지"
+            }
+        ];
+
+        function openTermModal(index) {
+            currentTermIndex = index;
+            document.getElementById('termTitle').innerText = termsData[index].title;
+            document.getElementById('termContent').innerText = termsData[index].content;
+            
+            const modal = document.getElementById('termModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function closeTermModal() {
+            const modal = document.getElementById('termModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function agreeCurrentTerm() {
+            if (currentTermIndex >= 0 && !termsAgreed[currentTermIndex]) {
+                toggleTerm(currentTermIndex);
+            }
+            closeTermModal();
+        }
 
         function startAnalysis() {
             const income = document.getElementById('income').value;
             const creditScore = document.getElementById('creditScore').value;
             const employmentType = document.querySelector('input[name="employmentType"]:checked').value;
+            const selectedAccount = document.getElementById('accountSelect').value;
 
             if (!income || !creditScore) {
                 alert('모든 정보를 입력해주세요.');
                 return;
             }
 
-            const userData = { income, creditScore, employmentType };
+            const existingData = JSON.parse(localStorage.getItem('trustFinUserData') || '{}');
+            const userData = { ...existingData, income, creditScore, employmentType, selectedAccount };
             localStorage.setItem('trustFinUserData', JSON.stringify(userData));
             window.location.href = 'result.html';
         }

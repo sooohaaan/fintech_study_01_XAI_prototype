@@ -44,11 +44,17 @@
 
             <div class="space-y-4">
                 <div class="flex justify-between items-end border-b border-gray-100 dark:border-gray-700 pb-4">
-                    <span class="text-gray-500 dark:text-gray-400 font-medium">대출 한도</span>
+                    <div class="flex items-center gap-1">
+                        <span class="text-gray-500 dark:text-gray-400 font-medium">대출 한도</span>
+                        <button type="button" onclick="openInfoModal('대출 한도', '고객님의 신용점수와 소득 정보를 종합적으로 분석하여 산출된 최대 대출 가능 금액입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                    </div>
                     <span class="text-2xl font-bold text-deepBlue dark:text-blue-400"><span id="finalLimit">0</span>만원</span>
                 </div>
                 <div class="flex justify-between items-end">
-                    <span class="text-gray-500 dark:text-gray-400 font-medium">적용 금리</span>
+                    <div class="flex items-center gap-1">
+                        <span class="text-gray-500 dark:text-gray-400 font-medium">적용 금리</span>
+                        <button type="button" onclick="openInfoModal('적용 금리', '기준 금리에 고객님의 신용 등급에 따른 가산 금리와 우대 금리가 반영된 최종 확정 금리입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                    </div>
                     <span class="text-2xl font-bold text-electricPurple dark:text-purple-400"><span id="finalRate">0.0</span>%</span>
                 </div>
             </div>
@@ -57,15 +63,24 @@
         <!-- Details -->
         <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-5 space-y-3 text-sm mb-8">
             <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">대출 기간</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-gray-500 dark:text-gray-400">대출 기간</span>
+                    <button type="button" onclick="openInfoModal('대출 기간', '대출 실행일로부터 만기일까지의 기간입니다. 만기 시 연장 신청이 가능할 수 있습니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-0.5 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                </div>
                 <span class="font-bold text-gray-900 dark:text-white">3년 (36개월)</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">상환 방식</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-gray-500 dark:text-gray-400">상환 방식</span>
+                    <button type="button" onclick="openInfoModal('상환 방식', '원리금균등분할상환 방식은 대출 기간 동안 매월 원금과 이자를 합하여 동일한 금액을 상환하는 방식입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-0.5 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                </div>
                 <span class="font-bold text-gray-900 dark:text-white">원리금균등분할상환</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">중도상환수수료</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-gray-500 dark:text-gray-400">중도상환수수료</span>
+                    <button type="button" onclick="openInfoModal('중도상환수수료', '대출 만기 이전에 대출금을 갚을 때 발생하는 수수료입니다. 이 상품은 면제 조건입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-0.5 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                </div>
                 <span class="font-bold text-gray-900 dark:text-white">면제</span>
             </div>
         </div>
@@ -74,7 +89,7 @@
 
     <!-- Bottom Fixed Button -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
-        <button onclick="executeLoan()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
+        <button id="executeBtn" onclick="executeLoan()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
             <span>대출금 입금받기</span>
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
         </button>
@@ -97,6 +112,28 @@
             <button onclick="location.href='assets.html'" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
                 확인
             </button>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div id="processingOverlay" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl flex flex-col items-center transform transition-transform scale-95">
+            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-deepBlue dark:text-blue-400">
+                <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">입금 처리 중</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center">은행 전산망과 통신하고 있습니다.<br>잠시만 기다려주세요.</p>
+        </div>
+    </div>
+
+    <!-- Info Modal (Generic) -->
+    <div id="infoModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeInfoModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 id="infoModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">정보</h3>
+            <p id="infoModalDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6">내용</p>
+            <button onclick="closeInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
     </div>
 
@@ -136,53 +173,104 @@
 
             // 모달 드래그 기능 초기화
             initBottomSheetDrag('successModal', closeSuccessModal);
+            initBottomSheetDrag('infoModal', closeInfoModal);
+
+            // 아이콘 렌더링 강제 실행
+            if (window.lucide) window.lucide.createIcons();
+            setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 300);
         });
 
         function executeLoan() {
             if (!confirm('대출을 실행하시겠습니까?\n입출금 계좌로 대출금이 입금됩니다.')) return;
 
-            const loanAppStr = localStorage.getItem('currentLoanApplication');
-            const loanApp = JSON.parse(loanAppStr);
-            const limitText = document.getElementById('finalLimit').innerText.replace(/,/g, '');
-            const loanAmount = parseInt(limitText) * 10000; // 만원 단위 -> 원 단위 변환
-
-            // 1. 대출 상태 변경 (pending/approved -> active)
-            let myLoans = JSON.parse(localStorage.getItem('trustFinMyLoans') || '[]');
-            myLoans = myLoans.map(loan => {
-                if (loan.timestamp === loanApp.timestamp) {
-                    return { ...loan, status: 'active' };
-                }
-                return loan;
+            // 로딩 오버레이 표시
+            const overlay = document.getElementById('processingOverlay');
+            const content = overlay.querySelector('div');
+            
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 스크롤 잠금
+            
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                overlay.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
             });
-            localStorage.setItem('trustFinMyLoans', JSON.stringify(myLoans));
 
-            // 2. 자산(계좌 잔액) 업데이트
-            let persona = JSON.parse(localStorage.getItem('trustFinPersona'));
-            if (persona && persona.accounts && persona.accounts.length > 0) {
-                // 첫 번째 계좌에 입금
-                persona.accounts[0].balance += loanAmount;
-                localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+            // 2초 지연 후 처리
+            setTimeout(() => {
+                const loanAppStr = localStorage.getItem('currentLoanApplication');
+                const loanApp = JSON.parse(loanAppStr);
+                const limitText = document.getElementById('finalLimit').innerText.replace(/,/g, '');
+                const loanAmount = parseInt(limitText) * 10000; // 만원 단위 -> 원 단위 변환
 
-                // 자산 페이지 강조 효과를 위한 플래그 저장
-                localStorage.setItem('newDepositAmount', loanAmount);
-            }
+                // 1. 대출 상태 변경 (pending/approved -> active)
+                let myLoans = JSON.parse(localStorage.getItem('trustFinMyLoans') || '[]');
+                myLoans = myLoans.map(loan => {
+                    if (loan.timestamp === loanApp.timestamp) {
+                        return { ...loan, status: 'active' };
+                    }
+                    return loan;
+                });
+                localStorage.setItem('trustFinMyLoans', JSON.stringify(myLoans));
 
-            // 3. 알림 추가
-            const now = new Date();
-            const dateStr = `${now.getMonth() + 1}.${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            const newNoti = {
-                type: 'transfer', // 입금 알림
-                title: '대출금 입금 완료',
-                message: `${loanApp.bankName} 대출금 ${parseInt(limitText).toLocaleString()}만원이 입금되었습니다.`,
-                date: dateStr,
-                read: false
-            };
-            const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
-            notifications.unshift(newNoti);
-            localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+                // 2. 자산(계좌 잔액) 업데이트
+                let persona = JSON.parse(localStorage.getItem('trustFinPersona'));
+                if (persona && persona.accounts && persona.accounts.length > 0) {
+                    // 신청 시 선택한 계좌 찾기
+                    let targetAccount = null;
+                    if (loanApp.depositAccount) {
+                        targetAccount = persona.accounts.find(acc => acc.accountNumber === loanApp.depositAccount);
+                    }
+                    // 없으면 첫 번째 계좌 (Fallback)
+                    if (!targetAccount) targetAccount = persona.accounts[0];
 
-            // 4. 완료 처리 및 이동
-            showSuccessModal(loanAmount);
+                    targetAccount.balance += loanAmount;
+                    localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+                    // 자산 페이지 강조 효과를 위한 플래그 저장
+                    localStorage.setItem('newDepositAmount', loanAmount);
+
+                    // 거래 내역 저장 (Transaction History)
+                    const newTx = {
+                        accountNumber: targetAccount.accountNumber,
+                        type: 'deposit',
+                        amount: loanAmount,
+                        desc: loanApp.bankName + ' 대출금',
+                        date: Date.now(),
+                        balance: targetAccount.balance
+                    };
+                    const transactions = JSON.parse(localStorage.getItem('trustFinTransactions') || '[]');
+                    transactions.push(newTx);
+                    localStorage.setItem('trustFinTransactions', JSON.stringify(transactions));
+                }
+
+                // 3. 알림 추가
+                const now = new Date();
+                const dateStr = `${now.getMonth() + 1}.${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const newNoti = {
+                    type: 'transfer', // 입금 알림
+                    title: '대출금 입금 완료',
+                    message: `${loanApp.bankName} 대출금 ${parseInt(limitText).toLocaleString()}만원이 입금되었습니다.`,
+                    date: dateStr,
+                    read: false
+                };
+                const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+                notifications.unshift(newNoti);
+                localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+
+                // 로딩 숨기기
+                overlay.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    // 4. 완료 처리 및 이동
+                    showSuccessModal(loanAmount);
+                }, 300);
+
+            }, 2000); // 2초 딜레이
         }
 
         function showSuccessModal(amount) {
@@ -224,6 +312,31 @@
                 document.body.style.overflow = ''; // 스크롤 잠금 해제
                 toggleBackgroundScale(false);
             }
+        }
+
+        function openInfoModal(title, desc) {
+            document.getElementById('infoModalTitle').innerText = title;
+            document.getElementById('infoModalDesc').innerText = desc;
+            
+            const modal = document.getElementById('infoModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            toggleBackgroundScale(true);
+        }
+
+        function closeInfoModal() {
+            const modal = document.getElementById('infoModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                toggleBackgroundScale(false);
+            }, 300);
         }
     </script>
 </body>

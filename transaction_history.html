@@ -178,6 +178,7 @@
 
             // Mock Transactions
             generateMockTransactions(account.balance);
+            loadRealTransactions(account.accountNumber); // 저장된 실제 거래 내역 로드
             renderTransactions();
 
             // Infinite Scroll Event
@@ -225,6 +226,32 @@
             }
 
             allTransactions = transactions;
+        }
+
+        function loadRealTransactions(accountNumber) {
+            const storedTransactions = JSON.parse(localStorage.getItem('trustFinTransactions') || '[]');
+            const myTransactions = storedTransactions.filter(tx => tx.accountNumber === accountNumber);
+            
+            myTransactions.forEach(tx => {
+                const date = new Date(tx.date);
+                const now = new Date();
+                let dateStr;
+                
+                if (date.toDateString() === now.toDateString()) dateStr = '오늘';
+                else dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+
+                allTransactions.unshift({
+                    rawDate: date,
+                    date: dateStr,
+                    desc: tx.desc,
+                    amount: tx.amount,
+                    type: tx.type,
+                    balance: tx.balance
+                });
+            });
+            
+            // 날짜 내림차순 정렬 (최신순)
+            allTransactions.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
         }
 
         function loadMoreTransactions() {
@@ -473,6 +500,19 @@
             
             allTransactions.unshift(newTx);
             renderTransactions();
+
+            // 거래 내역 영구 저장
+            const storedTx = {
+                accountNumber: account.accountNumber,
+                type: type,
+                amount: amount,
+                desc: desc,
+                date: now.getTime(),
+                balance: account.balance
+            };
+            const transactions = JSON.parse(localStorage.getItem('trustFinTransactions') || '[]');
+            transactions.push(storedTx);
+            localStorage.setItem('trustFinTransactions', JSON.stringify(transactions));
         }
 
         function openDateRangeModal() {

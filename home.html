@@ -39,18 +39,18 @@
                     </div>
                 </div>
                 
-                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 text-xs text-gray-500 dark:text-gray-400 space-y-2">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i>
-                        <span>신용점수 조회 완료</span>
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-xs text-gray-500 dark:text-gray-400 space-y-3">
+                    <div id="step1" class="flex items-center gap-3 transition-all duration-300 opacity-50">
+                        <div class="icon-box"><i data-lucide="circle" class="w-4 h-4"></i></div>
+                        <span>신용점수 조회</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i>
-                        <span>소득 정보 확인 완료</span>
+                    <div id="step2" class="flex items-center gap-3 transition-all duration-300 opacity-50">
+                        <div class="icon-box"><i data-lucide="circle" class="w-4 h-4"></i></div>
+                        <span>소득 정보 확인</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="loader" class="w-3 h-3 animate-spin text-deepBlue dark:text-blue-400"></i>
-                        <span class="font-bold text-gray-700 dark:text-gray-200">최종 한도 산출 중...</span>
+                    <div id="step3" class="flex items-center gap-3 transition-all duration-300 opacity-50">
+                        <div class="icon-box"><i data-lucide="circle" class="w-4 h-4"></i></div>
+                        <span>최종 한도 산출</span>
                     </div>
                 </div>
             </div>
@@ -58,6 +58,85 @@
             <button onclick="closeProgressModal()" class="w-full mt-6 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                 닫기
             </button>
+        </div>
+    </div>
+
+    <!-- Credit Score Detail Modal -->
+    <div id="creditScoreModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeCreditScoreModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[85vh] flex flex-col">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 flex-shrink-0"></div>
+            
+            <!-- Tabs -->
+            <div class="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6 flex-shrink-0">
+                <button onclick="switchCreditScoreTab('kcb')" id="tab-kcb" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-all">KCB</button>
+                <button onclick="switchCreditScoreTab('nice')" id="tab-nice" class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">NICE</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto pr-1">
+                <div class="text-center mb-8">
+                    <span id="modalScoreAgency" class="text-sm font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">KCB 올크레딧 기준</span>
+                    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mt-4 mb-2"><span id="modalCreditScore">0</span>점</h2>
+                    <p id="modalScoreChange" class="text-green-600 dark:text-green-400 font-bold flex items-center justify-center gap-1">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        지난달보다 15점 상승
+                    </p>
+                </div>
+
+                <!-- Score Gauge (Visual) -->
+                <div class="relative h-4 bg-gray-100 dark:bg-gray-700 rounded-full mb-2 overflow-hidden">
+                    <div id="modalScoreBar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-400 mb-8">
+                    <span>0</span>
+                    <span>1000</span>
+                </div>
+
+                <!-- Score Trend Chart -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">점수 변동 추이</h3>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        <div class="relative h-32 w-full">
+                            <svg id="scoreTrendChart" class="w-full h-full overflow-visible"></svg>
+                            <!-- Tooltip -->
+                            <div id="scoreTooltip" class="absolute bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 transform -translate-x-1/2 -translate-y-full z-10 whitespace-nowrap" style="top: 0; left: 0;">
+                                <span id="tooltipReason"></span>
+                                <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-2 h-2 bg-gray-900 dark:bg-white rotate-45"></div>
+                            </div>
+                        </div>
+                        <div id="scoreChartLabels" class="flex justify-between text-xs text-gray-400 mt-2 px-1"></div>
+                    </div>
+                </div>
+
+                <!-- Analysis Cards -->
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">상세 평가 항목</h3>
+                <div id="scoreAnalysisItems" class="space-y-3">
+                    <!-- JS Rendering -->
+                </div>
+                
+                <!-- Tip -->
+                <div id="creditScoreTip" class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800 transition-all duration-500">
+                    <h4 class="font-bold text-deepBlue dark:text-blue-400 text-sm mb-2">💡 신용점수 올리기 팁</h4>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                        신용카드를 한도 대비 30~50% 수준으로 꾸준히 사용하고, 통신비나 공과금을 성실하게 납부하면 점수 상승에 도움이 됩니다.
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="closeCreditScoreModal()" class="w-full mt-4 bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition flex-shrink-0">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <!-- Score Criteria Modal -->
+    <div id="scoreCriteriaModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeScoreCriteriaModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 id="criteriaTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">평가 기준</h3>
+            <p id="criteriaDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6">내용</p>
+            <button onclick="closeScoreCriteriaModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
     </div>
 
@@ -124,7 +203,7 @@
 
     <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
     <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 relative px-4 transition-colors duration-300">
+    <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 relative px-4 transition-colors duration-300">
         <div class="flex items-center gap-2 text-deepBlue dark:text-blue-400 font-bold text-xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <i data-lucide="shield-check" class="w-6 h-6"></i>
             <span>TrustFin</span>
@@ -140,15 +219,14 @@
     <!-- Main Dashboard -->
     <main class="p-5 max-w-md mx-auto space-y-6">
         
-        <!-- Total Balance -->
-        <div class="bg-gradient-to-br from-deepBlue to-electricPurple text-white rounded-2xl p-6 shadow-lg shadow-blue-200">
-            <p class="text-blue-200 text-sm font-medium mb-1">총 보유 자산</p>
-            <h2 class="text-3xl font-bold"><span id="totalBalance">0</span>원</h2>
-        </div>
-
         <!-- Account List -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-3">내 계좌</h3>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">내 계좌</h3>
+                <button onclick="location.href='my_accounts.html'" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                </button>
+            </div>
             <div id="accountList" class="space-y-3">
                 <!-- JS로 계좌 목록 렌더링 -->
             </div>
@@ -156,23 +234,89 @@
 
         <!-- My Spending (New) -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-3">내 소비</h3>
-            <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: 300ms">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm text-gray-500">이번 달 총 소비</span>
-                    <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">+12%</span>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">내 소비</h3>
+                <button onclick="location.href='my_spending.html'" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                </button>
+            </div>
+            <div id="spendingSection">
+                <!-- JS Rendering -->
+            </div>
+        </div>
+
+        <!-- Credit Score (New) -->
+        <div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-3">내 신용점수</h3>
+            <div class="flex gap-3">
+                <!-- KCB -->
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                                <i data-lucide="shield-check" class="w-3 h-3"></i>
+                            </div>
+                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400">KCB</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5 animate-bounce">
+                            <i data-lucide="trending-up" class="w-3 h-3"></i> 15
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><span id="myCreditScoreKCB">0</span><span class="text-sm font-medium text-gray-400 ml-1">점</span></h2>
+                        <p class="text-xs text-gray-400 mt-1">상위 10%</p>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                        <div id="creditScoreBarKCB" class="bg-green-500 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">1,250,000원</h2>
-                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
-                    <div class="bg-electricPurple h-2 rounded-full" style="width: 65%"></div>
+
+                <!-- NICE -->
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400">
+                                <i data-lucide="shield" class="w-3 h-3"></i>
+                            </div>
+                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400">NICE</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5 animate-bounce">
+                            <i data-lucide="trending-down" class="w-3 h-3"></i> 5
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><span id="myCreditScoreNICE">0</span><span class="text-sm font-medium text-gray-400 ml-1">점</span></h2>
+                        <p class="text-xs text-gray-400 mt-1">상위 15%</p>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                        <div id="creditScoreBarNICE" class="bg-deepBlue h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">예산 대비 65% 사용</p>
+            </div>
+            
+            <!-- Credit Score Tip Banner -->
+            <div onclick="openCreditScoreModal(true)" class="mt-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition-transform border border-blue-100 dark:border-blue-800 animate-pulse">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-deepBlue dark:text-blue-400 shadow-sm">
+                        <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">신용점수 올리기 꿀팁</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">점수 상승 비법 확인하기</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
             </div>
         </div>
 
         <!-- Loan Section (Modified) -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-3">내 대출</h3>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">내 대출</h3>
+                <button onclick="location.href='my_loans.html'" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                </button>
+            </div>
             <div id="loanSection">
                 <!-- JS로 내용 교체 -->
             </div>
@@ -224,8 +368,12 @@
             initBottomSheetDrag('progressModal', closeProgressModal);
             initBottomSheetDrag('spendingModal', closeSpendingModal);
             initBottomSheetDrag('transferModal', closeTransferModal);
+            initBottomSheetDrag('creditScoreModal', closeCreditScoreModal);
+            initBottomSheetDrag('scoreCriteriaModal', closeScoreCriteriaModal);
 
             renderMyLoans();
+            renderCreditScore();
+            renderMySpending();
         });
 
         function renderAccounts() {
@@ -235,52 +383,45 @@
             // 계좌 목록 렌더링 및 총 자산 계산
             const accountListEl = document.getElementById('accountList');
             let total = 0;
+            
+            // 총 자산 계산 (전체 계좌)
+            persona.accounts.forEach(acc => total += acc.balance);
 
-            accountListEl.innerHTML = persona.accounts.map((acc, index) => {
-                total += acc.balance;
-                return `
-                    <div onclick="goToAccountDetail('${acc.bank}')" class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex justify-between items-center opacity-0 animate-slide-in-right transition-colors cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: ${index * 150}ms">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
-                                <img src="${getBankLogoUrl(acc.bank)}" onerror="handleImageError(this, '${acc.bank[0]}')" class="w-full h-full object-cover" alt="${acc.bank}">
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 mb-0.5">
-                                    <span class="text-gray-400 text-[10px] tracking-tight hover:text-deepBlue dark:hover:text-blue-400 cursor-pointer transition-colors" onclick="copyToClipboard('${acc.accountNumber}', event)">${acc.accountNumber}</span>
-                                </p>
-                                <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${acc.balance}">0</span>원</p>
-                            </div>
+            // 주계좌(첫 번째 계좌)만 렌더링
+            const mainAccount = persona.accounts[0];
+            if (mainAccount) {
+                accountListEl.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
+                        <!-- 상단: 총 보유 자산 -->
+                        <div class="mb-4">
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">총 보유 자산</p>
+                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalBalance">0</span>원</h2>
                         </div>
-                        <button onclick="openTransferModal('${acc.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
+                        
+                        <!-- Divider -->
+                        <div class="border-t border-gray-100 dark:border-gray-700 my-4"></div>
+                        
+                        <!-- 하단: 주계좌 정보 -->
+                        <div onclick="goToAccountDetail('${mainAccount.bank}')" class="flex justify-between items-center cursor-pointer active:opacity-90 transition-opacity">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                                    <img src="${getBankLogoUrl(mainAccount.bank)}" onerror="handleImageError(this, '${mainAccount.bank[0]}')" class="w-full h-full object-cover" alt="${mainAccount.bank}">
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="text-sm font-bold text-gray-900 dark:text-white">${mainAccount.bank}</span>
+                                        <span class="text-[10px] font-bold text-deepBlue bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300 px-1.5 py-0.5 rounded">주계좌</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mb-0.5">
+                                        <span class="text-gray-400 text-[10px] tracking-tight">${mainAccount.accountNumber}</span>
+                                    </p>
+                                    <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${mainAccount.balance}">0</span>원</p>
+                                </div>
+                            </div>
+                            <button onclick="openTransferModal('${mainAccount.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
+                        </div>
                     </div>
                 `;
-            }).join('');
-
-            // Animation Function
-            function animateCountUp(element, endValue) {
-                const duration = 1500;
-                const startTime = performance.now();
-                const startValue = 0;
-                let lastHapticTime = 0;
-
-                function update(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const ease = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
-                    
-                    const current = Math.floor(startValue + (endValue - startValue) * ease);
-                    element.innerText = current.toLocaleString();
-
-                    // 애니메이션 진행 중 일정 간격으로 햅틱 피드백
-                    if (progress < 1 && currentTime - lastHapticTime > 80) {
-                        if (navigator.vibrate) navigator.vibrate(5);
-                        lastHapticTime = currentTime;
-                    }
-
-                    if (progress < 1) requestAnimationFrame(update);
-                    else element.innerText = endValue.toLocaleString();
-                }
-                requestAnimationFrame(update);
             }
 
             // Apply Animation
@@ -289,6 +430,102 @@
             document.querySelectorAll('.count-up').forEach(el => {
                 animateCountUp(el, parseInt(el.dataset.value));
             });
+        }
+
+        function renderCreditScore() {
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                const score = persona.creditScore || 0;
+                const niceScore = Math.max(0, score - 15); // NICE 점수는 임의로 KCB보다 조금 낮게 설정
+                
+                // 점수 애니메이션
+                const scoreElKCB = document.getElementById('myCreditScoreKCB');
+                const scoreElNICE = document.getElementById('myCreditScoreNICE');
+                if (scoreElKCB) animateCountUp(scoreElKCB, score);
+                if (scoreElNICE) animateCountUp(scoreElNICE, niceScore);
+                
+                // 바 애니메이션
+                setTimeout(() => {
+                    const barKCB = document.getElementById('creditScoreBarKCB');
+                    const barNICE = document.getElementById('creditScoreBarNICE');
+                    if (barKCB) {
+                        const percent = Math.min(100, (score / 1000) * 100);
+                        barKCB.style.width = `${percent}%`;
+                    }
+                    if (barNICE) {
+                        const percent = Math.min(100, (niceScore / 1000) * 100);
+                        barNICE.style.width = `${percent}%`;
+                    }
+                }, 300);
+            }
+        }
+
+        function renderMySpending() {
+            // 가상 데이터 (실제로는 서버/DB에서 가져옴)
+            const currentMonth = 1250000;
+            const lastMonth = 1100000; // 약 13.6% 증가
+            const budget = 2000000;
+
+            const diff = currentMonth - lastMonth;
+            const percent = Math.round((diff / lastMonth) * 100);
+            const isIncrease = diff >= 0;
+            
+            const badgeClass = isIncrease 
+                ? 'text-red-500 bg-red-50 dark:bg-red-900/30 dark:text-red-400' 
+                : 'text-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400';
+            const sign = isIncrease ? '+' : '';
+            
+            const budgetPercent = Math.min(100, Math.round((currentMonth / budget) * 100));
+
+            const html = `
+                <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: 300ms">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">이번 달 총 소비</span>
+                        <span class="text-xs font-bold ${badgeClass} px-2 py-1 rounded">${sign}${percent}%</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">${currentMonth.toLocaleString()}원</h2>
+                    <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
+                        <div id="spendingProgressBar" class="bg-electricPurple h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">예산 대비 ${budgetPercent}% 사용</p>
+                </div>
+            `;
+            
+            const section = document.getElementById('spendingSection');
+            if (section) {
+                section.innerHTML = html;
+                setTimeout(() => {
+                    const bar = document.getElementById('spendingProgressBar');
+                    if (bar) bar.style.width = `${budgetPercent}%`;
+                }, 500);
+            }
+        }
+
+        function animateCountUp(element, endValue) {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+            let lastHapticTime = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                if (element) element.innerText = current.toLocaleString();
+
+                // 애니메이션 진행 중 일정 간격으로 햅틱 피드백
+                if (progress < 1 && currentTime - lastHapticTime > 80) {
+                    if (navigator.vibrate) navigator.vibrate(5);
+                    lastHapticTime = currentTime;
+                }
+
+                if (progress < 1) requestAnimationFrame(update);
+                else if (element) element.innerText = endValue.toLocaleString();
+            }
+            requestAnimationFrame(update);
         }
 
         function renderMyLoans() {
@@ -310,7 +547,7 @@
                         dataChanged = true;
                         if (loan.personaId === currentPersonaId) {
                             showBanner = true;
-                            completedProducts.push(loan.productName);
+                            completedProducts.push(loan);
                         }
                     }
                 }
@@ -319,9 +556,29 @@
 
             if (dataChanged) {
                 localStorage.setItem('trustFinMyLoans', JSON.stringify(allLoans));
+
+                // 심사 완료 알림 추가
+                if (completedProducts.length > 0) {
+                    const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+                    const date = new Date();
+                    const dateStr = `${date.getMonth() + 1}.${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    completedProducts.forEach(loan => {
+                        notifications.unshift({
+                            type: 'loan',
+                            title: '대출 심사 완료',
+                            message: `'${loan.productName}' 심사가 완료되었습니다. 결과를 확인해주세요.`,
+                            date: dateStr,
+                            productId: loan.id,
+                            read: false
+                        });
+                    });
+                    localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+                }
+
                 if (showBanner) {
                     const msg = completedProducts.length === 1 
-                        ? `'${completedProducts[0]}' 심사 완료` 
+                        ? `'${completedProducts[0].productName}' 심사 완료` 
                         : `${completedProducts.length}건의 심사가 완료되었습니다.`;
                     showToast(msg);
                     updateNotificationBadge(); // 알림 뱃지 갱신
@@ -334,7 +591,15 @@
             // 최신순 정렬 (방금 신청한 상품이 최상단에 오도록 보장)
             myLoans.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             
-            const hasPending = myLoans.some(loan => loan.status === 'pending');
+            // 총 대출 잔액 계산 (시뮬레이션)
+            let totalBalance = 0;
+            let activeCount = 0;
+            myLoans.forEach(loan => {
+                if (loan.status === 'active') {
+                    totalBalance += 30000000; // 건당 3,000만원 가정
+                    activeCount++;
+                }
+            });
 
             // 렌더링
             if (myLoans.length === 0) {
@@ -356,46 +621,26 @@
                     </div>
                 `;
             } else {
-                loanSection.innerHTML = `<div class="space-y-3">` + myLoans.map(loan => {
-                    const isPending = loan.status === 'pending';
-                    const statusText = isPending ? '대출 심사 중' : '대출 심사 완료';
-                    const statusColor = isPending ? 'text-blue-600 bg-blue-50' : 'text-green-600 bg-green-50';
-                    const icon = isPending ? 'loader-2' : 'check-circle-2';
-                    const iconAnim = isPending ? 'animate-spin' : '';
-
-                    return `
-                        <div onclick="${isPending ? `openProgressModal('${loan.productName}')` : `goToExecutePage('${loan.timestamp}')`}" class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <div class="flex items-center gap-1.5 mb-1">
-                                        <img src="${getBankLogoUrl(loan.bankName)}" onerror="handleImageError(this, '${loan.bankName[0]}')" class="w-4 h-4 rounded-full object-contain" alt="${loan.bankName}">
-                                        <span class="text-xs font-bold text-gray-500">${loan.bankName}</span>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 dark:text-white text-lg">${loan.productName}</h4>
-                                </div>
-                                <span class="text-xs font-bold px-2 py-1 rounded ${isPending ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300' : 'text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-300'} flex items-center gap-1">
-                                    <i data-lucide="${icon}" class="w-3 h-3 ${iconAnim}"></i>
-                                    ${statusText}
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mt-3 overflow-hidden">
-                                <div class="h-full rounded-full ${isPending ? 'bg-blue-500 w-1/2 animate-pulse' : 'bg-green-500 w-full'}"></div>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-2 text-right">
-                                ${isPending ? '잠시만 기다려주세요 (약 1분)' : '클릭하여 금리/한도 확인하기'}
-                            </p>
+                loanSection.innerHTML = `
+                    <div onclick="location.href='my_loans.html'" class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">총 대출 잔액</span>
+                            <span class="text-xs font-bold text-deepBlue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">보유 ${myLoans.length}건</span>
                         </div>
-                    `;
-                }).join('') + 
-                `<button onclick="location.href='loan_input.html'" class="w-full py-3 text-sm text-gray-500 font-bold hover:text-deepBlue transition flex justify-center items-center gap-1">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span>추가 대출 알아보기</span>
-                </button>
-                </div>`;
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">${totalBalance.toLocaleString()}원</h2>
+                        <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: ${totalBalance > 0 ? '60%' : '0%'}"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2">
+                            ${activeCount > 0 ? '정상 이용 중입니다.' : '심사가 진행 중입니다.'}
+                        </p>
+                    </div>
+                `;
             }
             lucide.createIcons();
 
             // 심사 중인 항목이 있으면 1초 뒤 재검사
+            const hasPending = myLoans.some(loan => loan.status === 'pending');
             if (hasPending) {
                 setTimeout(renderMyLoans, 1000);
             }
@@ -415,7 +660,7 @@
 
         let progressInterval;
 
-        function openProgressModal(productName) {
+        function openProgressModal(productName, timestamp) {
             const modal = document.getElementById('progressModal');
             const nameEl = document.getElementById('progressProductName');
             const bar = document.getElementById('progressBar');
@@ -426,21 +671,73 @@
             document.body.style.overflow = 'hidden'; // 스크롤 잠금
             toggleBackgroundScale(true);
             
-            // 초기화
-            let progress = 30; // 기본 30%부터 시작
-            bar.style.width = `${progress}%`;
-            percentEl.innerText = `${progress}%`;
+            // UI 초기화
+            updateProgressUI(0);
 
-            // 가짜 애니메이션
             if (progressInterval) clearInterval(progressInterval);
+            
+            // 실제 경과 시간 기반 애니메이션
             progressInterval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.floor(Math.random() * 3);
-                    if (progress > 90) progress = 90;
-                    bar.style.width = `${progress}%`;
-                    percentEl.innerText = `${progress}%`;
+                const now = Date.now();
+                const elapsed = now - timestamp;
+                const duration = 60000; // 1분 (60초)
+                
+                let percent = Math.floor((elapsed / duration) * 100);
+                if (percent > 100) percent = 100;
+                if (percent < 0) percent = 0;
+
+                updateProgressUI(percent);
+
+                if (percent >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        closeProgressModal();
+                        renderMyLoans(); // 완료 상태로 갱신
+                    }, 800);
                 }
-            }, 500);
+            }, 100);
+        }
+
+        function updateProgressUI(percent) {
+            const bar = document.getElementById('progressBar');
+            const percentEl = document.getElementById('progressPercent');
+            
+            if (bar) bar.style.width = `${percent}%`;
+            if (percentEl) percentEl.innerText = `${percent}%`;
+
+            // 단계별 UI 업데이트
+            const steps = [
+                { id: 'step1', threshold: 15, text: '신용점수 조회' },
+                { id: 'step2', threshold: 50, text: '소득 정보 확인' },
+                { id: 'step3', threshold: 85, text: '최종 한도 산출' }
+            ];
+
+            steps.forEach(step => {
+                const el = document.getElementById(step.id);
+                const iconBox = el.querySelector('.icon-box');
+                const textSpan = el.querySelector('span');
+
+                if (percent >= step.threshold) {
+                    el.classList.remove('opacity-50');
+                    el.classList.add('text-deepBlue', 'dark:text-blue-400', 'font-bold');
+                    iconBox.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>`;
+                    textSpan.innerText = `${step.text} 완료`;
+                } else if (percent >= step.threshold - 15) {
+                    // 진행 중 (직전 단계)
+                    el.classList.remove('opacity-50');
+                    el.classList.add('text-gray-900', 'dark:text-white');
+                    iconBox.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-deepBlue dark:text-blue-400"></i>`;
+                    textSpan.innerText = `${step.text} 중...`;
+                } else {
+                    // 대기
+                    el.classList.add('opacity-50');
+                    el.classList.remove('text-deepBlue', 'dark:text-blue-400', 'font-bold', 'text-gray-900', 'dark:text-white');
+                    iconBox.innerHTML = `<i data-lucide="circle" class="w-4 h-4"></i>`;
+                    textSpan.innerText = step.text;
+                }
+            });
+            
+            if (window.lucide) window.lucide.createIcons();
         }
 
         function closeProgressModal(animate = true) {
@@ -462,6 +759,370 @@
                 toggleBackgroundScale(false);
             }
             if (progressInterval) clearInterval(progressInterval);
+        }
+
+        function openCreditScoreModal(scrollToTip = false) {
+            const modal = document.getElementById('creditScoreModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            toggleBackgroundScale(true);
+            
+            // 초기 탭 설정 (KCB)
+            switchCreditScoreTab('kcb');
+            // renderScoreTrendChart('kcb'); // switchCreditScoreTab 내부에서 호출됨
+            
+            // 팁 섹션으로 스크롤
+            if (scrollToTip) {
+                setTimeout(() => {
+                    const tipSection = document.getElementById('creditScoreTip');
+                    if (tipSection) {
+                        tipSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // 강조 효과
+                        tipSection.classList.add('ring-2', 'ring-blue-500', 'dark:ring-blue-400');
+                        setTimeout(() => tipSection.classList.remove('ring-2', 'ring-blue-500', 'dark:ring-blue-400'), 1500);
+                    }
+                }, 400); // 모달 애니메이션 후 실행
+            }
+            
+            lucide.createIcons();
+        }
+
+        function switchCreditScoreTab(tab) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            let score = 0;
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                score = persona.creditScore || 0;
+            }
+            
+            // KCB vs NICE 데이터 설정
+            let displayScore = score;
+            let agencyText = 'KCB 올크레딧 기준';
+            let changeText = '지난달보다 15점 상승';
+            let changeColor = 'text-green-600 dark:text-green-400';
+            let changeIcon = 'trending-up';
+
+            if (tab === 'nice') {
+                displayScore = Math.max(0, score - 15);
+                agencyText = 'NICE 평가정보 기준';
+                changeText = '지난달보다 5점 하락';
+                changeColor = 'text-blue-600 dark:text-blue-400';
+                changeIcon = 'trending-down';
+            }
+
+            // UI 업데이트
+            document.getElementById('modalCreditScore').innerText = displayScore;
+            document.getElementById('modalScoreAgency').innerText = agencyText;
+            
+            const changeEl = document.getElementById('modalScoreChange');
+            changeEl.className = `${changeColor} font-bold flex items-center justify-center gap-1`;
+            changeEl.innerHTML = `<i data-lucide="${changeIcon}" class="w-4 h-4"></i> ${changeText}`;
+
+            // 탭 스타일 업데이트
+            const kcbTab = document.getElementById('tab-kcb');
+            const niceTab = document.getElementById('tab-nice');
+            const activeClass = 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm';
+            const inactiveClass = 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200';
+
+            if (tab === 'kcb') {
+                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+            } else {
+                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+            }
+
+            // 상세 평가 항목 업데이트
+            const analysisItems = document.getElementById('scoreAnalysisItems');
+            if (tab === 'kcb') {
+                analysisItems.innerHTML = `
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">연체 없이 성실하게 상환 중</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
+                    </div>
+                    <div onclick="openScoreCriteriaModal('debt')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-electricPurple dark:text-purple-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">부채 수준</p><p class="text-xs text-gray-500 dark:text-gray-400">소득 대비 적절한 수준</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
+                    </div>
+                `;
+            } else {
+                analysisItems.innerHTML = `
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">최근 1년 연체 기록 없음</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
+                    </div>
+                    <div onclick="openScoreCriteriaModal('creditType')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">신용 형태</p><p class="text-xs text-gray-500 dark:text-gray-400">체크카드 사용 비중 높음</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
+                    </div>
+                `;
+            }
+
+            // 바 애니메이션
+            const bar = document.getElementById('modalScoreBar');
+            if (bar) {
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    const percent = Math.min(100, (displayScore / 1000) * 100);
+                    bar.style.width = `${percent}%`;
+                }, 100);
+            }
+
+            renderScoreTrendChart(tab);
+            
+            lucide.createIcons();
+        }
+
+        function closeCreditScoreModal(animate = true) {
+            const modal = document.getElementById('creditScoreModal');
+            const content = modal.querySelector('.bg-white');
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = '';
+                    toggleBackgroundScale(false);
+                    
+                    // 바 초기화
+                    const bar = document.getElementById('modalScoreBar');
+                    if (bar) bar.style.width = '0%';
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                toggleBackgroundScale(false);
+            }
+        }
+
+        const scoreCriteriaData = {
+            payment: {
+                title: "상환 이력",
+                desc: "최근 12개월 내 연체 기록 여부와 연체 기간, 금액 등을 종합적으로 평가합니다. 장기 연체는 점수에 큰 부정적 영향을 미치며, 성실한 상환은 점수 상승의 주요 요인입니다."
+            },
+            debt: {
+                title: "부채 수준",
+                desc: "소득 대비 총 부채 상환 비율(DSR)과 신용대출, 담보대출의 비중을 평가합니다. 고위험 대출(현금서비스 등) 사용 시 점수가 하락할 수 있습니다."
+            },
+            creditType: {
+                title: "신용 형태",
+                desc: "체크카드와 신용카드의 사용 비율, 할부 거래 비중 등을 분석합니다. 체크카드의 꾸준한 사용은 건전한 소비 습관으로 평가되어 긍정적인 영향을 줍니다."
+            }
+        };
+
+        function openScoreCriteriaModal(type) {
+            const data = scoreCriteriaData[type];
+            if (!data) return;
+
+            document.getElementById('criteriaTitle').innerText = data.title;
+            document.getElementById('criteriaDesc').innerText = data.desc;
+            
+            const modal = document.getElementById('scoreCriteriaModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+        }
+
+        function closeScoreCriteriaModal() {
+            const modal = document.getElementById('scoreCriteriaModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+            }, 300);
+        }
+
+        function renderScoreTrendChart(type) {
+            const svg = document.getElementById('scoreTrendChart');
+            const labelsDiv = document.getElementById('scoreChartLabels');
+            if (!svg) return;
+
+            svg.innerHTML = '';
+            labelsDiv.innerHTML = '';
+
+            // X축 레이블 생성 (현재 시점 기준 최근 6개월)
+            const months = [];
+            const now = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push(`${d.getMonth() + 1}월`);
+            }
+
+            let data = [];
+            const personaData = localStorage.getItem('trustFinPersona');
+            let currentScore = 0;
+            if (personaData) {
+                currentScore = JSON.parse(personaData).creditScore || 0;
+            }
+
+            if (type === 'kcb') {
+                // KCB: 상승 추세 시뮬레이션
+                const base = currentScore - 20;
+                data = [base, base + 5, base + 5, base + 10, base + 15, currentScore];
+            } else {
+                // NICE: 약간 하락 후 유지 시뮬레이션 (KCB보다 낮게 설정)
+                const niceScore = Math.max(0, currentScore - 15);
+                const base = niceScore + 5;
+                data = [base, base, base - 5, base - 5, base - 5, niceScore];
+            }
+
+            // Mock Reasons (변동 사유)
+            const reasons = [
+                '신용카드 신규 발급',
+                '대출금 성실 상환',
+                '체크카드 사용 실적',
+                '통신비 납부 내역',
+                '신용카드 한도 상향',
+                '최근 금융 거래 실적'
+            ];
+
+            // Chart Drawing Logic (SVG)
+            const width = svg.clientWidth || 300;
+            const height = svg.clientHeight || 128;
+            const padding = 10;
+            
+            const dataMin = Math.min(...data);
+            const dataMax = Math.max(...data);
+            const diff = dataMax - dataMin;
+            const paddingY = diff === 0 ? 10 : Math.ceil(diff * 0.2); // 변동폭의 20%를 여유분으로 설정
+            
+            const minVal = dataMin - paddingY;
+            const maxVal = dataMax + paddingY;
+            const range = maxVal - minVal || 1;
+
+            const pointsArr = data.map((val, i) => {
+                const x = (i / (data.length - 1)) * (width - padding * 2) + padding;
+                const y = height - ((val - minVal) / range) * (height - padding * 2) - padding;
+                return { x, y, val };
+            });
+            
+            const pointsStr = pointsArr.map(p => `${p.x},${p.y}`).join(' ');
+
+            // Gradient Defs
+            const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+            const areaColor = '#9CA3AF'; // Neutral Gray for area
+            defs.innerHTML = `
+                <linearGradient id="scoreChartGradient" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="${areaColor}" stop-opacity="0.1"/>
+                    <stop offset="100%" stop-color="${areaColor}" stop-opacity="0"/>
+                </linearGradient>
+            `;
+            svg.appendChild(defs);
+
+            // Area Path
+            const areaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const firstPoint = pointsStr.split(' ')[0];
+            const lastPoint = pointsStr.split(' ')[pointsStr.split(' ').length - 1];
+            const areaD = `M ${pointsStr} L ${lastPoint.split(',')[0]},${height} L ${firstPoint.split(',')[0]},${height} Z`;
+            
+            areaPath.setAttribute("d", areaD);
+            areaPath.setAttribute("fill", "url(#scoreChartGradient)");
+            areaPath.style.opacity = '0';
+            areaPath.style.transition = 'opacity 1s ease-out';
+            setTimeout(() => areaPath.style.opacity = '1', 100);
+            svg.appendChild(areaPath);
+
+            // Line Segments (Color Coded)
+            for (let i = 0; i < pointsArr.length - 1; i++) {
+                const p1 = pointsArr[i];
+                const p2 = pointsArr[i+1];
+                
+                let lineColor = '#9CA3AF'; // 유지 (Gray)
+                if (p2.val > p1.val) lineColor = '#10B981'; // 상승 (Green)
+                else if (p2.val < p1.val) lineColor = '#EF4444'; // 하락 (Red)
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", p1.x);
+                line.setAttribute("y1", p1.y);
+                line.setAttribute("x2", p2.x);
+                line.setAttribute("y2", p2.y);
+                line.setAttribute("stroke", lineColor);
+                line.setAttribute("stroke-width", "3");
+                line.setAttribute("stroke-linecap", "round");
+                line.setAttribute("class", "opacity-0 transition-opacity duration-500");
+                line.style.transitionDelay = `${i * 100}ms`;
+                svg.appendChild(line);
+                
+                setTimeout(() => line.classList.remove("opacity-0"), 50);
+            }
+
+            // Dots
+            pointsArr.forEach((p, i) => {
+                let dotColor = '#9CA3AF';
+                if (i > 0) {
+                    if (data[i] > data[i-1]) dotColor = '#10B981';
+                    else if (data[i] < data[i-1]) dotColor = '#EF4444';
+                } else if (data.length > 1) {
+                    if (data[1] > data[0]) dotColor = '#10B981';
+                    else if (data[1] < data[0]) dotColor = '#EF4444';
+                }
+
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", p.x);
+                circle.setAttribute("cy", p.y);
+                circle.setAttribute("r", "4");
+                circle.setAttribute("fill", "#fff");
+                circle.setAttribute("stroke", dotColor);
+                circle.setAttribute("stroke-width", "2");
+                circle.setAttribute("class", "opacity-0 transition-opacity duration-500");
+                circle.style.transitionDelay = `${i * 100 + 500}ms`;
+                svg.appendChild(circle);
+                
+                // Tooltip text (simple)
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", p.x);
+                text.setAttribute("y", p.y - 10);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "currentColor"); // Uses parent text color (gray-900/white) via CSS if set, or explicit color
+                // Explicitly setting class for color handling in dark mode
+                text.setAttribute("class", "text-[10px] font-bold text-gray-500 dark:text-gray-300 opacity-0 transition-opacity duration-500");
+                text.style.transitionDelay = `${i * 100 + 500}ms`;
+                text.textContent = p.val;
+                svg.appendChild(text);
+
+                setTimeout(() => {
+                    circle.classList.remove("opacity-0");
+                    text.classList.remove("opacity-0");
+                }, 100);
+
+                // Hit Area for Tooltip (Clickable)
+                const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                hitArea.setAttribute("cx", p.x);
+                hitArea.setAttribute("cy", p.y);
+                hitArea.setAttribute("r", "15"); // Larger radius for easier clicking
+                hitArea.setAttribute("fill", "transparent");
+                hitArea.style.cursor = "pointer";
+                hitArea.onclick = (e) => {
+                    e.stopPropagation();
+                    showScoreTooltip(p.x, p.y, reasons[i]);
+                };
+                svg.appendChild(hitArea);
+            });
+
+            // X-axis Labels
+            labelsDiv.innerHTML = months.map(m => `<span>${m}</span>`).join('');
+        }
+
+        function showScoreTooltip(x, y, text) {
+            const tooltip = document.getElementById('scoreTooltip');
+            const reasonEl = document.getElementById('tooltipReason');
+            
+            if (tooltip && reasonEl) {
+                reasonEl.innerText = text;
+                tooltip.style.left = `${x}px`;
+                tooltip.style.top = `${y - 10}px`; // 점 바로 위
+                tooltip.classList.remove('opacity-0');
+                
+                // 2초 후 자동 숨김
+                if (window.scoreTooltipTimeout) clearTimeout(window.scoreTooltipTimeout);
+                window.scoreTooltipTimeout = setTimeout(() => {
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            }
         }
 
         function openSpendingModal() {

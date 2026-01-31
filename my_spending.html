@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 내 소비</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">내 소비</h1>
+        </header>
+
+        <main class="p-5 max-w-md mx-auto space-y-6">
+            <!-- Total Spending Summary -->
+            <div class="text-center py-4">
+                <p class="text-gray-500 text-sm mb-1">이번 달 총 소비</p>
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalSpending">0</span>원</h2>
+            </div>
+
+            <div id="cardList" class="space-y-3">
+                <!-- JS로 카드 목록 렌더링 -->
+            </div>
+
+            <!-- Spending History Filter -->
+            <div class="mt-8">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">최근 소비 내역</h3>
+                <div class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+                    <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0">전체</button>
+                    <button onclick="setFilter('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">식비</button>
+                    <button onclick="setFilter('shopping')" id="filter-shopping" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">쇼핑</button>
+                    <button onclick="setFilter('transport')" id="filter-transport" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">교통</button>
+                </div>
+                <div id="spendingList" class="space-y-0 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                    <!-- JS Rendering -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            renderCards();
+            renderSpendingList();
+        });
+
+        function renderCards() {
+            // 가상의 카드 데이터 (실제로는 서버나 localStorage에서 가져와야 함)
+            const cards = [
+                { bank: '현대캐피탈', name: '현대카드 M BOOST', number: '1234', amount: 850000 },
+                { bank: '신한은행', name: '신한카드 Deep Dream', number: '5678', amount: 400000 }
+            ];
+
+            const cardListEl = document.getElementById('cardList');
+            let total = 0;
+
+            cardListEl.innerHTML = cards.map((card, index) => {
+                total += card.amount;
+                return `
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex justify-between items-center opacity-0 animate-slide-in-right transition-colors cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: ${index * 100}ms">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                                <img src="${getBankLogoUrl(card.bank)}" onerror="handleImageError(this, '${card.bank[0]}')" class="w-full h-full object-cover" alt="${card.bank}">
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 mb-0.5">
+                                    <span class="text-gray-400 text-[10px] tracking-tight">${card.name} (${card.number})</span>
+                                </p>
+                                <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${card.amount}">0</span>원</p>
+                            </div>
+                        </div>
+                        <button onclick="goToCardDetail('${card.name}', '${card.number}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">명세서</button>
+                    </div>
+                `;
+            }).join('');
+
+            animateCountUp(document.getElementById('totalSpending'), total);
+            
+            document.querySelectorAll('.count-up').forEach(el => {
+                animateCountUp(el, parseInt(el.dataset.value));
+            });
+            
+            lucide.createIcons();
+        }
+
+        function goToCardDetail(name, number, event) {
+            if (event) event.stopPropagation();
+            localStorage.setItem('selectedCard', JSON.stringify({ name, number }));
+            location.href = 'card_detail.html';
+        }
+
+        // Mock Data for Spending History
+        const spendingData = [
+            { id: 1, date: '오늘', desc: '스타벅스 강남점', amount: 4500, category: 'food', card: '현대카드' },
+            { id: 2, date: '오늘', desc: 'GS25 역삼점', amount: 3200, category: 'food', card: '신한카드' },
+            { id: 3, date: '어제', desc: '쿠팡', amount: 28500, category: 'shopping', card: '현대카드' },
+            { id: 4, date: '어제', desc: '지하철', amount: 1250, category: 'transport', card: '후불교통' },
+            { id: 5, date: '10.25', desc: '배달의민족', amount: 22000, category: 'food', card: '현대카드' },
+            { id: 6, date: '10.24', desc: '카카오택시', amount: 11500, category: 'transport', card: '신한카드' },
+            { id: 7, date: '10.23', desc: '무신사', amount: 56000, category: 'shopping', card: '현대카드' },
+            { id: 8, date: '10.22', desc: 'CGV 강남', amount: 15000, category: 'culture', card: '신한카드' },
+        ];
+
+        let currentFilter = 'all';
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            const buttons = ['all', 'food', 'shopping', 'transport'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`filter-${btn}`);
+                if (btn === filter) {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0';
+                } else {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
+                }
+            });
+            renderSpendingList();
+        }
+
+        function renderSpendingList() {
+            const listEl = document.getElementById('spendingList');
+            let filtered = spendingData;
+            
+            if (currentFilter !== 'all') {
+                filtered = spendingData.filter(item => item.category === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div class="p-8 text-center text-gray-400 dark:text-gray-500">내역이 없습니다.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(item => {
+                const categoryInfo = getCategoryInfo(item.category);
+                return `
+                    <div class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer active:scale-95 transform transition-transform">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full ${categoryInfo.bg} flex items-center justify-center ${categoryInfo.text} flex-shrink-0">
+                                <i data-lucide="${categoryInfo.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-0.5">${item.date} · ${item.card}</p>
+                                <p class="font-bold text-gray-900 dark:text-white">${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-gray-900 dark:text-white">-${item.amount.toLocaleString()}원</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        function getCategoryInfo(category) {
+            switch(category) {
+                case 'food': return { icon: 'utensils', bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400' };
+                case 'shopping': return { icon: 'shopping-bag', bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600 dark:text-purple-400' };
+                case 'transport': return { icon: 'bus', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400' };
+                case 'culture': return { icon: 'film', bg: 'bg-pink-100 dark:bg-pink-900/30', text: 'text-pink-600 dark:text-pink-400' };
+                default: return { icon: 'credit-card', bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-600 dark:text-gray-400' };
+            }
+        }
+
+        function animateCountUp(element, endValue) {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                if (element) element.innerText = current.toLocaleString();
+
+                if (progress < 1) requestAnimationFrame(update);
+                else if (element) element.innerText = endValue.toLocaleString();
+            }
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+</html>

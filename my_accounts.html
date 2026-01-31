@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 내 계좌</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">내 계좌</h1>
+        </header>
+
+        <main class="p-5 max-w-md mx-auto space-y-6">
+            <!-- Total Asset Summary -->
+            <div class="text-center py-4">
+                <p class="text-gray-500 text-sm mb-1">총 보유 자산</p>
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalAsset">0</span>원</h2>
+            </div>
+
+            <div id="accountList" class="space-y-3">
+                <!-- JS로 계좌 목록 렌더링 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTransferModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">송금하기</h3>
+            <p id="transferBankName" class="text-sm text-gray-500 mb-4">은행 계좌에서 송금</p>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-500 mb-1">보낼 금액</label>
+                <div class="flex items-center border-b-2 border-gray-200 dark:border-gray-600 focus-within:border-deepBlue transition">
+                    <input type="number" id="transferAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-2 outline-none bg-transparent dark:text-white">
+                    <span class="text-gray-900 dark:text-white font-bold">원</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            renderAccounts();
+            window.refreshData = renderAccounts;
+            initBottomSheetDrag('transferModal', closeTransferModal);
+        });
+
+        function renderAccounts() {
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (!personaData) {
+                location.href = 'login.html';
+                return;
+            }
+            const persona = JSON.parse(personaData);
+            const accountListEl = document.getElementById('accountList');
+            let total = 0;
+
+            accountListEl.innerHTML = persona.accounts.map((acc, index) => {
+                total += acc.balance;
+                return `
+                    <div onclick="goToAccountDetail('${acc.bank}')" class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex justify-between items-center opacity-0 animate-slide-in-right transition-colors cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: ${index * 100}ms">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                                <img src="${getBankLogoUrl(acc.bank)}" onerror="handleImageError(this, '${acc.bank[0]}')" class="w-full h-full object-cover" alt="${acc.bank}">
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white">${acc.bank}</span>
+                                    ${index === 0 ? '<span class="text-[10px] font-bold text-deepBlue bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300 px-1.5 py-0.5 rounded">주계좌</span>' : ''}
+                                </div>
+                                <p class="text-xs text-gray-400 mb-1">
+                                    <span class="tracking-tight">${acc.accountNumber}</span>
+                                </p>
+                                <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${acc.balance}">0</span>원</p>
+                            </div>
+                        </div>
+                        <button onclick="openTransferModal('${acc.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
+                    </div>
+                `;
+            }).join('');
+
+            animateCountUp(document.getElementById('totalAsset'), total);
+
+            document.querySelectorAll('.count-up').forEach(el => {
+                animateCountUp(el, parseInt(el.dataset.value));
+            });
+            
+            lucide.createIcons();
+        }
+
+        function animateCountUp(element, endValue) {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+            let lastHapticTime = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                if (element) element.innerText = current.toLocaleString();
+
+                if (progress < 1 && currentTime - lastHapticTime > 80) {
+                    if (navigator.vibrate) navigator.vibrate(5);
+                    lastHapticTime = currentTime;
+                }
+
+                if (progress < 1) requestAnimationFrame(update);
+                else if (element) element.innerText = endValue.toLocaleString();
+            }
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+</html>

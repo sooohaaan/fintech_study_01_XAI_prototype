@@ -60,6 +60,14 @@ function calculateMatchScore(user, product) {
     if (user.employmentType === 'business_owner' && product.tags.includes('사업자전용')) score += 15;
     if (user.employmentType === 'regular' && product.tags.includes('직장인우대')) score += 15;
 
+    // 대출 목적에 따른 가중치
+    if (user.loanPurpose) {
+        if (user.loanPurpose === 'living' && (product.tags.includes('간편심사') || product.tags.includes('당일입금') || product.tags.includes('모바일전용'))) score += 10;
+        if (user.loanPurpose === 'refinance' && (product.tags.includes('1금융권') || product.baseRate < 5.0)) score += 10;
+        if (user.loanPurpose === 'housing' && (product.tags.includes('높은한도') || product.tags.includes('넉넉한한도') || product.limitFactor >= 1.5)) score += 10;
+        if (user.loanPurpose === 'business' && product.tags.includes('사업자전용')) score += 10;
+    }
+
     // 점수 보정 (0 ~ 99점 사이로 제한)
     return Math.min(Math.max(score, 10), 99);
 }
