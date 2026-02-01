@@ -23,8 +23,8 @@
 
         <main class="p-5 max-w-md mx-auto space-y-8">
             <!-- Profile Section -->
-            <div onclick="alert('내 정보 수정 기능은 준비 중입니다.')" class="flex items-center gap-4 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                <div class="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400">
+            <div id="profileSection" onclick="alert('내 정보 수정 기능은 준비 중입니다.')" class="flex items-center gap-4 bg-white dark:bg-gray-800 p-6 rounded-[2rem] shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                <div id="profileIconContainer" class="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400">
                     <i data-lucide="user" class="w-7 h-7"></i>
                 </div>
                 <div>
@@ -34,7 +34,7 @@
             </div>
 
             <!-- 금융 서비스 -->
-            <section>
+            <section id="financeSection">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">금융 서비스</h3>
                 <div class="grid grid-cols-4 gap-y-6">
                     <a href="assets.html" class="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition">
@@ -65,7 +65,7 @@
             </section>
 
             <!-- 생활 서비스 -->
-            <section>
+            <section id="lifeSection">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">생활 서비스</h3>
                 <div class="grid grid-cols-4 gap-y-6">
                     <a href="home.html" class="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition">
@@ -84,7 +84,7 @@
             </section>
 
             <!-- 혜택 -->
-            <section>
+            <section id="benefitSection">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">혜택</h3>
                 <div class="grid grid-cols-4 gap-y-6">
                     <button onclick="alert('진행 중인 이벤트가 없습니다.')" class="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition">
@@ -106,14 +106,14 @@
             <section>
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">도움말 및 설정</h3>
                 <div class="space-y-3">
-                    <div onclick="openFaqModal()" class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <div onclick="openFaqModal()" class="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <span class="font-medium text-gray-900 dark:text-white">고객센터</span>
                         <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
                     </div>
                     
                     <!-- Dark Mode Toggle -->
-                    <div class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer" onclick="toggleTheme()">
-                        <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 cursor-pointer" onclick="toggleTheme()">
+                        <div id="darkModeLabelContainer" class="flex items-center gap-3">
                             <span class="font-medium text-gray-900 dark:text-white">다크 모드</span>
                         </div>
                         <div id="themeToggleBg" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out bg-gray-200">
@@ -121,7 +121,15 @@
                         </div>
                     </div>
 
-                    <button onclick="logout()" class="w-full p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-left font-medium text-red-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <button id="resetDataBtn" onclick="resetData()" class="w-full p-5 bg-white dark:bg-gray-800 rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 text-left font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        데이터 초기화
+                    </button>
+
+                    <button id="appInfoBtn" onclick="openAppInfoModal()" class="w-full p-5 bg-white dark:bg-gray-800 rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 text-left font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        앱 정보
+                    </button>
+
+                    <button id="logoutBtn" onclick="logout()" class="w-full p-5 bg-white dark:bg-gray-800 rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 text-left font-medium text-red-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         로그아웃
                     </button>
                 </div>
@@ -179,6 +187,79 @@
             if (personaData) {
                 const persona = JSON.parse(personaData);
                 document.getElementById('userName').innerText = `${persona.name}님`;
+                
+                const profileIconContainer = document.getElementById('profileIconContainer');
+
+                // 퍼소나별 프로필 아이콘 설정
+                if (persona.id === 'persona1') {
+                    if (profileIconContainer) {
+                        profileIconContainer.className = "w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400 text-3xl";
+                        profileIconContainer.innerHTML = '👨';
+                    }
+                } else if (persona.id === 'persona2') {
+                    if (profileIconContainer) {
+                        profileIconContainer.className = "w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-electricPurple dark:text-purple-400 text-3xl";
+                        profileIconContainer.innerHTML = '👩';
+                    }
+                }
+
+                // 게스트 모드일 경우 데이터 초기화 버튼 숨김
+                if (persona.id === 'guest') {
+                    const resetBtn = document.getElementById('resetDataBtn');
+                    if (resetBtn) resetBtn.style.display = 'none';
+
+                    // 게스트 모드 프로필 스타일 변경 (회색조)
+                    const profileSection = document.getElementById('profileSection');
+                    
+                    if (profileSection) {
+                        profileSection.className = "flex items-center gap-4 bg-gray-100 dark:bg-gray-800/50 p-6 rounded-[2rem] shadow-inner border border-gray-200 dark:border-gray-700 cursor-pointer transition";
+                        const desc = profileSection.querySelector('p');
+                        if (desc) desc.innerText = '로그인하고 혜택 받기';
+                    }
+                    
+                    if (profileIconContainer) {
+                        profileIconContainer.className = "w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-3xl";
+                        profileIconContainer.innerHTML = '👻';
+                    }
+
+                    // 섹션 아이콘 회색조 변경 (금융, 생활, 혜택)
+                    const sections = ['financeSection', 'lifeSection', 'benefitSection'];
+                    sections.forEach(id => {
+                        const section = document.getElementById(id);
+                        if (section) {
+                            const icons = section.querySelectorAll('.w-12.h-12');
+                            icons.forEach(icon => {
+                                icon.className = "w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500";
+                            });
+                            
+                            // 링크 및 버튼 기능 비활성화
+                            const clickables = section.querySelectorAll('a, button');
+                            clickables.forEach(el => {
+                                el.removeAttribute('href');
+                                el.onclick = (e) => {
+                                    e.preventDefault();
+                                    showGlobalToast('로그인이 필요한 서비스입니다.');
+                                };
+                                el.classList.replace('cursor-pointer', 'cursor-not-allowed');
+                            });
+                        }
+                    });
+
+                    // 로그아웃 버튼 텍스트 변경
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.innerText = '게스트 종료';
+                    }
+
+                    // 다크 모드 라벨 추가 (화면 설정)
+                    const darkModeContainer = document.getElementById('darkModeLabelContainer');
+                    if (darkModeContainer) {
+                        const label = document.createElement('span');
+                        label.className = 'text-[10px] font-bold text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-1.5 py-0.5 rounded';
+                        label.innerText = '화면 설정';
+                        darkModeContainer.appendChild(label);
+                    }
+                }
             }
 
             // 다크 모드 토글 초기 상태 설정
@@ -193,6 +274,7 @@
 
             // 모달 드래그 기능 초기화
             initBottomSheetDrag('faqModal', closeFaqModal);
+            initBottomSheetDrag('appInfoModal', closeAppInfoModal);
         });
 
         function openFaqModal() {
@@ -227,10 +309,123 @@
 
         function toggleFaq(button) {
             const content = button.nextElementSibling;
-            const icon = button.querySelector('i');
+            const icon = button.querySelector('svg') || button.querySelector('i');
             content.classList.toggle('hidden');
-            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            if (icon) {
+                icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        }
+
+        function resetData() {
+            if (!confirm('현재 퍼소나의 데이터를 초기화하시겠습니까?\n(대출 신청 내역, 알림, 거래 내역 등이 삭제됩니다)')) return;
+            
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (!personaData) return;
+            
+            const persona = JSON.parse(personaData);
+            
+            // 동적 데이터 삭제
+            localStorage.removeItem('trustFinUserData');
+            localStorage.removeItem('trustFinNotifications');
+            localStorage.removeItem('trustFinTransactions');
+            localStorage.removeItem('selectedCard');
+            localStorage.removeItem('newDepositAmount');
+            localStorage.removeItem('trustFinMyLoans');
+            
+            // 퍼소나 2의 경우 기본 대출 내역 복원
+            if (persona.id === 'persona2') {
+                const defaultLoans = [{
+                    id: 'existing_loan_1',
+                    personaId: 'persona2',
+                    bankName: '우리은행',
+                    productName: '직장인 신용대출',
+                    status: 'active',
+                    timestamp: Date.now() - 86400000 * 30,
+                    depositAccount: '123-456-1111'
+                }];
+                localStorage.setItem('trustFinMyLoans', JSON.stringify(defaultLoans));
+            }
+            
+            alert('데이터가 초기화되었습니다.');
+            location.href = 'home.html';
+        }
+
+        function openAppInfoModal() {
+            const modal = document.getElementById('appInfoModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            toggleBackgroundScale(true);
+        }
+
+        function closeAppInfoModal(animate = true) {
+            const modal = document.getElementById('appInfoModal');
+            const content = modal.querySelector('.bg-white');
+            
+            if (animate) {
+                content.classList.remove('animate-slide-up');
+                content.classList.add('animate-slide-down');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    content.classList.remove('animate-slide-down');
+                    document.body.style.overflow = '';
+                    toggleBackgroundScale(false);
+                }, 300);
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                toggleBackgroundScale(false);
+            }
+        }
+
+        function toggleLicense(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('svg') || button.querySelector('i');
+            content.classList.toggle('hidden');
+            if (icon) {
+                icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
         }
     </script>
+
+    <!-- App Info Modal -->
+    <div id="appInfoModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeAppInfoModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 rounded-3xl flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400 shadow-sm">
+                    <i data-lucide="shield-check" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">TrustFin</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Version 1.0.0 (Beta)</p>
+            </div>
+            <div class="space-y-4 border-t border-gray-100 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-300">현재 버전</span>
+                    <span class="font-bold text-deepBlue dark:text-blue-400">1.0.0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-300">최신 버전</span>
+                    <span class="font-bold text-gray-900 dark:text-white">1.0.0</span>
+                </div>
+                <div>
+                    <button onclick="toggleLicense(this)" class="w-full flex justify-between items-center hover:opacity-70 transition">
+                        <span class="text-gray-600 dark:text-gray-300">오픈소스 라이선스</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden mt-3 text-xs text-gray-500 dark:text-gray-400 space-y-2 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
+                        <div class="flex justify-between"><span>Tailwind CSS</span><span class="font-mono">MIT</span></div>
+                        <div class="flex justify-between"><span>Lucide Icons</span><span class="font-mono">ISC</span></div>
+                        <div class="flex justify-between"><span>Canvas Confetti</span><span class="font-mono">ISC</span></div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeAppInfoModal()" class="w-full mt-8 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                닫기
+            </button>
+        </div>
+    </div>
 </body>
 </html>

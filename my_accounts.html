@@ -70,6 +70,26 @@
             }
             const persona = JSON.parse(personaData);
             const accountListEl = document.getElementById('accountList');
+            
+            // 게스트 모드 처리
+            if (persona.id === 'guest') {
+                animateCountUp(document.getElementById('totalAsset'), 0);
+                accountListEl.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+                        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="wallet" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">계좌 정보가 없습니다</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">계좌를 개설하고 안전하게<br>자산을 관리해보세요.</p>
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                            계좌 개설하기
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
             let total = 0;
 
             accountListEl.innerHTML = persona.accounts.map((acc, index) => {

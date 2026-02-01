@@ -46,6 +46,7 @@ const loanProducts = [
 // 2. 매칭 점수 계산 알고리즘 (핵심 로직)
 function calculateMatchScore(user, product) {
     let score = 70; // 기본 점수
+    let aiBonusLog = []; // XAI 설명을 위한 로그 (내부용)
 
     // 신용점수 가중치 (+/- 20점)
     if (user.creditScore >= product.minCredit + 200) score += 20;
@@ -56,9 +57,16 @@ function calculateMatchScore(user, product) {
     // 소득이 높을수록 저금리 상품에 높은 점수
     if (user.income > 5000 && product.baseRate < 5.0) score += 10;
 
-    // 고용 형태 및 상품 특성 매칭
+    // [XAI 핵심] 고용 형태 및 잠재력 평가
     if (user.employmentType === 'business_owner' && product.tags.includes('사업자전용')) score += 15;
-    if (user.employmentType === 'regular' && product.tags.includes('직장인우대')) score += 15;
+    
+    // 사회초년생(Persona 1) 케이스: 신용점수는 낮지만 정규직인 경우 AI 가산점 부여
+    if (user.employmentType === 'regular') {
+        if (product.tags.includes('직장인우대')) score += 15;
+        
+        // 신용점수가 750점 미만이어도 정규직이면 '미래 소득 잠재력'을 인정하여 추가 점수
+        if (user.creditScore < 750) score += 10; 
+    }
 
     // 대출 목적에 따른 가중치
     if (user.loanPurpose) {
@@ -88,7 +96,13 @@ function getRecommendations() {
         
         // 예상 금리 및 한도 (단순 시뮬레이션)
         // 신용점수가 높을수록 금리 인하
-        const finalRate = (product.baseRate - (creditScore - 600) * 0.005).toFixed(2);
+        let rateDiscount = (creditScore - 600) * 0.005;
+        
+        // [XAI 핵심] AI 분석에 의한 추가 금리 할인 (사회초년생 우대)
+        if (user.employmentType === 'regular' && creditScore < 750) {
+            rateDiscount += 0.5; // 0.5%p 추가 할인
+        }
+        const finalRate = (product.baseRate - rateDiscount).toFixed(2);
         const finalLimit = Math.floor(income * product.limitFactor);
 
         return {

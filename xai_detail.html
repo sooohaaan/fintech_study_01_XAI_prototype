@@ -274,9 +274,15 @@
 
         // 종합 의견 텍스트 생성기
         function generateOpinion(user, product, creditScorePercent) {
-            let text = `고객님의 <strong>신용점수(${user.creditScore}점)</strong>는 
-                <span class="text-deepBlue dark:text-blue-400 font-bold">${product.bankName}</span>의 심사 기준에 
-                매우 부합합니다.<br><br>`;
+            let text = "";
+            
+            // Persona 1 (사회초년생) 타겟팅 메시지
+            if (user.creditScore < 800 && user.employmentType === 'regular') {
+                text += `고객님의 신용점수는 <strong>${user.creditScore}점</strong>으로 일반적인 기준에서는 중신용에 해당하지만, <br>
+                TrustFin AI는 고객님의 <strong>직업 안정성</strong>과 <strong>미래 소득 잠재력</strong>을 높게 평가했습니다.<br><br>`;
+            } else {
+                text += `고객님의 <strong>신용점수(${user.creditScore}점)</strong>는 <span class="text-deepBlue dark:text-blue-400 font-bold">${product.bankName}</span>의 심사 기준에 매우 부합합니다.<br><br>`;
+            }
 
             if (user.loanPurpose === 'living') {
                 text += `신청하신 <strong>생활비 용도</strong>는 소득 대비 한도 내에서 충분히 승인 가능성이 높습니다. 특히 `;
@@ -287,14 +293,18 @@
             } else if (user.loanPurpose === 'business') {
                 text += `<strong>사업 자금</strong> 흐름 개선을 위한 목적이 인정되며, 사업자 우대 조건 적용이 가능합니다. 또한 `;
             } else {
-                if (creditScorePercent > 80) {
+                if (user.creditScore < 800 && user.employmentType === 'regular') {
+                    // Persona 1 강조
+                    text += `금융 이력은 부족하지만 <strong>성실한 상환 가능성</strong>이 데이터로 입증되어, `;
+                } else if (creditScorePercent > 80) {
                     text += `특히 신용도가 높아 <strong>우대 금리 적용 가능성</strong>이 높으며, `;
                 } else {
                     text += `현재 소득 수준을 고려했을 때 <strong>안정적인 상환 능력</strong>이 인정되어, `;
                 }
             }
 
-            text += `다른 상품 대비 승인 확률이 <strong>약 15% 더 높게</strong> 분석되었습니다.`;
+            const boostPercent = (user.creditScore < 800 && user.employmentType === 'regular') ? "20%" : "15%";
+            text += `다른 상품 대비 승인 확률이 <strong>약 ${boostPercent} 더 높게</strong> 분석되었습니다.`;
             
             return text;
         }

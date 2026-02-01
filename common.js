@@ -154,7 +154,26 @@ function renderBottomNav(activePage) {
 
 // 로그아웃 함수
 function logout() {
-    if (confirm('로그아웃 하시겠습니까?')) {
+    const personaData = localStorage.getItem('trustFinPersona');
+    let isGuest = false;
+    let confirmMsg = '로그아웃 하시겠습니까?';
+
+    if (personaData) {
+        const persona = JSON.parse(personaData);
+        if (persona.id === 'guest') {
+            isGuest = true;
+            confirmMsg = '게스트 모드를 종료하시겠습니까?';
+        }
+    }
+
+    if (confirm(confirmMsg)) {
+        if (isGuest) {
+            localStorage.removeItem('trustFinNotifications');
+            localStorage.removeItem('trustFinTransactions');
+            localStorage.removeItem('trustFinMyLoans');
+            localStorage.removeItem('selectedCard');
+            localStorage.removeItem('newDepositAmount');
+        }
         localStorage.removeItem('trustFinPersona');
         localStorage.removeItem('trustFinUserData');
         window.location.href = 'login.html';

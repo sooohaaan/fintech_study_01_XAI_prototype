@@ -87,7 +87,7 @@
 
                 // 카드 생성
                 listEl.innerHTML = recommendations.map((item, index) => `
-                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${index * 150}ms">
+                    <div class="bg-white rounded-[2rem] p-6 shadow-lg border border-gray-100 hover:shadow-xl transition relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${index * 150}ms">
                         
                         <!-- Best Badge (1등만) -->
                         ${index === 0 ? `<div class="absolute top-0 left-0 bg-deepBlue text-white text-xs px-3 py-1 rounded-br-xl font-bold">Best Match</div>` : ''}

@@ -37,7 +37,7 @@
             </div>
 
             <!-- Loan Trend Chart -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-900 dark:text-white mb-4 text-sm">대출 잔액 변동</h3>
                 <div class="relative h-32 w-full">
                     <svg id="loanTrendChart" class="w-full h-full overflow-visible"></svg>
@@ -133,6 +133,24 @@
             const persona = JSON.parse(localStorage.getItem('trustFinPersona') || '{}');
             const currentPersonaId = persona.id;
 
+            // 게스트 모드 처리
+            if (currentPersonaId === 'guest') {
+                document.querySelector('main').innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center mt-10 opacity-0 animate-slide-in-right">
+                        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="coins" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">대출 내역이 없습니다</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">로그인하고 내 대출 한도와<br>최저 금리를 확인해보세요.</p>
+                        <button onclick="location.href='login.html'" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                            로그인하기
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
             // 현재 퍼소나의 대출 내역만 필터링
             const myLoans = allLoans.filter(loan => loan.personaId === currentPersonaId);
             
@@ -194,7 +212,7 @@
                     }
 
                     return `
-                        <div onclick="openLoanDetailModal(${loan.timestamp})" class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform opacity-0 animate-slide-in-right" style="animation-delay: ${index * 100}ms">
+                        <div onclick="openLoanDetailModal(${loan.timestamp})" class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform opacity-0 animate-slide-in-right" style="animation-delay: ${index * 100}ms">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
                                     <div class="flex items-center gap-1.5 mb-1">
