@@ -147,14 +147,14 @@
                 ` : '';
 
                 return `
-                    <div class="relative overflow-hidden rounded-xl group select-none">
+                    <div class="relative overflow-hidden rounded-3xl group select-none">
                         <!-- 삭제 버튼 (뒤) -->
                         <div class="absolute right-0 top-0 bottom-0 w-20 bg-red-500 flex items-center justify-center text-white font-bold text-sm cursor-pointer z-0" onclick="deleteNotification(${noti.originalIndex})">
                             삭제
                         </div>
                         
                         <!-- 컨텐츠 (앞) -->
-                        <div class="relative ${containerBg} p-4 border border-gray-100 dark:border-gray-700 shadow-sm flex gap-4 z-10 transition-transform duration-200 ease-out items-center"
+                        <div class="relative ${containerBg} p-4 border border-gray-100 dark:border-gray-700 shadow-lg flex gap-4 z-10 transition-transform duration-200 ease-out items-center"
                              ontouchstart="handleTouchStart(event, ${noti.originalIndex})"
                              ontouchmove="handleTouchMove(event)"
                              ontouchend="handleTouchEnd(event)"

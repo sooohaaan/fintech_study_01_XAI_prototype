@@ -37,7 +37,7 @@
             </div>
 
             <!-- Loan Trend Chart -->
-            <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-900 dark:text-white mb-4 text-sm">대출 잔액 변동</h3>
                 <div class="relative h-32 w-full">
                     <svg id="loanTrendChart" class="w-full h-full overflow-visible"></svg>
@@ -95,19 +95,19 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">목적에 맞는 최적의 상품을 추천해드립니다.</p>
             
             <div class="space-y-3 mb-6">
-                <button onclick="selectLoanPurpose('living', this)" class="survey-option w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
+                <button onclick="selectLoanPurpose('living', this)" class="survey-option w-full p-4 rounded-3xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
                     <span class="text-gray-700 dark:text-gray-300 font-medium">생활비</span>
                     <i data-lucide="check" class="w-5 h-5 text-deepBlue dark:text-blue-400 opacity-0 transition-opacity"></i>
                 </button>
-                <button onclick="selectLoanPurpose('refinance', this)" class="survey-option w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
+                <button onclick="selectLoanPurpose('refinance', this)" class="survey-option w-full p-4 rounded-3xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
                     <span class="text-gray-700 dark:text-gray-300 font-medium">대환대출 (갈아타기)</span>
                     <i data-lucide="check" class="w-5 h-5 text-deepBlue dark:text-blue-400 opacity-0 transition-opacity"></i>
                 </button>
-                <button onclick="selectLoanPurpose('housing', this)" class="survey-option w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
+                <button onclick="selectLoanPurpose('housing', this)" class="survey-option w-full p-4 rounded-3xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
                     <span class="text-gray-700 dark:text-gray-300 font-medium">주택/전세 자금</span>
                     <i data-lucide="check" class="w-5 h-5 text-deepBlue dark:text-blue-400 opacity-0 transition-opacity"></i>
                 </button>
-                <button onclick="selectLoanPurpose('business', this)" class="survey-option w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
+                <button onclick="selectLoanPurpose('business', this)" class="survey-option w-full p-4 rounded-3xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group">
                     <span class="text-gray-700 dark:text-gray-300 font-medium">사업 자금</span>
                     <i data-lucide="check" class="w-5 h-5 text-deepBlue dark:text-blue-400 opacity-0 transition-opacity"></i>
                 </button>
@@ -133,10 +133,57 @@
             const persona = JSON.parse(localStorage.getItem('trustFinPersona') || '{}');
             const currentPersonaId = persona.id;
 
+            // 실시간 상태 업데이트 로직 (1분 경과 체크)
+            const now = Date.now();
+            let dataChanged = false;
+            let completedProducts = [];
+
+            allLoans = allLoans.map(loan => {
+                if (loan.status === 'pending') {
+                    if (now - loan.timestamp > 60000) { // 1분(60000ms) 경과
+                        loan.status = 'approved';
+                        dataChanged = true;
+                        if (loan.personaId === currentPersonaId) {
+                            completedProducts.push(loan);
+                        }
+                    }
+                }
+                return loan;
+            });
+
+            if (dataChanged) {
+                localStorage.setItem('trustFinMyLoans', JSON.stringify(allLoans));
+
+                // 심사 완료 알림 추가
+                if (completedProducts.length > 0) {
+                    const notifications = JSON.parse(localStorage.getItem('trustFinNotifications') || '[]');
+                    const date = new Date();
+                    const dateStr = `${date.getMonth() + 1}.${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    completedProducts.forEach(loan => {
+                        notifications.unshift({
+                            type: 'loan',
+                            title: '대출 심사 완료',
+                            message: `'${loan.productName}' 심사가 완료되었습니다. 결과를 확인해주세요.`,
+                            date: dateStr,
+                            productId: loan.id,
+                            read: false
+                        });
+                    });
+                    localStorage.setItem('trustFinNotifications', JSON.stringify(notifications));
+                    
+                    const msg = completedProducts.length === 1 
+                        ? `'${completedProducts[0].productName}' 심사 완료` 
+                        : `${completedProducts.length}건의 심사가 완료되었습니다.`;
+                    if (typeof showGlobalToast === 'function') showGlobalToast(msg);
+                    if (typeof updateNotificationBadge === 'function') updateNotificationBadge();
+                }
+            }
+
             // 게스트 모드 처리
             if (currentPersonaId === 'guest') {
                 document.querySelector('main').innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center mt-10 opacity-0 animate-slide-in-right">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center mt-10 opacity-0 animate-slide-in-right">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="coins" class="w-8 h-8"></i>
                         </div>
@@ -153,6 +200,9 @@
 
             // 현재 퍼소나의 대출 내역만 필터링
             const myLoans = allLoans.filter(loan => loan.personaId === currentPersonaId);
+            
+            // 최신순 정렬
+            myLoans.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             
             let totalLoanAmount = 0;
 
@@ -212,7 +262,7 @@
                     }
 
                     return `
-                        <div onclick="openLoanDetailModal(${loan.timestamp})" class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform opacity-0 animate-slide-in-right" style="animation-delay: ${index * 100}ms">
+                        <div onclick="openLoanDetailModal(${loan.timestamp})" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform opacity-0 animate-slide-in-right" style="animation-delay: ${index * 100}ms">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
                                     <div class="flex items-center gap-1.5 mb-1">
@@ -254,6 +304,12 @@
             document.getElementById('totalLoan').innerText = totalLoanAmount.toLocaleString();
             renderLoanTrendChart(totalLoanAmount);
             lucide.createIcons();
+
+            // 심사 중인 항목이 있으면 1초 뒤 재검사
+            const hasPending = myLoans.some(loan => loan.status === 'pending');
+            if (hasPending) {
+                setTimeout(renderLoans, 1000);
+            }
         }
 
         function openLoanDetailModal(timestamp) {
@@ -262,33 +318,9 @@
             
             if (!loan) return;
 
-            // 상품 정보 매칭 (금리 등)
-            let rate = '4.5%'; // 기본값
-            if (typeof loanProducts !== 'undefined') {
-                const product = loanProducts.find(p => p.id === loan.id);
-                if (product) rate = product.baseRate + '%';
-            }
-
-            // 날짜 계산 (만기일: 실행일 + 3년)
-            const startDate = new Date(loan.timestamp);
-            const endDate = new Date(startDate);
-            endDate.setFullYear(endDate.getFullYear() + 3);
-            const endDateStr = `${endDate.getFullYear()}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${String(endDate.getDate()).padStart(2, '0')}`;
-
-            // UI 업데이트
-            document.getElementById('modalBankName').innerText = loan.bankName;
-            document.getElementById('modalProductName').innerText = loan.productName;
-            document.getElementById('modalBankLogo').src = getBankLogoUrl(loan.bankName);
-            document.getElementById('modalLoanAmount').innerText = loan.status === 'active' ? '30,000,000원' : '-';
-            document.getElementById('modalLoanRate').innerText = rate;
-            document.getElementById('modalLoanDate').innerText = endDateStr;
-
-            const modal = document.getElementById('loanDetailModal');
-            const content = modal.querySelector('.bg-white');
-            content.classList.add('animate-slide-up');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            toggleBackgroundScale(true);
+            // 모든 상태에서 대출 실행 화면으로 이동
+            localStorage.setItem('currentLoanApplication', JSON.stringify(loan));
+            location.href = 'loan_execute.html';
         }
 
         function closeLoanDetailModal(animate = true) {

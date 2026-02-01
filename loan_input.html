@@ -8,62 +8,62 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="common.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans pb-24 select-none">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
     <!-- Header -->
-    <header class="bg-white p-4 sticky top-0 z-20 flex items-center gap-4 shadow-sm">
-        <button onclick="history.back()" class="hover:bg-gray-100 p-2 rounded transition">
-            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700"></i>
+    <header class="bg-white dark:bg-gray-800 p-4 sticky top-0 z-20 flex items-center gap-4 shadow-sm dark:shadow-gray-900/50 transition-colors duration-300">
+        <button onclick="history.back()" class="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
         </button>
-        <h1 class="text-lg font-bold text-gray-900">대출 상담</h1>
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">대출 상담</h1>
     </header>
 
     <!-- Main Form -->
     <main class="p-5 max-w-md mx-auto space-y-6">
         
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">고객님께 딱 맞는<br>상품을 찾아드릴게요.</h1>
-            <p class="text-gray-500 mt-2 text-sm">기본 정보를 확인해주세요.</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">고객님께 딱 맞는<br>상품을 찾아드릴게요.</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">기본 정보를 확인해주세요.</p>
         </div>
 
-        <form id="infoForm" class="bg-white rounded-[2rem] p-6 shadow-lg border border-gray-100 space-y-5">
+        <form id="infoForm" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 space-y-5 transition-colors duration-300">
             
             <!-- Income -->
             <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">연소득 (만원)</label>
-                <input type="number" id="income" placeholder="예: 5000" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition placeholder-gray-300" required>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">연소득 (만원)</label>
+                <input type="number" id="income" placeholder="예: 5000" class="w-full text-lg font-bold border-b-2 border-gray-200 dark:border-gray-700 focus:border-deepBlue dark:focus:border-blue-500 outline-none py-2 transition placeholder-gray-300 dark:placeholder-gray-600 bg-transparent dark:text-white" required>
             </div>
 
             <!-- Credit Score -->
             <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">신용점수 (0~1000)</label>
-                <input type="number" id="creditScore" placeholder="예: 850" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition placeholder-gray-300" required>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">신용점수 (0~1000)</label>
+                <input type="number" id="creditScore" placeholder="예: 850" class="w-full text-lg font-bold border-b-2 border-gray-200 dark:border-gray-700 focus:border-deepBlue dark:focus:border-blue-500 outline-none py-2 transition placeholder-gray-300 dark:placeholder-gray-600 bg-transparent dark:text-white" required>
             </div>
 
             <!-- Employment Type -->
             <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">고용 형태</label>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">고용 형태</label>
                 <div class="grid grid-cols-2 gap-2 mt-2">
                     <label class="cursor-pointer">
                         <input type="radio" name="employmentType" value="regular" class="peer sr-only" checked>
-                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                        <div class="border dark:border-gray-600 rounded-xl p-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 peer-checked:bg-softBlue dark:peer-checked:bg-blue-900/30 peer-checked:text-deepBlue dark:peer-checked:text-blue-400 peer-checked:border-deepBlue dark:peer-checked:border-blue-500 transition">
                             직장인
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="employmentType" value="business_owner" class="peer sr-only">
-                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                        <div class="border dark:border-gray-600 rounded-xl p-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 peer-checked:bg-softBlue dark:peer-checked:bg-blue-900/30 peer-checked:text-deepBlue dark:peer-checked:text-blue-400 peer-checked:border-deepBlue dark:peer-checked:border-blue-500 transition">
                             사업자
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="employmentType" value="freelancer" class="peer sr-only">
-                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                        <div class="border dark:border-gray-600 rounded-xl p-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 peer-checked:bg-softBlue dark:peer-checked:bg-blue-900/30 peer-checked:text-deepBlue dark:peer-checked:text-blue-400 peer-checked:border-deepBlue dark:peer-checked:border-blue-500 transition">
                             프리랜서
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="employmentType" value="unemployed" class="peer sr-only">
-                        <div class="border rounded-xl p-3 text-center text-sm font-medium text-gray-500 peer-checked:bg-softBlue peer-checked:text-deepBlue peer-checked:border-deepBlue transition">
+                        <div class="border dark:border-gray-600 rounded-xl p-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 peer-checked:bg-softBlue dark:peer-checked:bg-blue-900/30 peer-checked:text-deepBlue dark:peer-checked:text-blue-400 peer-checked:border-deepBlue dark:peer-checked:border-blue-500 transition">
                             기타
                         </div>
                     </label>
@@ -72,44 +72,44 @@
 
             <!-- Account Selection -->
             <div>
-                <label class="block text-xs font-bold text-gray-500 mb-1">입금 받을 계좌</label>
-                <select id="accountSelect" class="w-full text-lg font-bold border-b-2 border-gray-200 focus:border-deepBlue outline-none py-2 transition bg-transparent rounded-none">
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">입금 받을 계좌</label>
+                <select id="accountSelect" class="w-full text-lg font-bold border-b-2 border-gray-200 dark:border-gray-700 focus:border-deepBlue dark:focus:border-blue-500 outline-none py-2 transition bg-transparent dark:text-white rounded-none">
                 </select>
             </div>
 
             <!-- Terms Agreement -->
-            <div class="pt-4 border-t border-gray-100">
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-gray-900">약관 및 동의</h3>
+                    <h3 class="font-bold text-gray-900 dark:text-white">약관 및 동의</h3>
                 </div>
-                <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                    <div onclick="toggleAllTerms()" class="p-4 border-b border-gray-200 flex items-center gap-3 cursor-pointer hover:bg-gray-100 transition">
-                        <div id="checkAll" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center transition-colors">
+                <div class="bg-gray-50 dark:bg-gray-700/30 rounded-3xl border border-gray-200 dark:border-gray-600 overflow-hidden">
+                    <div onclick="toggleAllTerms()" class="p-4 border-b border-gray-200 dark:border-gray-600 flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                        <div id="checkAll" class="w-6 h-6 rounded-full border-2 border-gray-300 dark:border-gray-500 flex items-center justify-center transition-colors">
                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
                         </div>
-                        <span class="font-bold text-gray-900">약관 전체 동의</span>
+                        <span class="font-bold text-gray-900 dark:text-white">약관 전체 동의</span>
                     </div>
                     <div class="p-4 space-y-3">
                         <div onclick="openTermModal(0)" class="flex items-center gap-3 cursor-pointer">
-                            <div id="check0" onclick="toggleTerm(0); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                            <div id="check0" onclick="toggleTerm(0); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 dark:border-gray-500 flex items-center justify-center bg-white dark:bg-gray-600 transition-colors">
                                 <i data-lucide="check" class="w-3 h-3 text-white"></i>
                             </div>
-                            <span class="text-sm text-gray-600">[필수] 서비스 이용약관</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">[필수] 서비스 이용약관</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 ml-auto"></i>
                         </div>
                         <div onclick="openTermModal(1)" class="flex items-center gap-3 cursor-pointer">
-                            <div id="check1" onclick="toggleTerm(1); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                            <div id="check1" onclick="toggleTerm(1); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 dark:border-gray-500 flex items-center justify-center bg-white dark:bg-gray-600 transition-colors">
                                 <i data-lucide="check" class="w-3 h-3 text-white"></i>
                             </div>
-                            <span class="text-sm text-gray-600">[필수] 개인정보 수집 및 이용</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">[필수] 개인정보 수집 및 이용</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 ml-auto"></i>
                         </div>
                         <div onclick="openTermModal(2)" class="flex items-center gap-3 cursor-pointer">
-                            <div id="check2" onclick="toggleTerm(2); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 flex items-center justify-center bg-white transition-colors">
+                            <div id="check2" onclick="toggleTerm(2); event.stopPropagation()" class="term-check w-5 h-5 rounded border border-gray-300 dark:border-gray-500 flex items-center justify-center bg-white dark:bg-gray-600 transition-colors">
                                 <i data-lucide="check" class="w-3 h-3 text-white"></i>
                             </div>
-                            <span class="text-sm text-gray-600">[필수] 제3자 정보 제공 동의</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto"></i>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">[필수] 제3자 정보 제공 동의</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 ml-auto"></i>
                         </div>
                     </div>
                 </div>
@@ -119,8 +119,8 @@
     </main>
 
     <!-- Bottom Fixed Button -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 max-w-md mx-auto z-40">
-        <button id="analyzeBtn" type="button" onclick="startAnalysis()" disabled class="w-full bg-gray-300 text-gray-500 font-bold text-lg py-4 rounded-xl shadow-none transition-all flex justify-center items-center gap-2 cursor-not-allowed">
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors duration-300">
+        <button id="analyzeBtn" type="button" onclick="startAnalysis()" disabled class="w-full bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold text-lg py-4 rounded-xl shadow-none transition-all flex justify-center items-center gap-2 cursor-not-allowed">
             <span>약관에 동의해주세요</span>
         </button>
     </div>
@@ -128,10 +128,10 @@
     <!-- Term Detail Modal -->
     <div id="termModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTermModal()"></div>
-        <div class="bg-white rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[80vh] flex flex-col">
-            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 flex-shrink-0"></div>
-            <h3 id="termTitle" class="text-lg font-bold text-gray-900 mb-4 flex-shrink-0">약관 제목</h3>
-            <div id="termContent" class="flex-1 overflow-y-auto text-sm text-gray-600 leading-relaxed mb-4 pr-2 whitespace-pre-line">
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[80vh] flex flex-col">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 flex-shrink-0"></div>
+            <h3 id="termTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex-shrink-0">약관 제목</h3>
+            <div id="termContent" class="flex-1 overflow-y-auto text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4 pr-2 whitespace-pre-line">
                 약관 내용...
             </div>
             <button onclick="agreeCurrentTerm()" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition flex-shrink-0">동의하고 닫기</button>
@@ -214,22 +214,22 @@
             // 전체 동의 체크박스
             const checkAll = document.getElementById('checkAll');
             if (allChecked) {
-                checkAll.classList.remove('border-gray-300');
-                checkAll.classList.add('bg-deepBlue', 'border-deepBlue');
+                checkAll.classList.remove('border-gray-300', 'dark:border-gray-500');
+                checkAll.classList.add('bg-deepBlue', 'border-deepBlue', 'dark:border-blue-500');
             } else {
-                checkAll.classList.add('border-gray-300');
-                checkAll.classList.remove('bg-deepBlue', 'border-deepBlue');
+                checkAll.classList.add('border-gray-300', 'dark:border-gray-500');
+                checkAll.classList.remove('bg-deepBlue', 'border-deepBlue', 'dark:border-blue-500');
             }
 
             // 개별 체크박스
             termsAgreed.forEach((checked, i) => {
                 const el = document.getElementById(`check${i}`);
                 if (checked) {
-                    el.classList.remove('border-gray-300', 'bg-white');
-                    el.classList.add('bg-deepBlue', 'border-deepBlue');
+                    el.classList.remove('border-gray-300', 'dark:border-gray-500', 'bg-white', 'dark:bg-gray-600');
+                    el.classList.add('bg-deepBlue', 'border-deepBlue', 'dark:border-blue-500');
                 } else {
-                    el.classList.add('border-gray-300', 'bg-white');
-                    el.classList.remove('bg-deepBlue', 'border-deepBlue');
+                    el.classList.add('border-gray-300', 'dark:border-gray-500', 'bg-white', 'dark:bg-gray-600');
+                    el.classList.remove('bg-deepBlue', 'border-deepBlue', 'dark:border-blue-500');
                 }
             });
 
@@ -237,13 +237,13 @@
             const btn = document.getElementById('analyzeBtn');
             if (allChecked) {
                 btn.disabled = false;
-                btn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                btn.classList.remove('bg-gray-300', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400', 'cursor-not-allowed', 'shadow-none');
                 btn.classList.add('bg-deepBlue', 'text-white', 'shadow-lg', 'hover:bg-blue-800', 'active:scale-95');
                 btn.innerHTML = `<span>무료로 금리 분석하기</span><i data-lucide="arrow-right" class="w-5 h-5"></i>`;
                 lucide.createIcons();
             } else {
                 btn.disabled = true;
-                btn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                btn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400', 'cursor-not-allowed', 'shadow-none');
                 btn.classList.remove('bg-deepBlue', 'text-white', 'shadow-lg', 'hover:bg-blue-800', 'active:scale-95');
                 btn.innerHTML = `<span>약관에 동의해주세요</span>`;
             }
@@ -309,8 +309,15 @@
                 return;
             }
 
+            // 페르소나 데이터에서 DSR 정보 가져오기
+            const personaData = localStorage.getItem('trustFinPersona');
+            let dsr = 0;
+            if (personaData) {
+                dsr = JSON.parse(personaData).dsr || 0;
+            }
+
             const existingData = JSON.parse(localStorage.getItem('trustFinUserData') || '{}');
-            const userData = { ...existingData, income, creditScore, employmentType, selectedAccount };
+            const userData = { ...existingData, income, creditScore, employmentType, selectedAccount, dsr };
             localStorage.setItem('trustFinUserData', JSON.stringify(userData));
             window.location.href = 'result.html';
         }

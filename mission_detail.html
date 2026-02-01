@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 미션 상세</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="common.js"></script>
+    <style>
+        .progress-bar-bounce {
+            transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes scaleUpCheck {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-scale-up-check {
+            animation: scaleUpCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+        </button>
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">미션 상세</h1>
+    </header>
+
+    <main class="p-5 max-w-md mx-auto space-y-6">
+        <!-- Mission Info Card -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
+            <div id="completedBadge" class="hidden absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm z-10">
+                MISSION CLEAR
+            </div>
+            
+            <div id="missionIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl bg-blue-50 dark:bg-blue-900/30 text-blue-500">
+                🎯
+            </div>
+            <h2 id="missionTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-2">미션 제목</h2>
+            <p id="missionDesc" class="text-sm text-gray-500 dark:text-gray-400 mb-6">미션 설명</p>
+            
+            <div class="flex justify-between items-center text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 px-1">
+                <span id="missionDday">D-Day</span>
+                <span id="missionProgressText">0%</span>
+            </div>
+            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner p-0.5">
+                <div id="missionProgressBar" class="bg-gradient-to-r from-blue-400 to-deepBlue dark:from-blue-400 dark:to-blue-600 h-full rounded-full progress-bar-bounce shadow-sm relative overflow-hidden" style="width: 0%">
+                    <div class="absolute inset-0 bg-white/10"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub Missions -->
+        <div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4 px-1">세부 미션</h3>
+            <div id="subMissionList" class="space-y-3">
+                <!-- JS Rendering -->
+            </div>
+        </div>
+
+        <!-- Give Up Button -->
+        <button id="actionBtn" onclick="giveUpMission()" class="w-full py-4 text-sm text-red-500 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition">
+            미션 포기하기
+        </button>
+    </main>
+
+    <!-- Give Up Confirmation Modal -->
+    <div id="giveUpModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeGiveUpModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">정말 포기하시겠습니까?</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">현재까지의 진행 상황이 모두 삭제되며,<br>복구할 수 없습니다.</p>
+            <div class="flex gap-3">
+                <button onclick="closeGiveUpModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="confirmGiveUp()" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition">포기하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMission = null;
+        let isDefaultMission = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            loadMission();
+            initBottomSheetDrag('giveUpModal', closeGiveUpModal);
+        });
+
+        function loadMission() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const missionId = urlParams.get('id');
+
+            if (!missionId) {
+                alert('잘못된 접근입니다.');
+                history.back();
+                return;
+            }
+
+            // 1. 기본 미션 확인
+            if (missionId === 'mission_housing') {
+                isDefaultMission = true;
+                currentMission = {
+                    id: 'mission_housing',
+                    title: '주택 마련 3억 대출 도전',
+                    desc: '목표 달성을 위한 AI 맞춤 플랜',
+                    dday: 'D-90',
+                    progress: 0,
+                    color: 'blue',
+                    subMissions: [
+                        { id: 'sub1', text: '2달 동안 신용 카드 사용으로 신용 점수 20점 올리기', status: 'active' },
+                        { id: 'sub2', text: '3달 동안 300만원 모아 자산 능력 30% 높이기', status: 'ready' }
+                    ]
+                };
+                // 로컬스토리지에 상태가 저장되어 있다면 덮어쓰기 (기본 미션도 상태 저장을 위해)
+                const storedMissions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+                const saved = storedMissions.find(m => m.id === missionId);
+                if (saved) currentMission = saved;
+            } else {
+                // 2. 저장된 미션 확인
+                const storedMissions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+                currentMission = storedMissions.find(m => m.id === missionId);
+            }
+
+            if (!currentMission) {
+                alert('미션을 찾을 수 없습니다.');
+                history.back();
+                return;
+            }
+
+            renderUI(0, null);
+        }
+
+        function renderUI(prevProgress = 0, completedSubId = null) {
+            document.getElementById('missionTitle').innerText = currentMission.title;
+            document.getElementById('missionDesc').innerText = currentMission.desc;
+            document.getElementById('missionDday').innerText = currentMission.dday;
+            
+            // 진행률 재계산
+            const total = currentMission.subMissions.length;
+            const completed = currentMission.subMissions.filter(s => s.status === 'completed').length;
+            const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
+            currentMission.progress = progress;
+
+            animateCountUp(document.getElementById('missionProgressText'), progress, prevProgress);
+            document.getElementById('missionProgressBar').style.width = `${progress}%`;
+
+            // 완료 상태 처리
+            const isCompleted = progress >= 100;
+            const badge = document.getElementById('completedBadge');
+            const actionBtn = document.getElementById('actionBtn');
+            const iconEl = document.getElementById('missionIcon');
+
+            if (isCompleted) {
+                badge.classList.remove('hidden');
+                iconEl.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400";
+                iconEl.innerHTML = '<i data-lucide="trophy" class="w-8 h-8"></i>';
+                
+                actionBtn.innerText = '목록으로 돌아가기';
+                actionBtn.className = 'w-full py-4 text-sm text-gray-600 dark:text-gray-300 font-bold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition';
+                actionBtn.onclick = () => location.href = 'mission_list.html?tab=completed';
+            }
+
+            const listEl = document.getElementById('subMissionList');
+            listEl.innerHTML = currentMission.subMissions.map(sub => {
+                let btnHtml = '';
+                let statusClass = '';
+                let icon = 'circle';
+                let iconClass = 'text-gray-400';
+
+                if (sub.status === 'completed') {
+                    statusClass = 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 opacity-70';
+                    icon = 'check-circle-2';
+                    
+                    if (sub.id === completedSubId) {
+                        iconClass = 'text-green-500 dark:text-green-400 animate-scale-up-check';
+                    } else {
+                        iconClass = 'text-green-500 dark:text-green-400';
+                    }
+                    
+                    btnHtml = `<span class="text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> 완료</span>`;
+                } else if (sub.status === 'active') {
+                    statusClass = 'bg-white dark:bg-gray-800 border-deepBlue dark:border-blue-500 shadow-md';
+                    icon = 'play-circle';
+                    iconClass = 'text-deepBlue dark:text-blue-400';
+                    btnHtml = `<button onclick="updateSubMission('${sub.id}', 'completed')" class="bg-deepBlue text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-800 transition">완료하기</button>`;
+                } else {
+                    statusClass = 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700';
+                    icon = 'circle';
+                    iconClass = 'text-gray-400';
+                    btnHtml = `<button onclick="updateSubMission('${sub.id}', 'active')" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">시작</button>`;
+                }
+
+                return `
+                    <div class="p-4 rounded-3xl border ${statusClass} flex justify-between items-center transition-all">
+                        <div class="flex items-center gap-3 flex-1">
+                            <i data-lucide="${icon}" class="w-5 h-5 ${iconClass}"></i>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white ${sub.status === 'completed' ? 'line-through text-gray-400' : ''}">${sub.text}</span>
+                        </div>
+                        <div class="ml-3 flex-shrink-0">
+                            ${btnHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        function updateSubMission(subId, newStatus) {
+            const sub = currentMission.subMissions.find(s => s.id === subId);
+            if (sub) {
+                const prevProgress = currentMission.progress;
+                sub.status = newStatus;
+                
+                // 진행률 계산 및 완료 날짜 저장
+                const total = currentMission.subMissions.length;
+                const completedCount = currentMission.subMissions.filter(s => s.status === 'completed').length;
+                const newProgress = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+                
+                currentMission.progress = newProgress;
+                if (newProgress >= 100 && !currentMission.completedAt) {
+                    currentMission.completedAt = Date.now();
+                } else if (newProgress < 100) {
+                    delete currentMission.completedAt;
+                }
+
+                saveMission();
+                renderUI(prevProgress, newStatus === 'completed' ? subId : null);
+
+                // 미션 완료 시 폭죽 효과
+                if (newProgress >= 100 && newStatus === 'completed') {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#1D4ED8', '#7C3AED', '#10B981', '#F59E0B']
+                    });
+                }
+            }
+        }
+
+        function saveMission() {
+            let missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+            const index = missions.findIndex(m => m.id === currentMission.id);
+            
+            if (index >= 0) {
+                missions[index] = currentMission;
+            } else {
+                missions.push(currentMission);
+            }
+            localStorage.setItem('trustFinMissions', JSON.stringify(missions));
+        }
+
+        function giveUpMission() {
+            const modal = document.getElementById('giveUpModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function closeGiveUpModal() {
+            const modal = document.getElementById('giveUpModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function confirmGiveUp() {
+            let missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+            missions = missions.filter(m => m.id !== currentMission.id);
+            localStorage.setItem('trustFinMissions', JSON.stringify(missions));
+            location.href = 'home.html';
+        }
+
+        function animateCountUp(element, endValue, startValue) {
+            const duration = 1200;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                element.innerText = `${current}% 달성`;
+
+                if (progress < 1) requestAnimationFrame(update);
+                else element.innerText = `${endValue}% 달성`;
+            }
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+</html>

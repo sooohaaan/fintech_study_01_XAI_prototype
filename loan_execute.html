@@ -31,7 +31,7 @@
         </div>
 
         <!-- Result Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
                     <img id="bankLogo" src="" onerror="handleImageError(this)" class="w-full h-full object-cover" alt="bank">
@@ -46,14 +46,14 @@
                 <div class="flex justify-between items-end border-b border-gray-100 dark:border-gray-700 pb-4">
                     <div class="flex items-center gap-1">
                         <span class="text-gray-500 dark:text-gray-400 font-medium">대출 한도</span>
-                        <button type="button" onclick="openInfoModal('대출 한도', '고객님의 신용점수와 소득 정보를 종합적으로 분석하여 산출된 최대 대출 가능 금액입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="openInfoModal('대출 한도', '고객님의 연소득, 신용점수, 기존 부채 현황을 종합적으로 분석하여 산출된 최대 대출 가능 금액입니다.\n\nDSR(총부채원리금상환비율) 규제 및 금융사 내부 심사 기준에 따라 실제 한도는 달라질 수 있습니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
                     </div>
                     <span class="text-2xl font-bold text-deepBlue dark:text-blue-400"><span id="finalLimit">0</span>만원</span>
                 </div>
                 <div class="flex justify-between items-end">
                     <div class="flex items-center gap-1">
                         <span class="text-gray-500 dark:text-gray-400 font-medium">적용 금리</span>
-                        <button type="button" onclick="openInfoModal('적용 금리', '기준 금리에 고객님의 신용 등급에 따른 가산 금리와 우대 금리가 반영된 최종 확정 금리입니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="openInfoModal('적용 금리', '기준 금리(COFIX 등)에 고객님의 신용 등급에 따른 가산 금리가 더해지고, 우대 금리(급여 이체, 카드 사용 등)가 차감된 최종 확정 금리입니다.\n\n시장 금리 변동에 따라 실제 실행 시점의 금리는 소폭 달라질 수 있습니다.')" class="relative z-10 text-gray-400 hover:text-deepBlue dark:text-gray-500 dark:hover:text-blue-400 transition p-1 flex-shrink-0"><i data-lucide="circle-help" class="w-4 h-4"></i></button>
                     </div>
                     <span class="text-2xl font-bold text-electricPurple dark:text-purple-400"><span id="finalRate">0.0</span>%</span>
                 </div>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Details -->
-        <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-5 space-y-3 text-sm mb-8">
+        <div class="bg-gray-100 dark:bg-gray-800/50 rounded-3xl p-5 space-y-3 text-sm mb-8">
             <div class="flex justify-between">
                 <div class="flex items-center gap-1">
                     <span class="text-gray-500 dark:text-gray-400">대출 기간</span>
@@ -132,7 +132,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <h3 id="infoModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">정보</h3>
-            <p id="infoModalDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6">내용</p>
+            <p id="infoModalDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 whitespace-pre-line">내용</p>
             <button onclick="closeInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
     </div>
@@ -150,6 +150,9 @@
             }
 
             const loanApp = JSON.parse(loanAppStr);
+            
+            // 상태에 따른 UI 업데이트
+            updateLoanStatusUI(loanApp.status);
             
             // RecommendLogic을 사용하여 최종 금리/한도 재계산 (시뮬레이션)
             // 실제로는 서버에서 확정된 값을 받아와야 함
@@ -337,6 +340,30 @@
                 document.body.style.overflow = '';
                 toggleBackgroundScale(false);
             }, 300);
+        }
+
+        function updateLoanStatusUI(status) {
+            const titleEl = document.querySelector('main .text-center h2');
+            const descEl = document.querySelector('main .text-center p');
+            const iconContainer = document.querySelector('main .text-center div');
+            const btnContainer = document.querySelector('.fixed.bottom-0');
+            const btn = document.getElementById('executeBtn');
+
+            if (status === 'pending') {
+                titleEl.innerText = '심사가 진행 중입니다';
+                descEl.innerText = '잠시만 기다려주세요.';
+                iconContainer.className = 'w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400';
+                iconContainer.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>';
+                
+                btn.disabled = true;
+                btn.classList.remove('bg-deepBlue', 'hover:bg-blue-800', 'active:scale-95', 'shadow-lg');
+                btn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400', 'cursor-not-allowed');
+                btn.innerHTML = '<span>심사 중</span>';
+            } else if (status === 'active') {
+                titleEl.innerText = '대출 이용 중입니다';
+                descEl.innerText = '이미 입금이 완료된 상품입니다.';
+                if (btnContainer) btnContainer.style.display = 'none';
+            }
         }
     </script>
 </body>

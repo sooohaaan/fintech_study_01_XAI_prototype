@@ -15,6 +15,21 @@
         .animate-header-down {
             animation: slideDownHeader 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        /* Scrollbar Hide */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
+        }
+        .group:hover .animate-shimmer, .group:active .animate-shimmer {
+            animation: shimmer 1.5s infinite;
+        }
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
@@ -54,7 +69,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-xs text-gray-500 dark:text-gray-400 space-y-3">
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-3xl p-4 text-xs text-gray-500 dark:text-gray-400 space-y-3">
                     <div id="step1" class="flex items-center gap-3 transition-all duration-300 opacity-50">
                         <div class="icon-box"><i data-lucide="circle" class="w-4 h-4"></i></div>
                         <span>신용점수 조회</span>
@@ -110,7 +125,7 @@
                 <!-- Score Trend Chart -->
                 <div class="mb-8">
                     <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">점수 변동 추이</h3>
-                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-3xl p-4 border border-gray-100 dark:border-gray-700">
                         <div class="relative h-32 w-full">
                             <svg id="scoreTrendChart" class="w-full h-full overflow-visible"></svg>
                             <!-- Tooltip -->
@@ -130,7 +145,7 @@
                 </div>
                 
                 <!-- Tip -->
-                <div id="creditScoreTip" class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800 transition-all duration-500">
+                <div id="creditScoreTip" class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-3xl border border-blue-100 dark:border-blue-800 transition-all duration-500">
                     <h4 class="font-bold text-deepBlue dark:text-blue-400 text-sm mb-2">💡 신용점수 올리기 팁</h4>
                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                         신용카드를 한도 대비 30~50% 수준으로 꾸준히 사용하고, 통신비나 공과금을 성실하게 납부하면 점수 상승에 도움이 됩니다.
@@ -161,7 +176,10 @@
         <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">이번 달 소비 상세</h3>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">이번 달 소비 상세</h3>
+                    <span id="spendingModalBadge" class="text-xs font-bold px-2 py-1 rounded hidden"></span>
+                </div>
                 <button onclick="closeSpendingModal()" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
                     <i data-lucide="x" class="w-5 h-5 text-gray-500 dark:text-gray-400"></i>
                 </button>
@@ -179,7 +197,10 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400">65%</p>
                         </div>
                     </div>
-                    <span class="font-bold text-gray-900 dark:text-white">812,500원</span>
+                    <div class="text-right">
+                        <div id="spendingModalItem1Amount" class="font-bold text-gray-900 dark:text-white">812,500원</div>
+                        <div id="spendingModalItem1Change" class="text-[10px]"></div>
+                    </div>
                 </div>
                 <!-- Item 2 -->
                 <div class="flex items-center justify-between">
@@ -192,7 +213,10 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400">20%</p>
                         </div>
                     </div>
-                    <span class="font-bold text-gray-900 dark:text-white">250,000원</span>
+                    <div class="text-right">
+                        <div id="spendingModalItem2Amount" class="font-bold text-gray-900 dark:text-white">250,000원</div>
+                        <div id="spendingModalItem2Change" class="text-[10px]"></div>
+                    </div>
                 </div>
                 <!-- Item 3 -->
                 <div class="flex items-center justify-between">
@@ -205,13 +229,19 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400">15%</p>
                         </div>
                     </div>
-                    <span class="font-bold text-gray-900 dark:text-white">187,500원</span>
+                    <div class="text-right">
+                        <div id="spendingModalItem3Amount" class="font-bold text-gray-900 dark:text-white">187,500원</div>
+                        <div id="spendingModalItem3Change" class="text-[10px]"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <span class="text-sm text-gray-500 dark:text-gray-400">총 지출</span>
-                <span class="text-lg font-bold text-gray-900 dark:text-white">1,250,000원</span>
+                <div class="text-right">
+                    <div id="spendingModalTotalAmount" class="text-lg font-bold text-gray-900 dark:text-white">1,250,000원</div>
+                    <div id="spendingModalTotalChange" class="text-xs mt-0.5"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -233,6 +263,11 @@
 
     <!-- Main Dashboard -->
     <main class="p-5 max-w-md mx-auto space-y-6">
+        
+        <!-- AI Mission Section -->
+        <div id="missionSection" class="hidden">
+            <div id="missionList" class="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 scrollbar-hide snap-x"></div>
+        </div>
         
         <!-- Account List -->
         <div>
@@ -262,10 +297,15 @@
 
         <!-- Credit Score (New) -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-3">내 신용점수</h3>
+            <div class="flex items-center gap-2 mb-3">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">내 신용점수</h3>
+                <button id="creditScoreToggleBtn" onclick="toggleCreditScoreVisibility(event)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+            </div>
             <div id="creditScoreSection" class="flex gap-3">
                 <!-- KCB -->
-                <div class="flex-1 bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
@@ -273,7 +313,7 @@
                             </div>
                             <span class="text-xs font-bold text-gray-500 dark:text-gray-400">KCB</span>
                         </div>
-                        <span class="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5 animate-bounce">
+                        <span id="kcbChangeBadge" class="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                             <i data-lucide="trending-up" class="w-3 h-3"></i> 15
                         </span>
                     </div>
@@ -287,7 +327,7 @@
                 </div>
 
                 <!-- NICE -->
-                <div class="flex-1 bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400">
@@ -295,7 +335,7 @@
                             </div>
                             <span class="text-xs font-bold text-gray-500 dark:text-gray-400">NICE</span>
                         </div>
-                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5 animate-bounce">
+                        <span id="niceChangeBadge" class="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                             <i data-lucide="trending-down" class="w-3 h-3"></i> 5
                         </span>
                     </div>
@@ -310,7 +350,7 @@
             </div>
             
             <!-- Credit Score Tip Banner -->
-            <div id="creditScoreTipBanner" onclick="openCreditScoreModal(true)" class="mt-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition-transform border border-blue-100 dark:border-blue-800 animate-pulse">
+            <div id="creditScoreTipBanner" onclick="openCreditScoreModal(true)" class="mt-3 bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition-transform border border-blue-100 dark:border-blue-800 shadow-lg animate-pulse">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-deepBlue dark:text-blue-400 shadow-sm">
                         <i data-lucide="lightbulb" class="w-5 h-5"></i>
@@ -390,6 +430,7 @@
             }
 
             renderAccounts();
+            renderMissions(); // 미션 렌더링 추가
             window.refreshData = renderAccounts; // 공통 송금 로직에서 호출할 갱신 함수 연결
 
             // 모달 드래그 기능 초기화
@@ -404,6 +445,154 @@
             renderMySpending();
         });
 
+        function renderMissions() {
+            const missionSection = document.getElementById('missionSection');
+            const missionList = document.getElementById('missionList');
+            const countBadge = document.getElementById('missionCountBadge');
+            
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (!personaData) return;
+            
+            const persona = JSON.parse(personaData);
+            
+            // 게스트 모드면 미션 숨김
+            if (persona.id === 'guest') {
+                missionSection.classList.add('hidden');
+                return;
+            }
+
+            missionSection.classList.remove('hidden');
+            
+            // 미션 데이터 생성 (시뮬레이션)
+            let missions = [];
+            
+            // 1. 주택 마련 대출 미션 (예시)
+            missions.push({
+                id: 'mission_housing',
+                title: '주택 마련 3억 대출 도전',
+                desc: '목표 달성을 위한 AI 맞춤 플랜',
+                dday: 'D-90',
+                progress: 0,
+                color: 'blue',
+                subMissions: [
+                    { id: 'sub1', text: '2달 동안 신용 카드 사용으로 신용 점수 20점 올리기', status: 'active' },
+                    { id: 'sub2', text: '3달 동안 300만원 모아 자산 능력 30% 높이기', status: 'ready' }
+                ]
+            });
+            
+            // 2. 저장된 미션 불러오기
+            const storedMissions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+            
+            // 저장된 미션에 subMissions가 없다면 기본값 추가 (호환성)
+            const formattedStoredMissions = storedMissions.map(m => ({
+                ...m,
+                subMissions: m.subMissions ? m.subMissions.map(sub => {
+                    // 기존 데이터 호환성 처리 (completed -> status)
+                    if (sub.status) return sub;
+                    return { id: sub.id || Math.random().toString(36).substr(2, 9), text: sub.text, status: sub.completed ? 'completed' : 'ready' };
+                }) : [
+                    { id: 'def1', text: '미션 가이드 확인하기', status: 'completed' },
+                    { id: 'def2', text: '실천 후 인증하기', status: 'ready' }
+                ]
+            }));
+            
+            missions = missions.concat(formattedStoredMissions);
+
+            // 통계 계산
+            const ongoingMissions = missions.filter(m => m.progress < 100);
+            const ongoingMissionCount = ongoingMissions.length;
+            
+            let totalSubMissions = 0;
+            let completedSubMissions = 0;
+            let activeSubMissions = 0;
+
+            missions.forEach(m => {
+                if (m.subMissions) {
+                    m.subMissions.forEach(sub => {
+                        totalSubMissions++;
+                        if (sub.status === 'completed') completedSubMissions++;
+                        if (sub.status === 'active') activeSubMissions++;
+                    });
+                }
+            });
+
+            const totalProgress = totalSubMissions === 0 ? 0 : Math.round((completedSubMissions / totalSubMissions) * 100);
+
+            // UI 렌더링 (요약 카드)
+            missionList.className = "mt-2"; // 기존 flex, overflow 제거
+            
+            missionList.innerHTML = `
+                <div onclick="location.href='mission_list.html'" class="bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 p-5 rounded-3xl shadow-lg border border-blue-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-transform relative group">
+                    <!-- Background Effects Container -->
+                    <div class="absolute inset-0 rounded-[2rem] overflow-hidden z-0">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 dark:bg-blue-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors"></div>
+                        <div class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 dark:via-white/10 to-transparent pointer-events-none"></div>
+                    </div>
+                    
+                    <div class="relative z-10 flex items-center justify-between">
+                        <h3 class="font-bold text-lg text-gray-900 dark:text-white">AI 금융 미션</h3>
+
+                        <div class="flex items-center gap-3">
+                            <div class="text-right">
+                                <div class="flex items-center justify-end gap-1 relative">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">달성률</p>
+                                    <button onclick="toggleMissionTooltip(event)" class="text-gray-400 hover:text-deepBlue dark:hover:text-blue-400 transition p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"><i data-lucide="circle-help" class="w-3 h-3"></i></button>
+                                    <div id="missionTooltip" class="absolute right-0 top-full mt-2 w-48 bg-gray-900/95 dark:bg-white/95 backdrop-blur-sm text-white dark:text-gray-900 text-[10px] p-3 rounded-xl shadow-xl border border-white/10 dark:border-gray-200 z-50 hidden opacity-0 translate-y-1 transition-all duration-200 pointer-events-none text-left">
+                                        <p class="leading-relaxed">전체 세부 미션 중 완료된 미션의 비율입니다.<br>(완료된 세부 미션 / 전체 세부 미션)</p>
+                                        <div class="absolute -top-1 right-3 w-2 h-2 bg-gray-900/95 dark:bg-white/95 rotate-45 border-l border-t border-white/10 dark:border-gray-200"></div>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-gray-900 dark:text-white">${totalProgress}%</p>
+                            </div>
+                            <div class="w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 dark:text-gray-400">진행중</p>
+                                <p class="text-base font-bold text-gray-900 dark:text-white">${ongoingMissionCount}개</p>
+                            </div>
+                            <div class="w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 dark:text-gray-400">세부미션</p>
+                                <p class="text-base font-bold text-gray-900 dark:text-white">${activeSubMissions}개</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if(countBadge) countBadge.innerText = `진행중 ${ongoingMissionCount}`;
+            
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function toggleMissionTooltip(event) {
+            event.stopPropagation();
+            const tooltip = document.getElementById('missionTooltip');
+            if (!tooltip) return;
+            
+            if (tooltip.classList.contains('hidden')) {
+                tooltip.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    tooltip.classList.remove('opacity-0', 'translate-y-1');
+                });
+                
+                // 3초 후 자동 숨김
+                setTimeout(() => {
+                    tooltip.classList.add('opacity-0', 'translate-y-1');
+                    setTimeout(() => tooltip.classList.add('hidden'), 200);
+                }, 3000);
+            } else {
+                tooltip.classList.add('opacity-0', 'translate-y-1');
+                setTimeout(() => tooltip.classList.add('hidden'), 200);
+            }
+        }
+
+        function toggleBalanceVisibility(event) {
+            if (event) event.stopPropagation();
+            const isHidden = localStorage.getItem('trustFinBalanceHidden') === 'true';
+            localStorage.setItem('trustFinBalanceHidden', !isHidden);
+            renderAccounts();
+        }
+
         function renderAccounts() {
             const personaData = localStorage.getItem('trustFinPersona');
             const persona = JSON.parse(personaData);
@@ -411,6 +600,7 @@
             // 계좌 목록 렌더링 및 총 자산 계산
             const accountListEl = document.getElementById('accountList');
             let total = 0;
+            const isBalanceHidden = localStorage.getItem('trustFinBalanceHidden') === 'true';
             
             // 총 자산 계산 (전체 계좌)
             persona.accounts.forEach(acc => total += acc.balance);
@@ -418,12 +608,18 @@
             // 주계좌(첫 번째 계좌)만 렌더링
             const mainAccount = persona.accounts[0];
             if (mainAccount) {
+                const eyeIcon = isBalanceHidden ? 'eye-off' : 'eye';
                 accountListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
                         <!-- 상단: 총 보유 자산 -->
                         <div class="mb-4">
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">총 보유 자산</p>
-                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalBalance">0</span>원</h2>
+                            <div class="flex items-center gap-2 mb-1">
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">총 보유 자산</p>
+                                <button onclick="toggleBalanceVisibility(event)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i data-lucide="${eyeIcon}" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalBalance">${isBalanceHidden ? '******' : '0'}</span>원</h2>
                         </div>
                         
                         <!-- Divider -->
@@ -443,7 +639,12 @@
                                     <p class="text-xs text-gray-500 mb-0.5">
                                         <span class="text-gray-400 text-[10px] tracking-tight">${mainAccount.accountNumber}</span>
                                     </p>
-                                    <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${mainAccount.balance}">0</span>원</p>
+                                    <p class="font-bold text-gray-900 dark:text-white text-lg">
+                                        ${isBalanceHidden 
+                                            ? '<span>******</span>' 
+                                            : `<span class="count-up" data-value="${mainAccount.balance}">0</span>`
+                                        }원
+                                    </p>
                                 </div>
                             </div>
                             <button onclick="openTransferModal('${mainAccount.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
@@ -452,7 +653,7 @@
                 `;
             } else {
                 accountListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="wallet" class="w-8 h-8"></i>
                         </div>
@@ -466,26 +667,33 @@
             }
 
             // Apply Animation
-            animateCountUp(document.getElementById('totalBalance'), total);
+            if (!isBalanceHidden) {
+                animateCountUp(document.getElementById('totalBalance'), total);
+                
+                document.querySelectorAll('.count-up').forEach(el => {
+                    animateCountUp(el, parseInt(el.dataset.value));
+                });
+            }
             
-            document.querySelectorAll('.count-up').forEach(el => {
-                animateCountUp(el, parseInt(el.dataset.value));
-            });
+            if (window.lucide) window.lucide.createIcons();
         }
 
         function renderCreditScore() {
             const personaData = localStorage.getItem('trustFinPersona');
+            const toggleBtn = document.getElementById('creditScoreToggleBtn');
+
             if (personaData) {
                 const persona = JSON.parse(personaData);
                 
                 // 게스트 모드 처리
                 if (persona.id === 'guest') {
+                    if (toggleBtn) toggleBtn.style.display = 'none';
                     const section = document.getElementById('creditScoreSection');
                     const tipBanner = document.getElementById('creditScoreTipBanner');
                     
                     if (section) {
                         section.innerHTML = `
-                            <div class="w-full bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 500ms">
+                            <div class="w-full bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 500ms">
                                 <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                                     <i data-lucide="shield-alert" class="w-8 h-8"></i>
                                 </div>
@@ -503,14 +711,33 @@
                     return;
                 }
 
+                if (toggleBtn) {
+                    toggleBtn.style.display = 'inline-flex';
+                    const isHidden = localStorage.getItem('trustFinCreditScoreHidden') === 'true';
+                    const iconName = isHidden ? 'eye-off' : 'eye';
+                    toggleBtn.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4"></i>`;
+                }
+
                 const score = persona.creditScore || 0;
                 const niceScore = Math.max(0, score - 15); // NICE 점수는 임의로 KCB보다 조금 낮게 설정
                 
+                // 점수 변동 배지 업데이트 (시뮬레이션 값)
+                updateChangeBadge('kcbChangeBadge', 15);
+                updateChangeBadge('niceChangeBadge', -5);
+
+                const isHidden = localStorage.getItem('trustFinCreditScoreHidden') === 'true';
+
                 // 점수 애니메이션
                 const scoreElKCB = document.getElementById('myCreditScoreKCB');
                 const scoreElNICE = document.getElementById('myCreditScoreNICE');
-                if (scoreElKCB) animateCountUp(scoreElKCB, score);
-                if (scoreElNICE) animateCountUp(scoreElNICE, niceScore);
+                
+                if (isHidden) {
+                    if (scoreElKCB) scoreElKCB.innerText = '***';
+                    if (scoreElNICE) scoreElNICE.innerText = '***';
+                } else {
+                    if (scoreElKCB) animateCountUp(scoreElKCB, score);
+                    if (scoreElNICE) animateCountUp(scoreElNICE, niceScore);
+                }
                 
                 // 상위 % 계산 (시뮬레이션)
                 const calculatePercentile = (s) => {
@@ -526,8 +753,14 @@
 
                 const percentKCB = document.getElementById('creditScorePercentKCB');
                 const percentNICE = document.getElementById('creditScorePercentNICE');
-                if (percentKCB) percentKCB.innerText = calculatePercentile(score);
-                if (percentNICE) percentNICE.innerText = calculatePercentile(niceScore);
+                
+                if (isHidden) {
+                    if (percentKCB) percentKCB.innerText = '**';
+                    if (percentNICE) percentNICE.innerText = '**';
+                } else {
+                    if (percentKCB) percentKCB.innerText = calculatePercentile(score);
+                    if (percentNICE) percentNICE.innerText = calculatePercentile(niceScore);
+                }
 
                 // 점수 구간별 색상 결정 함수
                 const getScoreColorClass = (s) => {
@@ -543,17 +776,67 @@
                     const barKCB = document.getElementById('creditScoreBarKCB');
                     const barNICE = document.getElementById('creditScoreBarNICE');
                     if (barKCB) {
-                        const percent = Math.min(100, (score / 1000) * 100);
-                        barKCB.className = `h-1.5 rounded-full transition-all duration-1000 ${getScoreColorClass(score)}`;
-                        barKCB.style.width = `${percent}%`;
+                        if (isHidden) {
+                            barKCB.className = `h-1.5 rounded-full transition-all duration-1000 bg-gray-200 dark:bg-gray-700`;
+                            barKCB.style.width = '0%';
+                        } else {
+                            const percent = Math.min(100, (score / 1000) * 100);
+                            barKCB.className = `h-1.5 rounded-full transition-all duration-1000 ${getScoreColorClass(score)}`;
+                            barKCB.style.width = `${percent}%`;
+                        }
                     }
                     if (barNICE) {
-                        const percent = Math.min(100, (niceScore / 1000) * 100);
-                        barNICE.className = `h-1.5 rounded-full transition-all duration-1000 ${getScoreColorClass(niceScore)}`;
-                        barNICE.style.width = `${percent}%`;
+                        if (isHidden) {
+                            barNICE.className = `h-1.5 rounded-full transition-all duration-1000 bg-gray-200 dark:bg-gray-700`;
+                            barNICE.style.width = '0%';
+                        } else {
+                            const percent = Math.min(100, (niceScore / 1000) * 100);
+                            barNICE.className = `h-1.5 rounded-full transition-all duration-1000 ${getScoreColorClass(niceScore)}`;
+                            barNICE.style.width = `${percent}%`;
+                        }
                     }
                 }, 300);
+                
+                if (window.lucide) window.lucide.createIcons();
             }
+        }
+
+        function updateChangeBadge(elementId, change) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            let colorClass = '';
+            let icon = '';
+            let text = Math.abs(change);
+
+            if (change > 0) {
+                colorClass = 'text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400';
+                icon = 'trending-up';
+            } else if (change < 0) {
+                colorClass = 'text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400';
+                icon = 'trending-down';
+            } else {
+                colorClass = 'text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
+                icon = 'minus';
+                text = '변동 없음';
+            }
+
+            el.className = `text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 ${colorClass}`;
+            el.innerHTML = `<i data-lucide="${icon}" class="w-3 h-3"></i> ${text}`;
+        }
+
+        function toggleSpendingVisibility(event) {
+            if (event) event.stopPropagation();
+            const isHidden = localStorage.getItem('trustFinSpendingHidden') === 'true';
+            localStorage.setItem('trustFinSpendingHidden', !isHidden);
+            renderMySpending();
+        }
+
+        function toggleCreditScoreVisibility(event) {
+            if (event) event.stopPropagation();
+            const isHidden = localStorage.getItem('trustFinCreditScoreHidden') === 'true';
+            localStorage.setItem('trustFinCreditScoreHidden', !isHidden);
+            renderCreditScore();
         }
 
         function renderMySpending() {
@@ -566,7 +849,7 @@
             // 게스트이거나 계좌가 없는 경우
             if (!persona.accounts || persona.accounts.length === 0 || persona.id === 'guest') {
                 section.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 300ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 300ms">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="credit-card" class="w-8 h-8"></i>
                         </div>
@@ -588,12 +871,20 @@
 
             const diff = currentMonth - lastMonth;
             const percent = Math.round((diff / lastMonth) * 100);
-            const isIncrease = diff >= 0;
             
-            const badgeClass = isIncrease 
-                ? 'text-red-500 bg-red-50 dark:bg-red-900/30 dark:text-red-400' 
-                : 'text-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400';
-            const sign = isIncrease ? '+' : '';
+            let badgeClass = '';
+            let sign = '';
+
+            if (diff > 0) {
+                badgeClass = 'text-red-500 bg-red-50 dark:bg-red-900/30 dark:text-red-400';
+                sign = '+';
+            } else if (diff < 0) {
+                badgeClass = 'text-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400';
+                sign = '';
+            } else {
+                badgeClass = 'text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
+                sign = '';
+            }
             
             const budgetPercent = Math.min(100, Math.round((currentMonth / budget) * 100));
             
@@ -609,13 +900,23 @@
                 progressColor = 'bg-yellow-500 dark:bg-yellow-400';
             }
 
+            const isSpendingHidden = localStorage.getItem('trustFinSpendingHidden') === 'true';
+            const eyeIcon = isSpendingHidden ? 'eye-off' : 'eye';
+
             const html = `
-                <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: 300ms">
+                <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: 300ms">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">이번 달 총 소비</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">이번 달 총 소비</span>
+                            <button onclick="toggleSpendingVisibility(event)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i data-lucide="${eyeIcon}" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                         <span class="text-xs font-bold ${badgeClass} px-2 py-1 rounded">${sign}${percent}%</span>
                     </div>
-                    <h2 onclick="location.href='my_spending.html'; event.stopPropagation();" class="text-3xl font-bold text-gray-900 dark:text-white hover:text-deepBlue dark:hover:text-blue-400 transition-colors cursor-pointer inline-block">${currentMonth.toLocaleString()}원</h2>
+                    <h2 onclick="location.href='my_spending.html'; event.stopPropagation();" class="text-3xl font-bold text-gray-900 dark:text-white hover:text-deepBlue dark:hover:text-blue-400 transition-colors cursor-pointer inline-block">
+                        ${isSpendingHidden ? '******' : currentMonth.toLocaleString() + '원'}
+                    </h2>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
                         <div id="spendingProgressBar" class="${progressColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                     </div>
@@ -629,6 +930,7 @@
                     const bar = document.getElementById('spendingProgressBar');
                     if (bar) bar.style.width = `${budgetPercent}%`;
                 }, 500);
+                if (window.lucide) window.lucide.createIcons();
             }
         }
 
@@ -685,7 +987,7 @@
             // 게스트 모드 처리
             if (currentPersonaId === 'guest') {
                 loanSection.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 700ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 700ms">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="coins" class="w-8 h-8"></i>
                         </div>
@@ -770,7 +1072,7 @@
             // 렌더링
             if (myLoans.length === 0) {
                 loanSection.innerHTML = `
-                    <div class="bg-gradient-to-br from-deepBlue to-electricPurple rounded-[2rem] p-6 shadow-lg text-white">
+                    <div class="bg-gradient-to-br from-deepBlue to-electricPurple rounded-3xl p-6 shadow-lg text-white">
                         <div class="flex items-start gap-4 mb-4">
                             <div class="bg-white/20 p-3 rounded-full text-white backdrop-blur-sm">
                                 <i data-lucide="coins" class="w-6 h-6"></i>
@@ -788,7 +1090,7 @@
                 `;
             } else {
                 loanSection.innerHTML = `
-                    <div onclick="location.href='my_loans.html'" class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform">
+                    <div onclick="location.href='my_loans.html'" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-gray-500 dark:text-gray-400">총 대출 잔액</span>
                             <span class="text-xs font-bold text-deepBlue dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">보유 ${myLoans.length}건</span>
@@ -979,13 +1281,24 @@
                 changeIcon = 'trending-down';
             }
 
+            const isHidden = localStorage.getItem('trustFinCreditScoreHidden') === 'true';
+
             // UI 업데이트
-            document.getElementById('modalCreditScore').innerText = displayScore;
+            if (isHidden) {
+                document.getElementById('modalCreditScore').innerText = '***';
+            } else {
+                document.getElementById('modalCreditScore').innerText = displayScore;
+            }
             document.getElementById('modalScoreAgency').innerText = agencyText;
             
             const changeEl = document.getElementById('modalScoreChange');
-            changeEl.className = `${changeColor} font-bold flex items-center justify-center gap-1`;
-            changeEl.innerHTML = `<i data-lucide="${changeIcon}" class="w-4 h-4"></i> ${changeText}`;
+            if (isHidden) {
+                changeEl.className = `text-gray-400 font-bold flex items-center justify-center gap-1`;
+                changeEl.innerHTML = `<span>-</span>`;
+            } else {
+                changeEl.className = `${changeColor} font-bold flex items-center justify-center gap-1`;
+                changeEl.innerHTML = `<i data-lucide="${changeIcon}" class="w-4 h-4"></i> ${changeText}`;
+            }
 
             // 탭 스타일 업데이트
             const kcbTab = document.getElementById('tab-kcb');
@@ -1005,19 +1318,19 @@
             const analysisItems = document.getElementById('scoreAnalysisItems');
             if (tab === 'kcb') {
                 analysisItems.innerHTML = `
-                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">연체 없이 성실하게 상환 중</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
                     </div>
-                    <div onclick="openScoreCriteriaModal('debt')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('debt')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-electricPurple dark:text-purple-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">부채 수준</p><p class="text-xs text-gray-500 dark:text-gray-400">소득 대비 적절한 수준</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
                     </div>
                 `;
             } else {
                 analysisItems.innerHTML = `
-                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">최근 1년 연체 기록 없음</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
                     </div>
-                    <div onclick="openScoreCriteriaModal('creditType')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('creditType')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">신용 형태</p><p class="text-xs text-gray-500 dark:text-gray-400">체크카드 사용 비중 높음</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
                     </div>
                 `;
@@ -1026,11 +1339,17 @@
             // 바 애니메이션
             const bar = document.getElementById('modalScoreBar');
             if (bar) {
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    const percent = Math.min(100, (displayScore / 1000) * 100);
-                    bar.style.width = `${percent}%`;
-                }, 100);
+                if (isHidden) {
+                    bar.className = "absolute top-0 left-0 h-full bg-gray-200 dark:bg-gray-700 transition-all duration-1000";
+                    bar.style.width = '0%';
+                } else {
+                    bar.className = "absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-1000";
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        const percent = Math.min(100, (displayScore / 1000) * 100);
+                        bar.style.width = `${percent}%`;
+                    }, 100);
+                }
             }
 
             renderScoreTrendChart(tab);
@@ -1109,6 +1428,21 @@
 
             svg.innerHTML = '';
             labelsDiv.innerHTML = '';
+
+            const isHidden = localStorage.getItem('trustFinCreditScoreHidden') === 'true';
+            if (isHidden) {
+                const width = svg.clientWidth || 300;
+                const height = svg.clientHeight || 128;
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", width / 2);
+                text.setAttribute("y", height / 2);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "middle");
+                text.setAttribute("class", "text-sm font-bold fill-gray-400 dark:fill-gray-500");
+                text.textContent = "점수 숨김 상태";
+                svg.appendChild(text);
+                return;
+            }
 
             // X축 레이블 생성 (현재 시점 기준 최근 6개월)
             const months = [];
@@ -1300,6 +1634,97 @@
         }
 
         function openSpendingModal() {
+            const isHidden = localStorage.getItem('trustFinSpendingHidden') === 'true';
+            
+            // 소비 증감 배지 로직 (renderMySpending과 동일)
+            const currentMonth = 1250000;
+            const lastMonth = 1100000;
+            const diff = currentMonth - lastMonth;
+            const percent = Math.round((diff / lastMonth) * 100);
+            
+            let badgeClass = '';
+            let sign = '';
+
+            if (diff > 0) {
+                badgeClass = 'text-red-500 bg-red-50 dark:bg-red-900/30 dark:text-red-400';
+                sign = '+';
+            } else if (diff < 0) {
+                badgeClass = 'text-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400';
+                sign = '';
+            } else {
+                badgeClass = 'text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
+                sign = '';
+            }
+
+            const badgeEl = document.getElementById('spendingModalBadge');
+            if (badgeEl) {
+                badgeEl.className = `text-xs font-bold px-2 py-1 rounded ${badgeClass}`;
+                badgeEl.innerText = `${sign}${percent}%`;
+                badgeEl.classList.remove('hidden');
+            }
+            
+            // Update amounts based on visibility
+            const amounts = [
+                { id: 'spendingModalItem1Amount', value: '812,500원' },
+                { id: 'spendingModalItem2Amount', value: '250,000원' },
+                { id: 'spendingModalItem3Amount', value: '187,500원' },
+                { id: 'spendingModalTotalAmount', value: '1,250,000원' }
+            ];
+
+            amounts.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) el.innerText = isHidden ? '******' : item.value;
+            });
+            
+            // Calculate and update category changes
+            const changes = [
+                { id: 'spendingModalItem1Change', current: 812500, last: 700000 }, // 쇼핑
+                { id: 'spendingModalItem2Change', current: 250000, last: 250000 }, // 식비
+                { id: 'spendingModalItem3Change', current: 187500, last: 150000 }  // 교통
+            ];
+
+            changes.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    if (isHidden) {
+                        el.innerText = '';
+                        return;
+                    }
+                    const diff = item.current - item.last;
+                    const percent = item.last === 0 ? 0 : Math.round((diff / item.last) * 100);
+                    
+                    if (diff > 0) {
+                        el.className = 'text-[10px] font-bold text-red-500 dark:text-red-400';
+                        el.innerText = `+${percent}%`;
+                    } else if (diff < 0) {
+                        el.className = 'text-[10px] font-bold text-blue-500 dark:text-blue-400';
+                        el.innerText = `${percent}%`;
+                    } else {
+                        el.className = 'text-[10px] font-bold text-gray-400';
+                        el.innerText = `-`;
+                    }
+                }
+            });
+            
+            // Total Change Text
+            const totalChangeEl = document.getElementById('spendingModalTotalChange');
+            if (totalChangeEl) {
+                if (isHidden) {
+                    totalChangeEl.innerText = '';
+                } else {
+                    if (diff > 0) {
+                        totalChangeEl.className = 'text-xs font-bold text-red-500 dark:text-red-400 mt-0.5';
+                        totalChangeEl.innerText = `전월 대비 +${percent}%`;
+                    } else if (diff < 0) {
+                        totalChangeEl.className = 'text-xs font-bold text-blue-500 dark:text-blue-400 mt-0.5';
+                        totalChangeEl.innerText = `전월 대비 ${percent}%`;
+                    } else {
+                        totalChangeEl.className = 'text-xs font-bold text-gray-400 mt-0.5';
+                        totalChangeEl.innerText = `전월과 동일`;
+                    }
+                }
+            }
+
             const modal = document.getElementById('spendingModal');
             const content = modal.querySelector('.bg-white');
             content.classList.add('animate-slide-up');

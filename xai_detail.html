@@ -27,6 +27,34 @@
         <h1 class="text-lg font-bold text-gray-900 dark:text-white">AI 상세 리포트</h1>
     </header>
 
+    <!-- Sticky Process Flow Indicator -->
+    <div class="sticky top-16 z-10 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 py-3 transition-colors duration-300">
+        <div class="max-w-md mx-auto px-6">
+            <div class="flex items-center justify-between relative px-2">
+                <!-- Connecting Line -->
+                <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-700 -z-10 transform -translate-y-1/2"></div>
+                
+                <!-- Step 1: Diagnosis -->
+                <button onclick="scrollToSection('section-diagnosis')" class="flex flex-col items-center bg-gray-50 dark:bg-gray-900 px-2 z-10 transition-transform active:scale-95">
+                    <div class="w-8 h-8 rounded-full bg-deepBlue text-white flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">1</div>
+                    <span class="text-[10px] font-bold text-deepBlue dark:text-blue-400">진단 (SHAP)</span>
+                </button>
+                
+                <!-- Step 2: Explanation -->
+                <button onclick="scrollToSection('section-explanation')" class="flex flex-col items-center bg-gray-50 dark:bg-gray-900 px-2 z-10 transition-transform active:scale-95">
+                    <div class="w-8 h-8 rounded-full bg-electricPurple text-white flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">2</div>
+                    <span class="text-[10px] font-bold text-electricPurple dark:text-purple-400">설명 (LIME)</span>
+                </button>
+                
+                <!-- Step 3: Prescription -->
+                <button onclick="scrollToSection('prescriptionSection')" class="flex flex-col items-center bg-gray-50 dark:bg-gray-900 px-2 z-10 transition-transform active:scale-95">
+                    <div class="w-8 h-8 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">3</div>
+                    <span class="text-[10px] font-bold text-yellow-600 dark:text-yellow-500">처방 (Action)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <main class="max-w-md mx-auto p-5">
         
         <!-- 1. Selected Product Header -->
@@ -37,78 +65,63 @@
                 </div>
                 <h2 id="bankName" class="text-xl font-bold text-gray-900 dark:text-white">은행명 로딩중</h2>
             </div>
-            <p id="productName" class="text-gray-500">상품명 로딩중</p>
-        </div>
-
-        <!-- 2. User Input Summary (List Style) -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-2 px-1">
-                <h3 class="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                    <i data-lucide="user-check" class="w-4 h-4 text-deepBlue dark:text-blue-400"></i>
-                    분석 기준 데이터
-                </h3>
-                <button onclick="location.href='loan_input.html'" class="text-xs text-gray-400 hover:text-deepBlue dark:hover:text-blue-400 font-medium transition underline">수정</button>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700 shadow-sm">
-                <div class="flex justify-between items-center p-3 text-sm">
-                    <span class="text-gray-500 dark:text-gray-400">연소득</span>
-                    <span id="userIncome" class="font-bold text-gray-900 dark:text-white">-</span>
-                </div>
-                <div class="flex justify-between items-center p-3 text-sm">
-                    <span class="text-gray-500 dark:text-gray-400">신용점수</span>
-                    <span id="userCredit" class="font-bold text-gray-900 dark:text-white">-</span>
-                </div>
-                <div class="flex justify-between items-center p-3 text-sm">
-                    <span class="text-gray-500 dark:text-gray-400">고용형태</span>
-                    <span id="userJob" class="font-bold text-gray-900 dark:text-white">-</span>
-                </div>
-            </div>
+            <p id="productName" class="text-gray-500 dark:text-gray-400 mb-4">상품명 로딩중</p>
         </div>
 
         <!-- 3. XAI Analysis (Progress Bars) -->
-        <div class="mb-8">
+        <div id="section-explanation" class="mb-8 scroll-mt-36">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                <i data-lucide="bar-chart-2" class="w-5 h-5 text-electricPurple"></i>
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-electricPurple dark:text-purple-400"></i>
                 상세 분석 결과
             </h3>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 space-y-6">
-                <!-- Factor 1: Credit Score -->
-                <div onclick="openDetailModal('credit')" class="cursor-pointer active:opacity-70 transition-opacity">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">신용점수 영향도</span>
-                        <span id="scoreText-credit" class="text-deepBlue dark:text-blue-400 font-bold">0%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                        <div id="bar-credit" class="progress-bar bg-gradient-to-r from-blue-300 to-deepBlue h-2.5 rounded-full w-0"></div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1">신용점수가 상품의 기준을 상회하여 긍정적입니다.</p>
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
+                <div id="analysisContainer" class="space-y-6">
+                    <!-- Dynamic Content -->
                 </div>
 
-                <!-- Factor 2: Income Stability -->
-                <div onclick="openDetailModal('income')" class="cursor-pointer active:opacity-70 transition-opacity">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">소득 안정성</span>
-                        <span id="scoreText-income" class="text-deepBlue dark:text-blue-400 font-bold">0%</span>
+                <!-- Moved: Analysis Criteria Data -->
+                <div id="section-diagnosis" class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 scroll-mt-48">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                            분석 기준 데이터
+                        </h4>
+                        <button onclick="location.href='loan_input.html'" class="text-xs text-gray-400 hover:text-deepBlue dark:hover:text-blue-400 font-medium transition underline">수정</button>
                     </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                        <div id="bar-income" class="progress-bar bg-gradient-to-r from-cyan-300 to-blue-600 h-2.5 rounded-full w-0"></div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-3xl border border-gray-100 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600">
+                        <div class="flex justify-between items-center p-3 text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">연소득</span>
+                            <span id="userIncome" class="font-bold text-gray-900 dark:text-white">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">신용점수</span>
+                            <span id="userCredit" class="font-bold text-gray-900 dark:text-white">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">고용형태</span>
+                            <span id="userJob" class="font-bold text-gray-900 dark:text-white">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 text-xs">
+                            <div class="flex items-center gap-1">
+                                <span class="text-gray-500 dark:text-gray-400">DSR</span>
+                                <button onclick="openDsrInfoModal()" class="text-gray-400 hover:text-deepBlue dark:hover:text-blue-400 transition"><i data-lucide="circle-help" class="w-3 h-3"></i></button>
+                            </div>
+                            <span id="userDSR" class="font-bold text-gray-900 dark:text-white">-</span>
+                        </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-1">연소득 대비 대출 한도 비율이 적절합니다.</p>
                 </div>
+            </div>
+        </div>
 
-                <!-- Factor 3: Job Type Match -->
-                <div onclick="openDetailModal('job')" class="cursor-pointer active:opacity-70 transition-opacity">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">직군 적합도</span>
-                        <span id="scoreText-job" class="text-electricPurple dark:text-purple-400 font-bold">0%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                        <div id="bar-job" class="progress-bar bg-gradient-to-r from-purple-300 to-electricPurple h-2.5 rounded-full w-0"></div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1">해당 상품이 선호하는 직군 그룹에 속합니다.</p>
-                </div>
+        <!-- 3.5. AI Prescription (Action Plan) - Updated Section -->
+        <div id="prescriptionSection" class="mb-8 hidden scroll-mt-36">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+                <span class="w-6 h-6 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-500 flex items-center justify-center text-xs font-bold">3</span>
+                AI Action Plan
+            </h3>
+            <div id="prescriptionList" class="space-y-3">
+                <!-- JS Rendering -->
             </div>
         </div>
 
@@ -123,7 +136,7 @@
                     <i data-lucide="share-2" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
                 <p id="aiOpinion" class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed">
                     분석 중입니다...
                 </p>
@@ -140,14 +153,60 @@
     </div>
     </div>
 
-    <!-- Detail Info Modal -->
-    <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeDetailModal()"></div>
+    <!-- DSR Info Modal -->
+    <div id="dsrInfoModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeDsrInfoModal()"></div>
         <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
-            <h3 id="detailModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">상세 정보</h3>
-            <p id="detailModalDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6">내용</p>
-            <button onclick="closeDetailModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">DSR이란?</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4">
+                <strong>총부채원리금상환비율 (Debt Service Ratio)</strong><br><br>
+                연소득 대비 연간 갚아야 할 대출 원리금(원금+이자)의 비율을 의미합니다.<br>
+                금융당국 규제에 따라 DSR 40% 초과 시 추가 대출이 제한될 수 있습니다.
+            </p>
+            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl text-xs space-y-2 mb-6">
+                <div class="flex justify-between"><span class="text-green-600 dark:text-green-400 font-bold">40% 미만</span><span class="text-gray-500 dark:text-gray-400">안정적</span></div>
+                <div class="flex justify-between"><span class="text-orange-500 dark:text-orange-400 font-bold">40% ~ 70%</span><span class="text-gray-500 dark:text-gray-400">주의 (한도 제한 가능)</span></div>
+                <div class="flex justify-between"><span class="text-red-500 dark:text-red-400 font-bold">70% 이상</span><span class="text-gray-500 dark:text-gray-400">위험 (대출 불가 가능성)</span></div>
+            </div>
+            <button onclick="closeDsrInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
+        </div>
+    </div>
+
+    <!-- DSR Calculator Modal -->
+    <div id="dsrCalculatorModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeDsrCalculatorModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">DSR 계산기</h3>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">연소득 (만원)</label>
+                    <input type="number" id="calcIncome" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-deepBlue transition font-bold" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">연간 대출 원리금 상환액 (만원)</label>
+                    <input type="number" id="calcDebt" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-deepBlue transition font-bold" placeholder="예: 1500">
+                    <p class="text-[10px] text-gray-400 mt-1">주택담보대출, 신용대출, 카드론 등의 연간 원금+이자 합계</p>
+                </div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="calcResultArea" class="hidden bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-4 mb-6 text-center border border-blue-100 dark:border-blue-800">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">예상 DSR</p>
+                <h2 class="text-3xl font-bold text-deepBlue dark:text-blue-400 mb-2"><span id="calcDsrValue">0</span>%</h2>
+                <p id="calcDsrStatus" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="calculateDSR()" class="flex-1 bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition shadow-lg active:scale-95">
+                    계산하기
+                </button>
+                <button onclick="closeDsrCalculatorModal()" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                    닫기
+                </button>
+            </div>
         </div>
     </div>
 
@@ -171,7 +230,7 @@
                 <i data-lucide="check-circle" class="w-8 h-8"></i>
             </div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">신청 완료</h2>
-            <p class="text-gray-500 text-sm mb-6">대출 신청이 성공적으로 접수되었습니다.<br>심사 결과는 곧 알림으로 전송됩니다.</p>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">대출 신청이 성공적으로 접수되었습니다.<br>심사 결과는 곧 알림으로 전송됩니다.</p>
             <button onclick="confirmLoan()" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
                 확인
             </button>
@@ -202,6 +261,30 @@
                 return;
             }
 
+            // 페르소나 데이터에서 자산 정보 가져오기
+            const personaData = localStorage.getItem('trustFinPersona');
+            let totalAssets = 0;
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                if (persona.accounts) {
+                    totalAssets = persona.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+                }
+            }
+
+            // [Fix] AI 분석 로직 실행하여 counterfactuals(처방/미션) 데이터 생성
+            // 단순히 static 데이터를 가져오는 것이 아니라, 현재 유저 데이터로 분석을 수행해야 함
+            const userForAnalysis = {
+                ...user,
+                income: parseInt(user.income || 0),
+                creditScore: parseInt(user.creditScore || 0),
+                totalAssets: totalAssets
+            };
+            
+            const analysis = calculateMatchScore(userForAnalysis, product);
+            product.matchScore = analysis.score;
+            product.contributions = analysis.contributions;
+            product.counterfactuals = analysis.counterfactuals;
+
             // 2. UI 업데이트 (기본 정보)
             document.getElementById('bankName').innerText = product.bankName;
             document.getElementById('productName').innerText = product.productName;
@@ -216,64 +299,165 @@
                 'business_owner': '개인사업자', 'freelancer': '프리랜서', 'unemployed': '기타'
             };
             document.getElementById('userJob').innerText = jobMap[user.employmentType] || '기타';
+            
+            // DSR 정보 업데이트
+            document.getElementById('userDSR').innerText = user.dsr ? `${user.dsr}%` : '-';
 
-            // 3. XAI 분석 로직 및 애니메이션 실행
-            // (실제로는 복잡한 서버 로직이지만, 여기서는 시뮬레이션 값을 계산합니다)
+            // 3. XAI 분석 결과 렌더링 (contributions 기반)
+            const analysisContainer = document.getElementById('analysisContainer');
+            analysisContainer.innerHTML = ''; // 초기화
             
-            // 점수 계산 (0~100)
-            let creditScorePercent = Math.min(100, (user.creditScore / 1000) * 100 + 10); // 기본 점수 보정
-            let incomePercent = Math.min(100, (user.income / 8000) * 100 + 20);
+            // 총점 표시 (배지 제거, 차트 영역 추가)
+            const totalScoreHtml = `
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <span class="text-sm font-bold text-gray-500 dark:text-gray-400">AI 매칭 점수</span>
+                        <h2 class="text-3xl font-extrabold text-deepBlue dark:text-blue-400 mt-1"><span id="detailMatchScore">0</span><span class="text-lg text-gray-400 dark:text-gray-500 ml-1">/100</span></h2>
+                    </div>
+                </div>
+                <!-- Score Stacked Bar Chart -->
+                <div class="mb-6 pt-2 pb-4 border-b border-gray-100 dark:border-gray-700">
+                    <div class="w-full h-6 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden flex shadow-inner" id="scoreBarContainer">
+                        <!-- Segments injected here -->
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400 mt-1 px-1 font-medium">
+                        <span>0</span>
+                        <span>100</span>
+                    </div>
+                </div>
+            `;
+            analysisContainer.insertAdjacentHTML('beforeend', totalScoreHtml);
             
-            // 직군 적합도는 상품 태그와 매칭
-            let jobPercent = 60; // 기본
-            if (product.tags.includes('직장인우대') && user.employmentType === 'regular') jobPercent = 95;
-            if (product.tags.includes('사업자전용') && user.employmentType === 'business_owner') jobPercent = 95;
-            
-            // 애니메이션 실행 (순차적 실행)
-            setTimeout(() => setProgressBar('credit', creditScorePercent), 300);
-            setTimeout(() => setProgressBar('income', incomePercent), 800);
-            setTimeout(() => setProgressBar('job', jobPercent), 1300);
+            // 점수 카운트업 애니메이션
+            const detailScoreEl = document.getElementById('detailMatchScore');
+            if (detailScoreEl) {
+                let current = 0;
+                const target = product.matchScore;
+                const interval = setInterval(() => {
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(interval);
+                    } else {
+                        current += 1;
+                    }
+                    detailScoreEl.innerText = current;
+                }, 15);
+            }
+
+            // 색상 매핑
+            const factorColors = {
+                '기본 점수': '#9CA3AF', // gray-400
+                '신용점수': '#3B82F6', // blue-500
+                '소득': '#10B981', // emerald-500
+                '자산': '#059669', // emerald-600
+                '직업': '#8B5CF6', // violet-500
+                'AI 분석': '#D946EF', // fuchsia-500
+                '대출목적': '#F59E0B', // amber-500
+                'DSR': '#EF4444', // red-500
+                '규제 미적용': '#06B6D4' // cyan-500
+            };
+
+            // 기본 점수 항목 추가
+            const baseItemHtml = `
+                <div class="flex justify-between items-center py-3 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: ${factorColors['기본 점수']}"></div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">기본 점수</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">모든 사용자의 시작 점수</p>
+                        </div>
+                    </div>
+                    <span class="font-bold text-gray-500 dark:text-gray-400 text-base">70점</span>
+                </div>
+            `;
+            analysisContainer.insertAdjacentHTML('beforeend', baseItemHtml);
+
+            if (!product.contributions || product.contributions.length === 0) {
+                 analysisContainer.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">특별한 가산/감점 요인이 없어<br>기본 점수가 적용되었습니다.</p>
+                    </div>
+                 `;
+            } else {
+                product.contributions.forEach((item, index) => {
+                    const isPositive = item.value > 0;
+                    const colorClass = isPositive ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400';
+                    const sign = item.value > 0 ? '+' : '';
+                    const dotColor = factorColors[item.factor] || '#6B7280';
+
+                    const html = `
+                        <div class="flex justify-between items-center py-3 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: ${dotColor}"></div>
+                                <div>
+                                    <p class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">${item.factor}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">${item.desc}</p>
+                                </div>
+                            </div>
+                            <span class="font-bold ${colorClass} text-base">${sign}${item.value}점</span>
+                        </div>
+                    `;
+                    analysisContainer.insertAdjacentHTML('beforeend', html);
+                });
+
+                // 차트 렌더링 호출
+                renderScoreBar(product.contributions, factorColors, product.matchScore);
+            }
+
+            // 3.5. 처방(Counterfactuals) 렌더링
+            if (product.counterfactuals && product.counterfactuals.length > 0) {
+                const prescriptionSection = document.getElementById('prescriptionSection');
+                const prescriptionList = document.getElementById('prescriptionList');
+                
+                prescriptionSection.classList.remove('hidden');
+                prescriptionSection.classList.add('animate-slide-up'); // 섹션 등장 애니메이션
+                
+                prescriptionList.innerHTML = product.counterfactuals.map((item, index) => `
+                    ${item.type === 'mission' ? `
+                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-5 rounded-3xl border border-indigo-100 dark:border-indigo-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${1600 + (index * 200)}ms">
+                            <div class="flex gap-3 items-start">
+                                <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-xl shadow-sm">
+                                    🎯
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1">AI 추천 미션</h4>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">${item.text}</p>
+                                </div>
+                            </div>
+                            <button onclick="handleAction('${item.action}', '${item.text.replace(/'/g, "\\'")}')" class="w-full mt-1 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-bold py-3 rounded-lg border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition flex justify-center items-center gap-2 text-sm shadow-sm">
+                                <span>${item.label}</span>
+                                <i data-lucide="flag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-yellow-200 dark:border-yellow-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${1600 + (index * 200)}ms">
+                            <div class="flex gap-3 items-start">
+                                <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center flex-shrink-0 text-yellow-600 dark:text-yellow-400">
+                                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                                </div>
+                                <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug pt-1">${item.text}</p>
+                            </div>
+                            <button onclick="handleAction('${item.action}')" class="ml-11 text-xs font-bold text-white bg-gray-900 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600 py-2 px-4 rounded-lg transition flex items-center gap-2 w-fit">
+                                <span>${item.label}</span>
+                                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                    `}
+                `).join('');
+            }
 
             // 4. 종합 의견 생성 (Dynamic Text Generation)
-            const opinionText = generateOpinion(user, product, creditScorePercent);
+            const opinionText = generateOpinion(user, product);
             typeWriterEffect('aiOpinion', opinionText, 30);
 
             // 모달 드래그 기능 초기화
             initBottomSheetDrag('completeModal', closeCompleteModal);
-            initBottomSheetDrag('detailModal', closeDetailModal);
+            initBottomSheetDrag('dsrInfoModal', closeDsrInfoModal);
+            initBottomSheetDrag('dsrCalculatorModal', closeDsrCalculatorModal);
         });
 
-        // Progress Bar 설정 함수
-        function setProgressBar(id, percent) {
-            const bar = document.getElementById(`bar-${id}`);
-            const text = document.getElementById(`scoreText-${id}`);
-            
-            // 80% 이상일 경우 초록색으로 변경하여 긍정적 신호 강조
-            if (percent >= 80) {
-                bar.classList.remove('from-blue-300', 'to-deepBlue', 'from-cyan-300', 'to-blue-600', 'from-purple-300', 'to-electricPurple');
-                bar.classList.add('from-green-400', 'to-green-600');
-                
-                // 텍스트 색상도 변경
-                text.classList.remove('text-deepBlue', 'text-electricPurple', 'dark:text-blue-400', 'dark:text-purple-400');
-                text.classList.add('text-green-600', 'dark:text-green-400');
-            }
-            
-            // 너비 설정 (CSS Transition 작동)
-            bar.style.width = `${percent}%`;
-            
-            // 숫자 카운트 업 효과
-            let current = 0;
-            const interval = setInterval(() => {
-                if (current >= percent) clearInterval(interval);
-                else {
-                    current++;
-                    text.innerText = `${current}%`;
-                }
-            }, 15); // 속도 조절
-        }
-
         // 종합 의견 텍스트 생성기
-        function generateOpinion(user, product, creditScorePercent) {
+        function generateOpinion(user, product) {
             let text = "";
             
             // Persona 1 (사회초년생) 타겟팅 메시지
@@ -296,7 +480,7 @@
                 if (user.creditScore < 800 && user.employmentType === 'regular') {
                     // Persona 1 강조
                     text += `금융 이력은 부족하지만 <strong>성실한 상환 가능성</strong>이 데이터로 입증되어, `;
-                } else if (creditScorePercent > 80) {
+                } else if (user.creditScore >= 850) {
                     text += `특히 신용도가 높아 <strong>우대 금리 적용 가능성</strong>이 높으며, `;
                 } else {
                     text += `현재 소득 수준을 고려했을 때 <strong>안정적인 상환 능력</strong>이 인정되어, `;
@@ -348,54 +532,80 @@
             type();
         }
 
-        const detailInfoData = {
-            credit: {
-                title: "신용점수 영향도",
-                desc: "고객님의 신용점수는 해당 상품의 승인 기준을 충족하며, 전체 신청자 중 상위권에 속합니다. 이는 금리 인하에 긍정적인 영향을 미쳤습니다."
-            },
-            income: {
-                title: "소득 안정성",
-                desc: "연소득 대비 대출 한도 비율(DSR)이 안정적인 수준입니다. 월 상환액이 소득의 일정 비율을 넘지 않아 상환 능력이 우수하다고 평가되었습니다."
-            },
-            job: {
-                title: "직군 적합도",
-                desc: "해당 금융사는 고객님의 직군(고용 형태)을 선호합니다. 과거 유사한 직군의 상환 이력이 우수하여 추가 가산점이 부여되었습니다."
+        function renderScoreBar(contributions, colors, finalScore) {
+            const container = document.getElementById('scoreBarContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // 1. 점수 구성 계산 (Net Contribution Logic)
+            // 기본 점수에서 시작하여 가점은 추가하고, 감점은 기존 영역을 줄임
+            let segments = [{ factor: '기본 점수', value: 70, color: colors['기본 점수'] }];
+            
+            contributions.forEach(item => {
+                if (item.value > 0) {
+                    segments.push({ factor: item.factor, value: item.value, color: colors[item.factor] || '#6B7280' });
+                } else if (item.value < 0) {
+                    // 감점 요인은 뒤에서부터 깎아나감
+                    let remaining = Math.abs(item.value);
+                    while (remaining > 0 && segments.length > 0) {
+                        const last = segments[segments.length - 1];
+                        if (last.value > remaining) {
+                            last.value -= remaining;
+                            remaining = 0;
+                        } else {
+                            remaining -= last.value;
+                            segments.pop();
+                        }
+                    }
+                }
+            });
+
+            // 1.5. 최종 점수 보정 (Clamping)
+            // 계산된 세그먼트 합계가 최종 점수(finalScore)와 다를 경우(상한/하한 보정 시) 그래프를 맞춤
+            let currentTotal = segments.reduce((sum, seg) => sum + seg.value, 0);
+            
+            if (currentTotal > finalScore) {
+                // 상한선(99점) 초과 시: 뒤에서부터 잘라냄
+                let diff = currentTotal - finalScore;
+                while (diff > 0 && segments.length > 0) {
+                    const last = segments[segments.length - 1];
+                    if (last.value > diff) {
+                        last.value -= diff;
+                        diff = 0;
+                    } else {
+                        diff -= last.value;
+                        segments.pop();
+                    }
+                }
+            } else if (currentTotal < finalScore) {
+                // 하한선(10점) 미만 시: 최소 보장 영역 추가
+                segments.push({ factor: '최소 보장', value: finalScore - currentTotal, color: '#E5E7EB' });
             }
-        };
 
-        function openDetailModal(type) {
-            const data = detailInfoData[type];
-            if (!data) return;
+            // 2. 세그먼트 렌더링
+            segments.forEach((seg, i) => {
+                const el = document.createElement('div');
+                el.style.width = '0%'; // 애니메이션 시작값
+                el.style.backgroundColor = seg.color;
+                el.className = 'h-full first:rounded-l-full last:rounded-r-full relative group transition-all duration-1000 ease-out cursor-help';
+                
+                // 툴팁
+                el.innerHTML = `
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 pointer-events-none">
+                        <div class="bg-gray-900/90 dark:bg-white/90 backdrop-blur text-white dark:text-gray-900 text-[10px] font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                            ${seg.factor} ${seg.value}점
+                        </div>
+                        <div class="w-2 h-2 bg-gray-900/90 dark:bg-white/90 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+                    </div>
+                `;
 
-            document.getElementById('detailModalTitle').innerText = data.title;
-            document.getElementById('detailModalDesc').innerText = data.desc;
-            
-            const modal = document.getElementById('detailModal');
-            const content = modal.querySelector('.bg-white');
-            content.classList.add('animate-slide-up');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            toggleBackgroundScale(true);
-        }
-
-        function closeDetailModal(animate = true) {
-            const modal = document.getElementById('detailModal');
-            const content = modal.querySelector('.bg-white');
-            
-            if (animate) {
-                content.classList.remove('animate-slide-up');
-                content.classList.add('animate-slide-down');
+                container.appendChild(el);
+                
+                // 너비 애니메이션
                 setTimeout(() => {
-                    modal.classList.add('hidden');
-                    content.classList.remove('animate-slide-down');
-                    document.body.style.overflow = '';
-                    toggleBackgroundScale(false);
-                }, 300);
-            } else {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-                toggleBackgroundScale(false);
-            }
+                    el.style.width = `${seg.value}%`;
+                }, 100 + (i * 150));
+            });
         }
 
         function shareResult() {
@@ -414,6 +624,131 @@
             } else {
                 copyToClipboard(`${shareData.text}\n${shareData.url}`);
             }
+        }
+
+        function handleAction(actionType, missionText) {
+            if (actionType === 'mission_challenge') {
+                if (confirm('이 미션에 도전하시겠습니까?\n달성 시 알림을 보내드립니다.')) {
+                    const missionId = `mission_${Date.now()}`;
+                    const newMission = {
+                        id: missionId,
+                        title: '한도 상향 도전',
+                        desc: missionText,
+                        dday: 'D-60',
+                        progress: 0,
+                        color: 'purple',
+                        subMissions: [
+                            { id: 'sub1', text: '미션 가이드 확인하기', status: 'ready' },
+                            { id: 'sub2', text: '실천 후 인증하기', status: 'ready' }
+                        ]
+                    };
+                    
+                    const missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+                    if (!missions.some(m => m.desc === missionText)) {
+                        missions.push(newMission);
+                        localStorage.setItem('trustFinMissions', JSON.stringify(missions));
+                        location.href = `mission_detail.html?id=${missionId}`;
+                    } else {
+                        alert('이미 도전 중인 미션입니다.');
+                        const existing = missions.find(m => m.desc === missionText);
+                        if (existing) location.href = `mission_detail.html?id=${existing.id}`;
+                    }
+                }
+                return;
+            }
+            if (actionType === 'dsr_calc') {
+                openDsrCalculatorModal();
+                return;
+            }
+            // 프로토타입용 간단한 피드백
+            alert(`[${actionType}] 기능은 준비 중입니다.\n실제 서비스에서는 해당 기능을 수행하는 페이지로 이동하거나 시뮬레이션 팝업을 띄웁니다.`);
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                // 요소가 숨겨져 있다면(처방 섹션 등) 보이게 처리 후 스크롤
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    el.classList.add('animate-slide-up');
+                }
+                
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function openDsrInfoModal() {
+            const modal = document.getElementById('dsrInfoModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            toggleBackgroundScale(true);
+        }
+
+        function closeDsrInfoModal() {
+            const modal = document.getElementById('dsrInfoModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function openDsrCalculatorModal() {
+            const modal = document.getElementById('dsrCalculatorModal');
+            const content = modal.querySelector('.bg-white');
+            
+            // 기존 입력값 초기화 또는 로드
+            const userData = JSON.parse(localStorage.getItem('trustFinUserData') || '{}');
+            if (userData.income) {
+                document.getElementById('calcIncome').value = userData.income;
+            }
+            document.getElementById('calcDebt').value = '';
+            document.getElementById('calcResultArea').classList.add('hidden');
+
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            toggleBackgroundScale(true);
+        }
+
+        function closeDsrCalculatorModal() {
+            const modal = document.getElementById('dsrCalculatorModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function calculateDSR() {
+            const income = parseFloat(document.getElementById('calcIncome').value);
+            const debt = parseFloat(document.getElementById('calcDebt').value);
+
+            if (!income || !debt) {
+                alert('연소득과 연간 상환액을 모두 입력해주세요.');
+                return;
+            }
+
+            const dsr = ((debt / income) * 100).toFixed(2);
+            document.getElementById('calcDsrValue').innerText = dsr;
+            
+            const statusEl = document.getElementById('calcDsrStatus');
+            if (dsr < 40) statusEl.innerHTML = '<span class="text-green-600 dark:text-green-400">안정적입니다.</span> 추가 대출이 가능합니다.';
+            else if (dsr < 70) statusEl.innerHTML = '<span class="text-orange-500 dark:text-orange-400">주의 단계입니다.</span> 한도가 제한될 수 있습니다.';
+            else statusEl.innerHTML = '<span class="text-red-500 dark:text-red-400">위험 단계입니다.</span> 추가 대출이 어려울 수 있습니다.';
+
+            document.getElementById('calcResultArea').classList.remove('hidden');
+            if (navigator.vibrate) navigator.vibrate(10);
         }
 
         function showCompleteModal() {

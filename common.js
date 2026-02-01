@@ -14,6 +14,12 @@ if (typeof tailwind !== 'undefined') {
                     electricPurple: '#7C3AED',
                     softBlue: '#EFF6FF'
                 },
+                boxShadow: {
+                    'md': '0 3px 4px -1px rgb(0 0 0 / 0.1), 0 1px 3px -1px rgb(0 0 0 / 0.1)',
+                    'lg': '0 7px 10px -2px rgb(0 0 0 / 0.1), 0 3px 4px -3px rgb(0 0 0 / 0.1)',
+                    'xl': '0 14px 18px -4px rgb(0 0 0 / 0.1), 0 6px 7px -4px rgb(0 0 0 / 0.1)',
+                    '2xl': '0 18px 35px -8px rgb(0 0 0 / 0.25)',
+                },
                 fontFamily: {
                     sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
                 },

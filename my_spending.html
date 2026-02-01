@@ -47,7 +47,7 @@
                     <button onclick="setFilter('shopping')" id="filter-shopping" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">쇼핑</button>
                     <button onclick="setFilter('transport')" id="filter-transport" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">교통</button>
                 </div>
-                <div id="spendingList" class="space-y-0 bg-white dark:bg-gray-800 rounded-[2rem] shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
+                <div id="spendingList" class="space-y-0 bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
                     <!-- JS Rendering -->
                 </div>
             </div>
@@ -70,7 +70,7 @@
             if (persona.id === 'guest') {
                 document.getElementById('totalSpending').innerText = '0';
                 cardListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="credit-card" class="w-8 h-8"></i>
                         </div>
@@ -93,7 +93,7 @@
             cardListEl.innerHTML = cards.map((card, index) => {
                 total += card.amount;
                 return `
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center opacity-0 animate-slide-in-right transition-colors cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: ${index * 100}ms">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center opacity-0 animate-slide-in-right transition-colors cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: ${index * 100}ms">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
                                 <img src="${getBankLogoUrl(card.bank)}" onerror="handleImageError(this, '${card.bank[0]}')" class="w-full h-full object-cover" alt="${card.bank}">

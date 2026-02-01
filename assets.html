@@ -53,7 +53,7 @@
         </div>
 
         <!-- Asset Graph (Donut Chart) -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-[2rem] shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
             <h3 class="font-bold text-gray-900 dark:text-white mb-6">자산 구성</h3>
             
             <div class="flex items-center justify-center mb-8">
@@ -160,7 +160,7 @@
                 document.getElementById('investRatioText').innerText = '0%';
 
                 assetListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="wallet" class="w-8 h-8"></i>
                         </div>
@@ -188,7 +188,7 @@
                 const shimmerEffect = isTarget ? `<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent animate-shimmer pointer-events-none z-0"></div>` : '';
 
                 return `
-                    <div onclick="goToAccountDetail('${acc.bank}')" class="${containerClass} p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-all duration-500 cursor-pointer active:scale-95 transform transition-transform">
+                    <div onclick="goToAccountDetail('${acc.bank}')" class="${containerClass} p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-all duration-500 cursor-pointer active:scale-95 transform transition-transform">
                         ${shimmerEffect}
                         <div class="flex items-center gap-4 relative z-10">
                             <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">

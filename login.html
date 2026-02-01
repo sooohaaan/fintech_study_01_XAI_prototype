@@ -17,7 +17,7 @@
         
         <div class="space-y-4">
             <!-- Persona 1 -->
-            <button onclick="selectPersona(1)" class="w-full relative bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-blue-100 dark:hover:ring-blue-900">
+            <button onclick="selectPersona(1)" class="w-full relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-blue-100 dark:hover:ring-blue-900">
                 <!-- Background Decoration -->
                 <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -88,7 +88,7 @@
             </button>
 
             <!-- Persona 2 -->
-            <button onclick="selectPersona(2)" class="w-full relative bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-purple-100 dark:hover:ring-purple-900">
+            <button onclick="selectPersona(2)" class="w-full relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-purple-100 dark:hover:ring-purple-900">
                 <!-- Background Decoration -->
                 <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -224,7 +224,7 @@
             if (id === 1) {
                 persona = {
                     id: 'persona1',
-                    name: '김철수', age: 29, job: 'regular', income: 2600, creditScore: 740,
+                    name: '김철수', age: 29, job: 'regular', income: 2600, creditScore: 740, dsr: 15.2,
                     accounts: [
                         { bank: '국민은행', balance: 5000000, accountNumber: '123-456-7890' }
                     ],
@@ -236,7 +236,7 @@
             } else {
                 persona = {
                     id: 'persona2',
-                    name: '이영희', age: 32, job: 'regular', income: 4600, creditScore: 950,
+                    name: '이영희', age: 32, job: 'regular', income: 4600, creditScore: 950, dsr: 24.8,
                     accounts: [
                         { bank: '국민은행', balance: 30000000, accountNumber: '123-456-1111' },
                         { bank: '신한은행', balance: 5000000, accountNumber: '110-222-333333' },
