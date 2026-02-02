@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="common.js"></script>
+    <style>
+        .tab-bg {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 50%;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
     <!-- Header -->
@@ -18,10 +24,14 @@
     </header>
 
     <main class="p-5 max-w-md mx-auto">
+        <!-- Summary -->
+        <div id="missionSummary" class="mb-6"></div>
+
         <!-- Tabs -->
-        <div class="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6">
-            <button onclick="switchTab('ongoing')" id="tab-ongoing" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-all">진행 중</button>
-            <button onclick="switchTab('completed')" id="tab-completed" class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">완료</button>
+        <div class="relative flex bg-gray-200 dark:bg-gray-800 rounded-full p-1 mb-6 h-12">
+            <div id="tab-bg" class="absolute top-1 bottom-1 left-1 bg-white dark:bg-gray-700 rounded-full shadow-sm tab-bg"></div>
+            <button onclick="switchTab('ongoing')" id="tab-ongoing" class="flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300">진행 중</button>
+            <button onclick="switchTab('completed')" id="tab-completed" class="flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300">완료</button>
         </div>
 
         <div id="missionListContainer" class="space-y-4">
@@ -48,44 +58,73 @@
             
             const ongoingTab = document.getElementById('tab-ongoing');
             const completedTab = document.getElementById('tab-completed');
-            const activeClass = 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm';
-            const inactiveClass = 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-transparent';
+            const tabBg = document.getElementById('tab-bg');
 
             if (tab === 'ongoing') {
-                ongoingTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
-                completedTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                tabBg.style.transform = 'translateX(0%)';
+                ongoingTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300';
+                completedTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
             } else {
-                ongoingTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
-                completedTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                tabBg.style.transform = 'translateX(100%)'; // 100% 이동 (width가 50%이므로 남은 공간만큼 이동)
+                // padding 보정: p-1 (4px) 고려하여 정확한 위치 계산 필요하지만, 
+                // 여기서는 flex container 내부에서의 상대적 이동이므로 translateX(100%)가 아닌 calc(100% - 4px) 등이 필요할 수 있음.
+                // Tailwind p-1은 0.25rem. 간단히 100%로 이동하되, 부모 padding 때문에 약간의 오차가 있을 수 있음.
+                // 더 정확하게는 left: 0에서 left: 50%로 변경하거나 transform을 조정.
+                // 여기서는 width 50%인 요소가 relative 컨테이너(p-1) 안에서 움직이므로, 
+                // transform: translateX(100%)를 하면 부모 너비의 50%만큼 이동함.
+                // 하지만 부모 padding 때문에 정확히 맞지 않을 수 있음.
+                // 더 쉬운 방법: left 값을 조정하거나, flex 구조상 50% 이동이 맞음.
+                // p-1이 있으므로 내부 공간 기준 100% 이동이 맞음.
+                
+                // 텍스트 색상 변경
+                ongoingTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
+                completedTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300';
             }
             
             renderMissionList();
         }
 
+        function getMissionRewards(mission) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            
+            let difficulty = 1.0;
+            
+            // 퍼소나 상황에 따른 난이도 가중치 계산
+            if (mission.title.includes('신용')) {
+                const score = persona.creditScore || 0;
+                if (score < 650) difficulty += 0.5;
+                else if (score > 900) difficulty += 0.2;
+            }
+            
+            if (mission.title.includes('대출') || mission.title.includes('상환') || mission.title.includes('부채')) {
+                const dsr = persona.dsr || 0;
+                if (dsr > 40) difficulty += 0.4;
+            }
+            
+            if (mission.title.includes('주택') || mission.title.includes('자산')) {
+                const income = persona.income || 0;
+                if (income < 3500) difficulty += 0.3;
+            }
+
+            // 기본 포인트 설정
+            const baseSubPoint = 100;
+            const baseFinalPoint = 300;
+            
+            const subPoint = Math.round(baseSubPoint * difficulty / 10) * 10;
+            const finalPoint = Math.round(baseFinalPoint * difficulty / 10) * 10;
+            
+            return { subPoint, finalPoint, isHighReward: difficulty >= 1.3 };
+        }
+
         function renderMissionList() {
             const container = document.getElementById('missionListContainer');
+            const summaryContainer = document.getElementById('missionSummary');
             
             // 1. 저장된 미션 불러오기
             const storedMissions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
             
-            // 2. 기본 예시 미션 (저장된 내역에 없으면 추가)
-            const defaultMission = {
-                id: 'mission_housing',
-                title: '주택 마련 3억 대출 도전',
-                desc: '목표 달성을 위한 AI 맞춤 플랜',
-                dday: 'D-90',
-                progress: 0,
-                color: 'blue',
-                subMissions: [
-                    { id: 'sub1', text: '2달 동안 신용 카드 사용으로 신용 점수 20점 올리기', status: 'active' },
-                    { id: 'sub2', text: '3달 동안 300만원 모아 자산 능력 30% 높이기', status: 'ready' }
-                ]
-            };
-
             let missions = [...storedMissions];
-            if (!missions.some(m => m.id === defaultMission.id)) {
-                missions.unshift(defaultMission);
-            }
 
             // 데이터 포맷팅 (호환성)
             missions = missions.map(m => ({
@@ -95,6 +134,42 @@
                     return { id: sub.id || Math.random().toString(36).substr(2, 9), text: sub.text, status: sub.completed ? 'completed' : 'ready' };
                 }) : []
             }));
+
+            // (2) D-day 실시간 계산
+            missions.forEach(m => {
+                if (m.deadline) {
+                    const now = new Date();
+                    const deadline = new Date(m.deadline);
+                    const diffTime = deadline - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    m.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
+                }
+            });
+
+            // 총 획득 가능 포인트 계산 (진행 중인 미션 기준)
+            let totalPotentialPoints = 0;
+            missions.forEach(m => {
+                if (m.progress < 100) {
+                    const rewards = getMissionRewards(m);
+                    const subCount = m.subMissions ? m.subMissions.length : 0;
+                    totalPotentialPoints += rewards.finalPoint + (subCount * rewards.subPoint);
+                }
+            });
+
+            if (summaryContainer) {
+                summaryContainer.innerHTML = `
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg flex justify-between items-center animate-slide-up">
+                        <div>
+                            <p class="text-sm font-medium text-indigo-100 mb-1">총 획득 가능 포인트</p>
+                            <h2 class="text-3xl font-bold"><span id="totalPotentialPoints">0</span> P</h2>
+                        </div>
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                            <i data-lucide="gift" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                `;
+                animateCountUp(document.getElementById('totalPotentialPoints'), totalPotentialPoints);
+            }
 
             // 3. 탭 필터링
             let filteredMissions = missions.filter(m => {
@@ -118,9 +193,20 @@
                 return;
             }
 
-            container.innerHTML = filteredMissions.map(m => {
+            // 카드 생성 함수
+            const createCardHtml = (m) => {
                 const isCompleted = m.progress >= 100;
                 
+                // 포인트 계산
+                const rewards = getMissionRewards(m);
+                const subMissionCount = m.subMissions ? m.subMissions.length : 0;
+                const rewardPoints = rewards.finalPoint + (subMissionCount * rewards.subPoint);
+
+                let highRewardBadge = '';
+                if (rewards.isHighReward) {
+                    highRewardBadge = `<span class="text-[10px] font-bold text-white bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded inline-flex items-center shadow-sm"><i data-lucide="flame" class="w-3 h-3 mr-0.5"></i>High Reward</span>`;
+                }
+
                 let colorClass;
                 if (isCompleted) {
                     colorClass = 'text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400';
@@ -148,8 +234,12 @@
                 return `
                     <div onclick="toggleMission('${m.id}')" class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-all duration-300 overflow-hidden group">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold ${colorClass} px-2 py-1 rounded mb-2 inline-flex items-center">${badgeContent}</span>
-                            <span class="text-[10px] font-bold text-gray-400">${m.progress}%</span>
+                            <div class="flex gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold ${colorClass} px-2 py-1 rounded inline-flex items-center">${badgeContent}</span>
+                                <span class="text-[10px] font-bold text-electricPurple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded inline-flex items-center">+${rewardPoints.toLocaleString()}P</span>
+                                ${highRewardBadge}
+                            </div>
+                            <span class="text-[10px] font-bold text-gray-400 mt-0.5">${m.progress}%</span>
                         </div>
                         <h4 class="font-bold text-gray-900 dark:text-white mb-1">${m.title}</h4>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">${m.desc}</p>
@@ -172,7 +262,33 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            };
+
+            if (currentTab === 'completed') {
+                // 날짜별 그룹화
+                const groups = {};
+                filteredMissions.forEach(m => {
+                    const date = new Date(m.completedAt || Date.now());
+                    const dateStr = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+                    if (!groups[dateStr]) groups[dateStr] = [];
+                    groups[dateStr].push(m);
+                });
+
+                const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+                
+                container.innerHTML = sortedDates.map(date => `
+                    <div class="mb-6 animate-slide-up">
+                        <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 px-1 flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4"></i> ${date}
+                        </h3>
+                        <div class="space-y-4">
+                            ${groups[date].map(m => createCardHtml(m)).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = filteredMissions.map(m => createCardHtml(m)).join('');
+            }
 
             lucide.createIcons();
         }
@@ -205,6 +321,25 @@
                 icon.style.transform = 'rotate(0deg)';
                 setTimeout(() => content.classList.add('hidden'), 300);
             }
+        }
+
+        function animateCountUp(element, endValue) {
+            const duration = 1500;
+            const startTime = performance.now();
+            const startValue = 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                if (element) element.innerText = current.toLocaleString();
+
+                if (progress < 1) requestAnimationFrame(update);
+                else if (element) element.innerText = endValue.toLocaleString();
+            }
+            requestAnimationFrame(update);
         }
     </script>
 </body>

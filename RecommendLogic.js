@@ -281,6 +281,55 @@ function getRecommendations() {
     return results.sort((a, b) => b.matchScore - a.matchScore);
 }
 
+// 5. 맞춤형 미션 생성 (사용자 피드백 기반)
+function getTailoredMission(user, intent) {
+    const purpose = user.loanPurpose || 'living';
+
+    if (intent === 'limit') {
+        // 한도 상향 니즈
+        if (purpose === 'housing') return { type: 'mission', text: '주택 담보 가치 인정 범위 내에서 한도를 높이기 위해 소득 증빙을 강화해보세요.', action: 'mission_challenge', label: '주택 자금 한도 상향' };
+        if (purpose === 'business') return { type: 'mission', text: '매출 증빙 자료를 보완하여 사업자 대출 한도를 높여보세요.', action: 'mission_challenge', label: '사업 자금 한도 상향' };
+        
+        const targetScore = Math.min(user.creditScore + 30, 1000);
+        return {
+            type: 'mission',
+            text: `신용점수를 ${targetScore}점까지 올리고 부채를 줄여 신용대출 한도를 높여보세요.`,
+            action: 'mission_challenge',
+            label: '신용대출 한도 상향'
+        };
+    } else if (intent === 'rate') {
+        // 금리 인하 니즈
+        if (purpose === 'refinance') return { type: 'mission', text: '성실 상환 이력을 쌓아 대환 대출 전용 우대 금리를 적용받아보세요.', action: 'mission_challenge', label: '대환 대출 금리 인하' };
+        if (purpose === 'housing') return { type: 'mission', text: '거래 실적을 쌓아 주택 담보 대출 금리 우대를 받아보세요.', action: 'mission_challenge', label: '주택 대출 금리 인하' };
+        
+        return {
+            type: 'mission',
+            text: `마이데이터로 자산 건전성을 입증하고 우대 금리 조건을 달성해보세요.`,
+            action: 'mission_challenge',
+            label: '우대 금리 도전'
+        };
+    } else if (intent === 'period') {
+        // 기간 연장 니즈
+        if (purpose === 'business') return { type: 'mission', text: '사업 지속성을 입증하여 대출 만기 연장을 준비하세요.', action: 'mission_challenge', label: '사업 대출 기간 연장' };
+        return {
+            type: 'mission',
+            text: `신용도를 유지하고 연체 없는 금융 생활로 대출 만기 연장 심사를 통과하세요.`,
+            action: 'mission_challenge',
+            label: '대출 기간 연장'
+        };
+    } else if (intent === 'method') {
+        // 상환 방식 변경 니즈
+        if (purpose === 'housing') return { type: 'mission', text: '거치 기간 활용이나 상환 방식 변경을 위해 신용도를 관리하세요.', action: 'mission_challenge', label: '주택 대출 상환 관리' };
+        return {
+            type: 'mission',
+            text: `안정적인 소득 흐름을 입증하여 상환 방식을 변경해보세요.`,
+            action: 'mission_challenge',
+            label: '상환 방식 변경'
+        };
+    }
+    return null;
+}
+
 // 4. 대출 신청 및 알림 시스템
 const ApplicationManager = {
     // 대출 신청 (시뮬레이션)

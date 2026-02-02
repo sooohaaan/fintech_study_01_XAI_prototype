@@ -27,9 +27,11 @@
                 <div id="profileIconContainer" class="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400">
                     <i data-lucide="user" class="w-7 h-7"></i>
                 </div>
-                <div>
-                    <h2 id="userName" class="font-bold text-xl text-gray-900 dark:text-white">게스트님</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">내 정보 수정하기</p>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                        <h2 id="userName" class="font-bold text-xl text-gray-900 dark:text-white">게스트님</h2>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">내 정보 수정하기</p>
                 </div>
             </div>
 
@@ -93,7 +95,7 @@
                         </div>
                         <span class="text-xs font-medium text-gray-700 dark:text-gray-300">이벤트</span>
                     </button>
-                    <button onclick="alert('보유한 쿠폰이 없습니다.')" class="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition">
+                    <button onclick="openCouponBox()" class="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition">
                         <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-electricPurple dark:text-purple-400">
                             <i data-lucide="ticket" class="w-6 h-6"></i>
                         </div>
@@ -135,6 +137,35 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Reset Confirm Modal -->
+    <div id="resetConfirmModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeResetModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500 dark:text-red-400 text-3xl">
+                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">데이터 초기화</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">다음 데이터가 모두 삭제되며 복구할 수 없습니다.</p>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-8 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                <div class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> 대출 신청 및 심사 내역</div>
+                <div class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> 알림 및 거래 내역</div>
+                <div class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> 진행 중인 미션 및 포인트</div>
+                <div class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-red-500"></i> 쿠폰함 및 설정 정보</div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeResetModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="performReset()" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition flex items-center justify-center gap-2">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> 초기화
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- FAQ Modal -->
@@ -275,6 +306,7 @@
             // 모달 드래그 기능 초기화
             initBottomSheetDrag('faqModal', closeFaqModal);
             initBottomSheetDrag('appInfoModal', closeAppInfoModal);
+            initBottomSheetDrag('resetConfirmModal', closeResetModal);
         });
 
         function openFaqModal() {
@@ -317,8 +349,30 @@
         }
 
         function resetData() {
-            if (!confirm('현재 퍼소나의 데이터를 초기화하시겠습니까?\n(대출 신청 내역, 알림, 거래 내역 등이 삭제됩니다)')) return;
+            const modal = document.getElementById('resetConfirmModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('resetConfirmModal');
+            const content = modal.querySelector('.bg-white');
             
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function performReset() {
             const personaData = localStorage.getItem('trustFinPersona');
             if (!personaData) return;
             
@@ -331,6 +385,15 @@
             localStorage.removeItem('selectedCard');
             localStorage.removeItem('newDepositAmount');
             localStorage.removeItem('trustFinMyLoans');
+            localStorage.removeItem('trustFinMissions');
+            localStorage.removeItem('trustFinPointHistory');
+            localStorage.removeItem('trustFinCoupons');
+
+            // 퍼소나 객체 내의 포인트 초기화
+            if (persona.id !== 'guest') {
+                persona.points = 0;
+                localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+            }
             
             // 퍼소나 2의 경우 기본 대출 내역 복원
             if (persona.id === 'persona2') {
@@ -348,6 +411,22 @@
             
             alert('데이터가 초기화되었습니다.');
             location.href = 'home.html';
+        }
+
+        // (3) 로그아웃 함수 추가
+        function logout() {
+            if (!confirm('로그아웃 하시겠습니까?')) return;
+            localStorage.removeItem('trustFinPersona');
+            localStorage.removeItem('trustFinUserData');
+            localStorage.removeItem('trustFinNotifications');
+            localStorage.removeItem('trustFinTransactions');
+            localStorage.removeItem('selectedCard');
+            localStorage.removeItem('newDepositAmount');
+            location.href = 'login.html';
+        }
+
+        function openCouponBox() {
+            location.href = 'coupon_box.html';
         }
 
         function openAppInfoModal() {

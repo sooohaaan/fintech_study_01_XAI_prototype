@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 포인트 충전</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">포인트 충전</h1>
+        </header>
+
+        <main class="p-5 max-w-md mx-auto">
+            <!-- Current Points -->
+            <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-6 text-center transition-colors">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">현재 보유 포인트</p>
+                <h2 class="text-3xl font-bold text-electricPurple dark:text-purple-400"><span id="currentPoints">0</span> P</h2>
+            </div>
+
+            <!-- Mission List Section -->
+            <div class="mb-6">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 px-1">미션으로 포인트 모으기</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 px-1 mb-4">고객님의 상황에 딱 맞는 미션을 추천해드려요.</p>
+                <div id="missionList" class="space-y-3">
+                    <!-- JS Rendering -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeQuizModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600 dark:text-purple-400 text-3xl">
+                    <i data-lucide="help-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">신용 상식 퀴즈</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">문제를 맞히면 포인트를 드려요!</p>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6 mb-8 text-center">
+                <p class="font-bold text-lg text-gray-900 dark:text-white leading-relaxed break-keep">
+                    신용카드를 전혀 사용하지 않으면<br>신용점수가 무조건 올라간다?
+                </p>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="checkQuizAnswer(true)" class="flex-1 aspect-square rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-deepBlue dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-12 h-12 rounded-full border-2 border-deepBlue dark:border-blue-400 flex items-center justify-center text-deepBlue dark:text-blue-400 font-bold text-2xl group-hover:scale-110 transition-transform">O</div>
+                    <span class="text-sm font-bold text-gray-600 dark:text-gray-300">그렇다</span>
+                </button>
+                <button onclick="checkQuizAnswer(false)" class="flex-1 aspect-square rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-12 h-12 rounded-full border-2 border-red-500 flex items-center justify-center text-red-500 font-bold text-2xl group-hover:scale-110 transition-transform">X</div>
+                    <span class="text-sm font-bold text-gray-600 dark:text-gray-300">아니다</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div id="attendanceModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeAttendanceModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">매일매일 출석체크</h3>
+            
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-6">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <span id="calendarMonth" class="font-bold text-gray-900 dark:text-white text-lg"></span>
+                </div>
+                <div class="grid grid-cols-7 gap-2 text-center mb-2">
+                    <span class="text-xs text-red-500 font-bold">일</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">월</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">화</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">수</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">목</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">금</span>
+                    <span class="text-xs text-blue-500 font-bold">토</span>
+                </div>
+                <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center">
+                    <!-- JS Generated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuizPoints = 0;
+        let currentQuizTitle = '';
+        let currentAttendancePoints = 0;
+        let currentAttendanceTitle = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            loadPoints();
+            renderMissions();
+            initBottomSheetDrag('quizModal', closeQuizModal);
+            initBottomSheetDrag('attendanceModal', closeAttendanceModal);
+        });
+
+        function loadPoints() {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            document.getElementById('currentPoints').innerText = (persona.points || 0).toLocaleString();
+        }
+
+        function renderMissions() {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            const listEl = document.getElementById('missionList');
+            
+            let missions = [];
+
+            // 1. 공통 미션
+            missions.push({
+                title: '매일매일 출석체크',
+                desc: '하루 한 번 방문하고 포인트 받기',
+                points: 10,
+                icon: 'calendar-check',
+                color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                action: "openAttendanceModal(10, '출석체크')"
+            });
+
+            // 2. 신용점수 기반 추천
+            if (persona.creditScore && persona.creditScore < 800) {
+                missions.push({
+                    title: '신용점수 올리기 퀴즈',
+                    desc: '신용 관리 상식 퀴즈 풀고 점수 UP',
+                    points: 50,
+                    icon: 'help-circle',
+                    color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+                    action: "openQuizModal(50, '신용 퀴즈')"
+                });
+            } else {
+                missions.push({
+                    title: '신용점수 조회하기',
+                    desc: '변동된 내 점수 확인하고 포인트 받기',
+                    points: 30,
+                    icon: 'shield-check',
+                    color: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+                    action: "completeSimpleMission(30, '신용점수 조회')"
+                });
+            }
+
+            // 3. 직업/소득 기반 추천
+            if (persona.job === 'regular') {
+                missions.push({
+                    title: '급여 계좌 연동',
+                    desc: '주거래 계좌 설정하고 혜택 받기',
+                    points: 500,
+                    icon: 'briefcase',
+                    color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
+                    action: "completeSimpleMission(500, '급여 계좌 연동')"
+                });
+            } else if (persona.job === 'business_owner') {
+                missions.push({
+                    title: '사업자 카드 등록',
+                    desc: '지출 증빙용 카드 등록하기',
+                    points: 500,
+                    icon: 'credit-card',
+                    color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
+                    action: "completeSimpleMission(500, '사업자 카드 등록')"
+                });
+            }
+
+            // 4. 자산/DSR 기반 추천
+            if (persona.dsr && persona.dsr > 40) {
+                missions.push({
+                    title: '부채 관리 컨설팅',
+                    desc: 'AI가 제안하는 부채 상환 플랜 보기',
+                    points: 100,
+                    icon: 'trending-down',
+                    color: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+                    action: "completeSimpleMission(100, '부채 컨설팅 확인')"
+                });
+            } else {
+                missions.push({
+                    title: '자산 연결하기',
+                    desc: '흩어진 내 자산 한눈에 모아보기',
+                    points: 200,
+                    icon: 'link',
+                    color: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400',
+                    action: "completeSimpleMission(200, '자산 연결')"
+                });
+            }
+
+            listEl.innerHTML = missions.map(m => `
+                <div onclick="${m.action}" class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between cursor-pointer active:scale-95 transition-transform hover:shadow-md">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full ${m.color} flex items-center justify-center text-xl flex-shrink-0">
+                            <i data-lucide="${m.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-sm mb-0.5">${m.title}</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">${m.desc}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-electricPurple dark:text-purple-400 font-bold text-sm bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-lg">+${m.points}P</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function openQuizModal(points, title) {
+            currentQuizPoints = points;
+            currentQuizTitle = title;
+            
+            const modal = document.getElementById('quizModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function closeQuizModal() {
+            const modal = document.getElementById('quizModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function checkQuizAnswer(isO) {
+            // 정답은 X (false)
+            if (isO === false) {
+                // 정답
+                closeQuizModal();
+                setTimeout(() => {
+                    completeSimpleMission(currentQuizPoints, currentQuizTitle);
+                }, 300);
+            } else {
+                // 오답
+                alert('틀렸습니다. 다시 시도해보세요!\n\n신용거래 이력이 없으면 신용도를 판단할 근거가 부족하여 점수가 오르지 않을 수 있습니다.');
+            }
+        }
+
+        function openAttendanceModal(points, title) {
+            currentAttendancePoints = points;
+            currentAttendanceTitle = title;
+            
+            renderCalendar();
+            
+            const modal = document.getElementById('attendanceModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function closeAttendanceModal() {
+            const modal = document.getElementById('attendanceModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const today = now.getDate();
+            
+            document.getElementById('calendarMonth').innerText = `${year}년 ${month + 1}월`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            // Empty cells
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+            
+            // Days
+            for (let i = 1; i <= lastDate; i++) {
+                const isToday = i === today;
+                const dayHtml = `
+                    <div class="relative h-10 flex items-center justify-center rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 ${isToday ? 'bg-blue-50 dark:bg-blue-900/30 font-bold text-deepBlue dark:text-blue-400' : ''}">
+                        <span class="${isToday ? 'opacity-0' : ''}">${i}</span>
+                        ${isToday ? `
+                            <div id="todayStamp" class="absolute inset-0 flex items-center justify-center opacity-0 transform scale-150 transition-all duration-500 ease-out">
+                                <div class="w-8 h-8 rounded-full border-2 border-red-500 dark:border-red-400 flex items-center justify-center text-red-500 dark:text-red-400 font-bold text-[10px] rotate-[-15deg] bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">출석</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                grid.innerHTML += dayHtml;
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                const stamp = document.getElementById('todayStamp');
+                if (stamp) {
+                    stamp.classList.remove('opacity-0', 'scale-150');
+                    stamp.classList.add('opacity-100', 'scale-100');
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    
+                    setTimeout(() => {
+                        closeAttendanceModal();
+                        setTimeout(() => {
+                            completeSimpleMission(currentAttendancePoints, currentAttendanceTitle);
+                        }, 300);
+                    }, 1200);
+                }
+            }, 600);
+        }
+
+        function completeSimpleMission(points, title) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                persona.points = (persona.points || 0) + points;
+                localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+                // 내역 저장
+                const history = JSON.parse(localStorage.getItem('trustFinPointHistory') || '[]');
+                const now = new Date();
+                const dateStr = `${now.getMonth() + 1}.${now.getDate()}`;
+                history.unshift({
+                    title: `${title} 완료`,
+                    date: dateStr,
+                    amount: points,
+                    type: 'earn'
+                });
+                localStorage.setItem('trustFinPointHistory', JSON.stringify(history));
+
+                alert(`${points}P가 적립되었습니다!`);
+                loadPoints();
+            }
+        }
+    </script>
+</body>
+</html>

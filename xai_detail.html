@@ -114,6 +114,42 @@
             </div>
         </div>
 
+        <!-- 3.2 Feedback Section (New) -->
+        <div id="feedbackSection" class="mb-8 scroll-mt-36 hidden">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+                <i data-lucide="message-circle-question" class="w-5 h-5 text-blue-500"></i>
+                조건이 만족스러우신가요?
+            </h3>
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    현재 제안된 금리와 한도에 대해 의견을 알려주세요.<br>
+                    AI가 고객님의 니즈에 맞춰 새로운 목표를 설계해드립니다.
+                </p>
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick="handleFeedback('satisfied')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">만족해요, 이대로 진행할게요</span>
+                        <i data-lucide="thumbs-up" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                    </button>
+                    <button onclick="handleFeedback('limit')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">한도가 더 필요해요</span>
+                        <i data-lucide="trending-up" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                    </button>
+                    <button onclick="handleFeedback('rate')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">금리가 더 낮았으면 해요</span>
+                        <i data-lucide="percent" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                    </button>
+                    <button onclick="handleFeedback('period')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">대출 기간을 연장하고 싶어요</span>
+                        <i data-lucide="calendar-clock" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                    </button>
+                    <button onclick="handleFeedback('method')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200">상환 방식을 변경하고 싶어요</span>
+                        <i data-lucide="refresh-ccw" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- 3.5. AI Prescription (Action Plan) - Updated Section -->
         <div id="prescriptionSection" class="mb-8 hidden scroll-mt-36">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
@@ -404,33 +440,83 @@
                 renderScoreBar(product.contributions, factorColors, product.matchScore);
             }
 
-            // 3.5. 처방(Counterfactuals) 렌더링
-            if (product.counterfactuals && product.counterfactuals.length > 0) {
-                const prescriptionSection = document.getElementById('prescriptionSection');
-                const prescriptionList = document.getElementById('prescriptionList');
-                
+            // 3.5. 피드백 섹션 표시 (처방 렌더링은 피드백 후로 지연)
+            const feedbackSection = document.getElementById('feedbackSection');
+            if (feedbackSection) {
+                feedbackSection.classList.remove('hidden');
+                feedbackSection.classList.add('animate-slide-up');
+            }
+
+            // 4. 종합 의견 생성 (Dynamic Text Generation)
+            const opinionText = generateOpinion(user, product);
+            typeWriterEffect('aiOpinion', opinionText, 30);
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('completeModal', closeCompleteModal);
+            initBottomSheetDrag('dsrInfoModal', closeDsrInfoModal);
+            initBottomSheetDrag('dsrCalculatorModal', closeDsrCalculatorModal);
+        });
+
+        function handleFeedback(intent) {
+            const prescriptionSection = document.getElementById('prescriptionSection');
+            const prescriptionList = document.getElementById('prescriptionList');
+            const feedbackSection = document.getElementById('feedbackSection');
+            
+            // 피드백 섹션 숨김
+            feedbackSection.classList.add('hidden');
+
+            // 데이터 다시 가져오기 (최신 상태 반영)
+            const userDataStr = localStorage.getItem('trustFinUserData');
+            const user = JSON.parse(userDataStr);
+            const selectedProductId = localStorage.getItem('selectedProductId');
+            const product = loanProducts.find(p => p.id === selectedProductId);
+            
+            const personaData = localStorage.getItem('trustFinPersona');
+            let totalAssets = 0;
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                if (persona.accounts) totalAssets = persona.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+            }
+            const userForAnalysis = { ...user, income: parseInt(user.income||0), creditScore: parseInt(user.creditScore||0), totalAssets };
+            
+            // 기본 분석 결과
+            const analysis = calculateMatchScore(userForAnalysis, product);
+            let counterfactuals = analysis.counterfactuals;
+
+            if (intent !== 'satisfied') {
+                // 맞춤형 미션 생성 (RecommendLogic.js 함수 호출)
+                const tailoredMission = getTailoredMission(userForAnalysis, intent);
+                if (tailoredMission) {
+                    // 기존 미션 타입 제거하고 새 미션 추가
+                    counterfactuals = counterfactuals.filter(c => c.type !== 'mission');
+                    counterfactuals.unshift(tailoredMission);
+                }
+            }
+
+            // 렌더링
+            if (counterfactuals && counterfactuals.length > 0) {
                 prescriptionSection.classList.remove('hidden');
-                prescriptionSection.classList.add('animate-slide-up'); // 섹션 등장 애니메이션
+                prescriptionSection.classList.add('animate-slide-up');
                 
-                prescriptionList.innerHTML = product.counterfactuals.map((item, index) => `
+                prescriptionList.innerHTML = counterfactuals.map((item, index) => `
                     ${item.type === 'mission' ? `
-                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-5 rounded-3xl border border-indigo-100 dark:border-indigo-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${1600 + (index * 200)}ms">
+                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-5 rounded-3xl border border-indigo-100 dark:border-indigo-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
                             <div class="flex gap-3 items-start">
                                 <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-xl shadow-sm">
                                     🎯
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1">AI 추천 미션</h4>
+                                    <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1">AI 맞춤 미션 (${intent === 'limit' ? '한도 상향' : (intent === 'rate' ? '금리 인하' : (intent === 'period' ? '기간 연장' : (intent === 'method' ? '상환 변경' : '추천')))})</h4>
                                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">${item.text}</p>
                                 </div>
                             </div>
-                            <button onclick="handleAction('${item.action}', '${item.text.replace(/'/g, "\\'")}')" class="w-full mt-1 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-bold py-3 rounded-lg border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition flex justify-center items-center gap-2 text-sm shadow-sm">
+                            <button onclick="handleAction('${item.action}', '${item.text.replace(/'/g, "\\'")}', '${item.label}')" class="w-full mt-1 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-bold py-3 rounded-lg border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition flex justify-center items-center gap-2 text-sm shadow-sm">
                                 <span>${item.label}</span>
                                 <i data-lucide="flag" class="w-4 h-4"></i>
                             </button>
                         </div>
                     ` : `
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-yellow-200 dark:border-yellow-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${1600 + (index * 200)}ms">
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-yellow-200 dark:border-yellow-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
                             <div class="flex gap-3 items-start">
                                 <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center flex-shrink-0 text-yellow-600 dark:text-yellow-400">
                                     <i data-lucide="check-square" class="w-4 h-4"></i>
@@ -444,17 +530,10 @@
                         </div>
                     `}
                 `).join('');
+                
+                if (window.lucide) window.lucide.createIcons();
             }
-
-            // 4. 종합 의견 생성 (Dynamic Text Generation)
-            const opinionText = generateOpinion(user, product);
-            typeWriterEffect('aiOpinion', opinionText, 30);
-
-            // 모달 드래그 기능 초기화
-            initBottomSheetDrag('completeModal', closeCompleteModal);
-            initBottomSheetDrag('dsrInfoModal', closeDsrInfoModal);
-            initBottomSheetDrag('dsrCalculatorModal', closeDsrCalculatorModal);
-        });
+        }
 
         // 종합 의견 텍스트 생성기
         function generateOpinion(user, product) {
@@ -626,21 +705,67 @@
             }
         }
 
-        function handleAction(actionType, missionText) {
+        function handleAction(actionType, missionText, missionTitle) {
             if (actionType === 'mission_challenge') {
                 if (confirm('이 미션에 도전하시겠습니까?\n달성 시 알림을 보내드립니다.')) {
                     const missionId = `mission_${Date.now()}`;
+                    
+                    let subMissions = [
+                        { id: 'sub1', text: '미션 가이드 확인하기', status: 'ready' },
+                        { id: 'sub2', text: '실천 후 인증하기', status: 'ready' }
+                    ];
+
+                    // 미션 제목에 따라 세부 미션 맞춤 설정
+                    if (missionTitle && missionTitle.includes('한도')) {
+                        if (missionTitle.includes('주택')) {
+                            subMissions = [
+                                { id: 'sub_hl_1', text: 'KB시세 및 공시지가 확인', status: 'ready' },
+                                { id: 'sub_hl_2', text: '소득금액증명원 발급', status: 'ready' }
+                            ];
+                        } else if (missionTitle.includes('사업')) {
+                            subMissions = [
+                                { id: 'sub_bl_1', text: '최근 3개월 매출 장부 정리', status: 'ready' },
+                                { id: 'sub_bl_2', text: '부가세 납부 내역 준비', status: 'ready' }
+                            ];
+                        } else {
+                            subMissions = [
+                                { id: 'sub_l_1', text: '부채 비율 5% 줄이기', status: 'ready' },
+                                { id: 'sub_l_2', text: '신용점수 20점 올리기', status: 'ready' }
+                            ];
+                        }
+                    } else if (missionTitle && missionTitle.includes('금리')) {
+                        if (missionTitle.includes('대환')) {
+                            subMissions = [
+                                { id: 'sub_rr_1', text: '기존 대출 중도상환수수료 확인', status: 'ready' },
+                                { id: 'sub_rr_2', text: '6개월간 연체 없이 상환하기', status: 'ready' }
+                            ];
+                        } else {
+                            subMissions = [
+                                { id: 'sub_r_1', text: '마이데이터 자산 연결하기', status: 'ready' },
+                                { id: 'sub_r_2', text: '우대금리 조건(급여이체 등) 달성', status: 'ready' }
+                            ];
+                        }
+                    } else if (missionTitle && missionTitle.includes('기간')) {
+                        subMissions = [
+                            { id: 'sub_p_1', text: '신용점수 현재 수준 유지', status: 'ready' },
+                            { id: 'sub_p_2', text: '만기 1개월 전 연장 신청', status: 'ready' }
+                        ];
+                    } else if (missionTitle && missionTitle.includes('상환')) {
+                        subMissions = [
+                            { id: 'sub_m_1', text: '월 가용 소득 계산하기', status: 'ready' },
+                            { id: 'sub_m_2', text: '상환 방식 변경 신청서 작성', status: 'ready' }
+                        ];
+                    }
+
                     const newMission = {
                         id: missionId,
-                        title: '한도 상향 도전',
+                        title: missionTitle || '금융 목표 도전',
                         desc: missionText,
                         dday: 'D-60',
+                        deadline: Date.now() + (60 * 24 * 60 * 60 * 1000), // D-day 계산을 위한 마감일
                         progress: 0,
                         color: 'purple',
-                        subMissions: [
-                            { id: 'sub1', text: '미션 가이드 확인하기', status: 'ready' },
-                            { id: 'sub2', text: '실천 후 인증하기', status: 'ready' }
-                        ]
+                        subMissions: subMissions
                     };
                     
                     const missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');

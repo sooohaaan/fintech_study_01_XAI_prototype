@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 쿠폰함</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">쿠폰함</h1>
+        </header>
+
+        <main class="p-5 max-w-md mx-auto">
+            <!-- Tabs -->
+            <div class="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6">
+                <button onclick="switchTab('active')" id="tab-active" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-all">사용 가능</button>
+                <button onclick="switchTab('used')" id="tab-used" class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">사용 완료</button>
+            </div>
+
+            <div id="couponList" class="space-y-4">
+                <!-- JS Rendering -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Coupon Detail Modal -->
+    <div id="couponModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeCouponModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            
+            <div class="text-center mb-6">
+                <div id="modalIcon" class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-sm">🎁</div>
+                <h3 id="modalName" class="text-xl font-bold text-gray-900 dark:text-white mb-1">상품명</h3>
+                <p id="modalDesc" class="text-sm text-gray-500 dark:text-gray-400">설명</p>
+            </div>
+
+            <!-- Barcode Area -->
+            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-xl mb-6 flex flex-col items-center justify-center">
+                <div class="w-full h-16 bg-white dark:bg-gray-600 mb-2 flex items-center justify-center overflow-hidden">
+                    <!-- Fake Barcode -->
+                    <div class="flex gap-1 h-10 items-end opacity-80">
+                        <div class="w-1 h-10 bg-black dark:bg-white"></div><div class="w-2 h-10 bg-black dark:bg-white"></div><div class="w-1 h-10 bg-black dark:bg-white"></div><div class="w-3 h-10 bg-black dark:bg-white"></div><div class="w-1 h-10 bg-black dark:bg-white"></div><div class="w-2 h-10 bg-black dark:bg-white"></div><div class="w-4 h-10 bg-black dark:bg-white"></div><div class="w-1 h-10 bg-black dark:bg-white"></div><div class="w-2 h-10 bg-black dark:bg-white"></div><div class="w-1 h-10 bg-black dark:bg-white"></div><div class="w-3 h-10 bg-black dark:bg-white"></div>
+                    </div>
+                </div>
+                <p class="text-xs font-mono text-gray-500 dark:text-gray-400 tracking-widest">1234-5678-9012</p>
+            </div>
+
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">유효기간</span>
+                    <span id="modalValidity" class="font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">사용처</span>
+                    <span id="modalUsage" class="font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">구매일</span>
+                    <span id="modalDate" class="font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+            </div>
+
+            <div id="modalBtnContainer" class="mt-8">
+                <!-- JS Injected -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            renderCoupons();
+            initBottomSheetDrag('couponModal', closeCouponModal);
+        });
+
+        let allCoupons = [];
+        let currentTab = 'active';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const activeBtn = document.getElementById('tab-active');
+            const usedBtn = document.getElementById('tab-used');
+            
+            const activeClass = 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm';
+            const inactiveClass = 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-transparent';
+
+            if (tab === 'active') {
+                activeBtn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                usedBtn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+            } else {
+                activeBtn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                usedBtn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+            }
+            renderCoupons();
+        }
+
+        function renderCoupons() {
+            const listEl = document.getElementById('couponList');
+            allCoupons = JSON.parse(localStorage.getItem('trustFinCoupons') || '[]');
+
+            // Filter based on tab
+            const filtered = allCoupons.map((c, i) => ({...c, originalIndex: i}))
+                .filter(c => currentTab === 'active' ? (c.status !== 'used') : (c.status === 'used'));
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500">
+                        <i data-lucide="${currentTab === 'active' ? 'ticket' : 'archive'}" class="w-12 h-12 mb-3 opacity-50"></i>
+                        <p>${currentTab === 'active' ? '사용 가능한 쿠폰이 없습니다.' : '사용 완료된 쿠폰이 없습니다.'}</p>
+                        ${currentTab === 'active' ? `<button onclick="location.href='point_shop.html'" class="mt-4 text-sm font-bold text-deepBlue dark:text-blue-400 hover:underline">포인트 상점 가기</button>` : ''}
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            listEl.innerHTML = filtered.map((coupon) => `
+                <div onclick="openCouponModal(${coupon.originalIndex})" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 flex items-center gap-4 cursor-pointer active:scale-95 transition-transform ${coupon.status === 'used' ? 'opacity-60 grayscale' : ''}">
+                    <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700/50 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
+                        ${coupon.icon}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-gray-900 dark:text-white text-base truncate">${coupon.name}</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">${coupon.desc}</p>
+                        <p class="text-xs ${coupon.status === 'used' ? 'text-gray-400' : 'text-deepBlue dark:text-blue-400'} font-bold mt-1">${coupon.status === 'used' ? '사용 완료' : '사용 가능'}</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function openCouponModal(index) {
+            const coupon = allCoupons[index];
+            if (!coupon) return;
+
+            document.getElementById('modalIcon').innerText = coupon.icon;
+            document.getElementById('modalName').innerText = coupon.name;
+            document.getElementById('modalDesc').innerText = coupon.desc;
+            document.getElementById('modalValidity').innerText = coupon.validity || '별도 표기';
+            document.getElementById('modalUsage').innerText = coupon.usage || '전국 매장';
+            document.getElementById('modalDate').innerText = coupon.date;
+
+            const btnContainer = document.getElementById('modalBtnContainer');
+            
+            if (coupon.status === 'used') {
+                btnContainer.innerHTML = `
+                    <button onclick="closeCouponModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                        닫기
+                    </button>
+                `;
+            } else {
+                btnContainer.innerHTML = `
+                    <div class="flex gap-3">
+                        <button onclick="closeCouponModal()" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                            닫기
+                        </button>
+                        <button onclick="useCoupon(${index})" class="flex-1 bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                            사용 완료 처리
+                        </button>
+                    </div>
+                `;
+            }
+
+            const modal = document.getElementById('couponModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function useCoupon(index) {
+            if (confirm('이 쿠폰을 사용 완료 처리하시겠습니까?')) {
+                allCoupons[index].status = 'used';
+                localStorage.setItem('trustFinCoupons', JSON.stringify(allCoupons));
+                
+                closeCouponModal();
+                setTimeout(() => {
+                    renderCoupons();
+                    showGlobalToast('쿠폰이 사용 처리되었습니다.');
+                }, 300);
+            }
+        }
+
+        function closeCouponModal() {
+            const modal = document.getElementById('couponModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+    </script>
+</body>
+</html>

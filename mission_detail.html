@@ -29,6 +29,9 @@
             <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
         </button>
         <h1 class="text-lg font-bold text-gray-900 dark:text-white">미션 상세</h1>
+        <button id="headerListBtn" onclick="location.href='mission_list.html'" class="absolute right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <i data-lucide="list" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+        </button>
     </header>
 
     <main class="p-5 max-w-md mx-auto space-y-6">
@@ -37,11 +40,24 @@
             <div id="completedBadge" class="hidden absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm z-10">
                 MISSION CLEAR
             </div>
+            <div id="highRewardBadge" class="hidden absolute top-0 left-0 bg-gradient-to-r from-orange-400 to-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-br-xl shadow-sm z-10 flex items-center gap-1">
+                <i data-lucide="flame" class="w-3 h-3"></i> High Reward
+            </div>
             
             <div id="missionIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl bg-blue-50 dark:bg-blue-900/30 text-blue-500">
                 🎯
             </div>
             <h2 id="missionTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-2">미션 제목</h2>
+            <div class="flex justify-center gap-3 mb-6">
+                <div class="flex flex-col items-center justify-center w-28 py-2.5 bg-gray-50 dark:bg-gray-700/30 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">총 획득 가능</span>
+                    <span class="text-sm font-bold text-gray-900 dark:text-white"><span id="totalReward">0</span> P</span>
+                </div>
+                <div class="flex flex-col items-center justify-center w-28 py-2.5 bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-purple-100 dark:border-purple-800/50">
+                    <span class="text-[10px] text-purple-600 dark:text-purple-400 font-bold mb-0.5">현재 획득</span>
+                    <span class="text-sm font-bold text-electricPurple dark:text-purple-400"><span id="earnedReward">0</span> P</span>
+                </div>
+            </div>
             <p id="missionDesc" class="text-sm text-gray-500 dark:text-gray-400 mb-6">미션 설명</p>
             
             <div class="flex justify-between items-center text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 px-1">
@@ -63,10 +79,48 @@
             </div>
         </div>
 
+        <!-- Point Contribution Graph -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">포인트 기여도</h3>
+            <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-electricPurple bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400">
+                            다음 레벨까지
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span id="contributionPercent" class="text-xs font-semibold inline-block text-electricPurple dark:text-purple-400">
+                            0%
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-hidden h-4 mb-4 text-xs flex rounded-full bg-gray-100 dark:bg-gray-700">
+                    <div id="currentPointBar" style="width: 0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gray-400 dark:bg-gray-500 transition-all duration-1000"></div>
+                    <div id="rewardPointBar" style="width: 0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-electricPurple dark:bg-purple-500 transition-all duration-1000 relative">
+                         <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>현재 <span id="currentPointText">0</span>P</span>
+                    <span>목표 <span id="goalPointText">0</span>P</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-3 text-center">
+                    이 미션을 완료하면 목표의 <span id="contributionText" class="font-bold text-electricPurple dark:text-purple-400">0%</span>를 더 채울 수 있어요!
+                </p>
+            </div>
+        </div>
+
         <!-- Give Up Button -->
         <button id="actionBtn" onclick="giveUpMission()" class="w-full py-4 text-sm text-red-500 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition">
             미션 포기하기
         </button>
+
+        <div id="listLink" class="text-center pb-4">
+            <button onclick="location.href='mission_list.html'" class="text-xs text-gray-400 dark:text-gray-500 font-medium hover:text-gray-600 dark:hover:text-gray-300 transition underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4">
+                다른 미션 목록 보기
+            </button>
+        </div>
     </main>
 
     <!-- Give Up Confirmation Modal -->
@@ -110,7 +164,7 @@
                     id: 'mission_housing',
                     title: '주택 마련 3억 대출 도전',
                     desc: '목표 달성을 위한 AI 맞춤 플랜',
-                    dday: 'D-90',
+                    deadline: Date.now() + (90 * 24 * 60 * 60 * 1000), // D-day 기준일 설정
                     progress: 0,
                     color: 'blue',
                     subMissions: [
@@ -134,7 +188,61 @@
                 return;
             }
 
+            // D-day 실시간 계산
+            if (!currentMission.deadline && currentMission.id === 'mission_housing') {
+                currentMission.deadline = Date.now() + (90 * 24 * 60 * 60 * 1000);
+            }
+
+            if (currentMission.deadline) {
+                const now = new Date();
+                const deadline = new Date(currentMission.deadline);
+                const diffTime = deadline - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                currentMission.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
+            }
+
             renderUI(0, null);
+        }
+
+        function getMissionLink(text) {
+            if (text.includes('신용')) return 'home.html';
+            if (text.includes('자산') || text.includes('마이데이터') || text.includes('모아')) return 'assets.html';
+            if (text.includes('부채') || text.includes('대출') || text.includes('상환')) return 'my_loans.html';
+            if (text.includes('소비') || text.includes('지출') || text.includes('카드')) return 'my_spending.html';
+            return null;
+        }
+
+        function getMissionRewards(mission) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            
+            let difficulty = 1.0;
+            
+            // 퍼소나 상황에 따른 난이도 가중치 계산
+            if (mission.title.includes('신용')) {
+                const score = persona.creditScore || 0;
+                if (score < 650) difficulty += 0.5; // 저신용자: 개선 난이도/필요성 높음
+                else if (score > 900) difficulty += 0.2; // 고신용자: 추가 상승 난이도
+            }
+            
+            if (mission.title.includes('대출') || mission.title.includes('상환') || mission.title.includes('부채')) {
+                const dsr = persona.dsr || 0;
+                if (dsr > 40) difficulty += 0.4; // 고부채: 관리 난이도 높음
+            }
+            
+            if (mission.title.includes('주택') || mission.title.includes('자산')) {
+                const income = persona.income || 0;
+                if (income < 3500) difficulty += 0.3; // 자산 형성 노력 가중치
+            }
+
+            // 기본 포인트 설정
+            const baseSubPoint = 100;
+            const baseFinalPoint = 300;
+            
+            const subPoint = Math.round(baseSubPoint * difficulty / 10) * 10;
+            const finalPoint = Math.round(baseFinalPoint * difficulty / 10) * 10;
+            
+            return { subPoint, finalPoint, isHighReward: difficulty >= 1.3 };
         }
 
         function renderUI(prevProgress = 0, completedSubId = null) {
@@ -142,13 +250,34 @@
             document.getElementById('missionDesc').innerText = currentMission.desc;
             document.getElementById('missionDday').innerText = currentMission.dday;
             
+            // 보상 포인트 표시
+            const rewards = getMissionRewards(currentMission);
+            const subMissionCount = currentMission.subMissions ? currentMission.subMissions.length : 0;
+            const totalReward = rewards.finalPoint + (subMissionCount * rewards.subPoint);
+            
+            const completedCount = currentMission.subMissions ? currentMission.subMissions.filter(s => s.status === 'completed').length : 0;
+            let earnedReward = completedCount * rewards.subPoint;
+            if (currentMission.completedAt) earnedReward += rewards.finalPoint;
+
+            animatePoint(document.getElementById('totalReward'), totalReward);
+            animatePoint(document.getElementById('earnedReward'), earnedReward);
+            
+            // High Reward 배지 표시
+            const highRewardBadge = document.getElementById('highRewardBadge');
+            if (highRewardBadge) {
+                if (rewards.isHighReward) highRewardBadge.classList.remove('hidden');
+                else highRewardBadge.classList.add('hidden');
+            }
+            
+            renderContributionGraph(rewards);
+            
             // 진행률 재계산
             const total = currentMission.subMissions.length;
             const completed = currentMission.subMissions.filter(s => s.status === 'completed').length;
             const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
             currentMission.progress = progress;
 
-            animateCountUp(document.getElementById('missionProgressText'), progress, prevProgress);
+            animateProgressText(document.getElementById('missionProgressText'), progress, prevProgress);
             document.getElementById('missionProgressBar').style.width = `${progress}%`;
 
             // 완료 상태 처리
@@ -156,6 +285,11 @@
             const badge = document.getElementById('completedBadge');
             const actionBtn = document.getElementById('actionBtn');
             const iconEl = document.getElementById('missionIcon');
+            const headerListBtn = document.getElementById('headerListBtn');
+
+            if (headerListBtn) {
+                headerListBtn.onclick = () => location.href = isCompleted ? 'mission_list.html?tab=completed' : 'mission_list.html';
+            }
 
             if (isCompleted) {
                 badge.classList.remove('hidden');
@@ -165,17 +299,27 @@
                 actionBtn.innerText = '목록으로 돌아가기';
                 actionBtn.className = 'w-full py-4 text-sm text-gray-600 dark:text-gray-300 font-bold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition';
                 actionBtn.onclick = () => location.href = 'mission_list.html?tab=completed';
+                
+                const listLink = document.getElementById('listLink');
+                if (listLink) listLink.classList.add('hidden');
             }
 
             const listEl = document.getElementById('subMissionList');
-            listEl.innerHTML = currentMission.subMissions.map(sub => {
+            
+            // 정렬: 진행중(active) -> 준비(ready) -> 완료(completed)
+            const sortedSubMissions = [...currentMission.subMissions].sort((a, b) => {
+                const statusOrder = { 'active': 0, 'ready': 1, 'completed': 2 };
+                return (statusOrder[a.status] || 3) - (statusOrder[b.status] || 3);
+            });
+
+            listEl.innerHTML = sortedSubMissions.map(sub => {
                 let btnHtml = '';
                 let statusClass = '';
                 let icon = 'circle';
                 let iconClass = 'text-gray-400';
 
                 if (sub.status === 'completed') {
-                    statusClass = 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 opacity-70';
+                    statusClass = 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800/50 opacity-80';
                     icon = 'check-circle-2';
                     
                     if (sub.id === completedSubId) {
@@ -186,7 +330,7 @@
                     
                     btnHtml = `<span class="text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> 완료</span>`;
                 } else if (sub.status === 'active') {
-                    statusClass = 'bg-white dark:bg-gray-800 border-deepBlue dark:border-blue-500 shadow-md';
+                    statusClass = 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800 shadow-sm';
                     icon = 'play-circle';
                     iconClass = 'text-deepBlue dark:text-blue-400';
                     btnHtml = `<button onclick="updateSubMission('${sub.id}', 'completed')" class="bg-deepBlue text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-800 transition">완료하기</button>`;
@@ -197,11 +341,33 @@
                     btnHtml = `<button onclick="updateSubMission('${sub.id}', 'active')" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">시작</button>`;
                 }
 
+                // Link Logic
+                const linkUrl = getMissionLink(sub.text);
+                let textContent = `<span class="text-sm font-medium text-gray-900 dark:text-white ${sub.status === 'completed' ? 'line-through text-gray-400' : ''}">${sub.text}</span>`;
+                
+                if (linkUrl && sub.status !== 'completed') {
+                    textContent = `
+                        <a href="${linkUrl}" class="text-sm font-medium text-gray-900 dark:text-white hover:text-deepBlue dark:hover:text-blue-400 underline decoration-dotted underline-offset-4 transition-colors flex items-center gap-1 group">
+                            ${sub.text}
+                            <i data-lucide="external-link" class="w-3 h-3 text-gray-400 group-hover:text-deepBlue dark:group-hover:text-blue-400"></i>
+                        </a>
+                    `;
+                }
+
+                // Point Badge
+                let pointBadge = '';
+                if (sub.status !== 'completed') {
+                    pointBadge = `<span class="text-[10px] font-bold text-electricPurple dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-1.5 py-0.5 rounded ml-2 flex-shrink-0">+${rewards.subPoint}P</span>`;
+                }
+
                 return `
                     <div class="p-4 rounded-3xl border ${statusClass} flex justify-between items-center transition-all">
-                        <div class="flex items-center gap-3 flex-1">
-                            <i data-lucide="${icon}" class="w-5 h-5 ${iconClass}"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white ${sub.status === 'completed' ? 'line-through text-gray-400' : ''}">${sub.text}</span>
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <i data-lucide="${icon}" class="w-5 h-5 ${iconClass} flex-shrink-0"></i>
+                            <div class="flex items-center flex-wrap gap-y-1">
+                                ${textContent}
+                                ${pointBadge}
+                            </div>
                         </div>
                         <div class="ml-3 flex-shrink-0">
                             ${btnHtml}
@@ -213,9 +379,50 @@
             lucide.createIcons();
         }
 
+        function renderContributionGraph(rewards) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            const currentPoints = persona.points || 0;
+            
+            // Calculate remaining potential reward from this mission
+            let remainingReward = 0;
+            if (currentMission.progress < 100) {
+                const remainingSubCount = currentMission.subMissions.filter(s => s.status !== 'completed').length;
+                remainingReward += remainingSubCount * rewards.subPoint;
+                if (!currentMission.completedAt) {
+                    remainingReward += rewards.finalPoint;
+                }
+            }
+
+            // Goal calculation (Next 3000 points milestone)
+            const baseGoal = 3000;
+            let goal = Math.ceil((currentPoints + 0.1) / baseGoal) * baseGoal;
+            if (currentPoints + remainingReward > goal) {
+                goal = Math.ceil((currentPoints + remainingReward) / baseGoal) * baseGoal;
+            }
+
+            const currentPercent = (currentPoints / goal) * 100;
+            const rewardPercent = (remainingReward / goal) * 100;
+            const totalPercent = Math.min(100, currentPercent + rewardPercent);
+
+            document.getElementById('currentPointBar').style.width = `${currentPercent}%`;
+            document.getElementById('rewardPointBar').style.width = `${rewardPercent}%`;
+            
+            document.getElementById('currentPointText').innerText = currentPoints.toLocaleString();
+            document.getElementById('goalPointText').innerText = goal.toLocaleString();
+            
+            document.getElementById('contributionPercent').innerText = `${Math.round(totalPercent)}% 달성 예정`;
+            document.getElementById('contributionText').innerText = `+${Math.round(rewardPercent)}%`;
+        }
+
         function updateSubMission(subId, newStatus) {
             const sub = currentMission.subMissions.find(s => s.id === subId);
             if (sub) {
+                const rewards = getMissionRewards(currentMission);
+
+                const prevStatus = sub.status;
+                if (prevStatus === newStatus) return;
+
                 const prevProgress = currentMission.progress;
                 sub.status = newStatus;
                 
@@ -225,10 +432,25 @@
                 const newProgress = total === 0 ? 0 : Math.round((completedCount / total) * 100);
                 
                 currentMission.progress = newProgress;
+
+                // 1. 세부 미션 완료 보상 (동적 계산)
+                if (newStatus === 'completed') {
+                    awardPoints(rewards.subPoint, '세부 미션 완료');
+                }
+
+                // 2. 최종 완료 보상 (동적 계산)
                 if (newProgress >= 100 && !currentMission.completedAt) {
                     currentMission.completedAt = Date.now();
+                    awardPoints(rewards.finalPoint, '미션 최종 완료 보상');
                 } else if (newProgress < 100) {
                     delete currentMission.completedAt;
+                }
+
+                // 편의 기능: 진행중인 미션이 없고 미완료 상태일 때, 다음 '준비' 미션을 자동으로 '진행중'으로 변경
+                const hasActive = currentMission.subMissions.some(s => s.status === 'active');
+                if (!hasActive && currentMission.progress < 100 && newStatus === 'completed') {
+                    const nextReady = currentMission.subMissions.find(s => s.status === 'ready');
+                    if (nextReady) nextReady.status = 'active';
                 }
 
                 saveMission();
@@ -236,11 +458,21 @@
 
                 // 미션 완료 시 폭죽 효과
                 if (newProgress >= 100 && newStatus === 'completed') {
+                    let confettiColors = ['#1D4ED8', '#7C3AED', '#10B981', '#F59E0B']; // 기본 (알록달록)
+
+                    if (currentMission.color === 'blue') {
+                        confettiColors = ['#1D4ED8', '#3B82F6', '#60A5FA', '#2563EB'];
+                    } else if (currentMission.color === 'red') {
+                        confettiColors = ['#EF4444', '#DC2626', '#F87171', '#B91C1C'];
+                    } else if (currentMission.color === 'purple') {
+                        confettiColors = ['#7C3AED', '#6D28D9', '#8B5CF6', '#5B21B6'];
+                    }
+
                     confetti({
                         particleCount: 150,
                         spread: 70,
                         origin: { y: 0.6 },
-                        colors: ['#1D4ED8', '#7C3AED', '#10B981', '#F59E0B']
+                        colors: confettiColors
                     });
                 }
             }
@@ -281,6 +513,28 @@
             }, 300);
         }
 
+        function awardPoints(amount, title) {
+            const personaData = localStorage.getItem('trustFinPersona');
+            if (personaData) {
+                const persona = JSON.parse(personaData);
+                persona.points = (persona.points || 0) + amount;
+                localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+                
+                const history = JSON.parse(localStorage.getItem('trustFinPointHistory') || '[]');
+                const now = new Date();
+                const dateStr = `${now.getMonth() + 1}.${now.getDate()}`;
+                history.unshift({
+                    title: title,
+                    date: dateStr,
+                    amount: amount,
+                    type: 'earn'
+                });
+                localStorage.setItem('trustFinPointHistory', JSON.stringify(history));
+
+                setTimeout(() => showGlobalToast(`${title}! ${amount}P가 지급되었습니다.`), 800);
+            }
+        }
+
         function confirmGiveUp() {
             let missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
             missions = missions.filter(m => m.id !== currentMission.id);
@@ -288,7 +542,7 @@
             location.href = 'home.html';
         }
 
-        function animateCountUp(element, endValue, startValue) {
+        function animateProgressText(element, endValue, startValue) {
             const duration = 1200;
             const startTime = performance.now();
 
@@ -302,6 +556,25 @@
 
                 if (progress < 1) requestAnimationFrame(update);
                 else element.innerText = `${endValue}% 달성`;
+            }
+            requestAnimationFrame(update);
+        }
+
+        function animatePoint(element, endValue) {
+            const duration = 1000;
+            const startTime = performance.now();
+            const startValue = parseInt(element.innerText.replace(/[^0-9]/g, '')) || 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                
+                const current = Math.floor(startValue + (endValue - startValue) * ease);
+                element.innerText = current.toLocaleString();
+
+                if (progress < 1) requestAnimationFrame(update);
+                else element.innerText = endValue.toLocaleString();
             }
             requestAnimationFrame(update);
         }

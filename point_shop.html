@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrustFin - 포인트 상점</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="common.js"></script>
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">포인트 상점</h1>
+            <div class="absolute right-4 flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 px-3 py-1.5 rounded-full">
+                <span class="text-xs font-bold text-electricPurple dark:text-purple-400" id="headerPoints">0 P</span>
+            </div>
+        </header>
+
+        <main class="p-5 max-w-md mx-auto">
+            <!-- Category Filter -->
+            <div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <button onclick="filterShop('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0">전체</button>
+                <button onclick="filterShop('cafe')" id="filter-cafe" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">카페</button>
+                <button onclick="filterShop('store')" id="filter-store" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">편의점</button>
+                <button onclick="filterShop('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">외식</button>
+                <button onclick="filterShop('culture')" id="filter-culture" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">문화</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4" id="shopList">
+                <!-- JS Rendering -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Purchase Confirm Modal -->
+    <div id="purchaseModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closePurchaseModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-6">
+                <div id="modalIcon" class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-sm">🎁</div>
+                <h3 id="modalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-1">상품명</h3>
+                <p class="text-electricPurple dark:text-purple-400 font-bold text-xl"><span id="modalPrice">0</span> P</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-6 text-sm space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">유효기간</span>
+                    <span id="modalValidity" class="font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">사용처</span>
+                    <span id="modalUsage" class="font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 text-center mb-6">구매 후 취소할 수 없습니다.</p>
+            <div class="flex gap-3">
+                <button onclick="closePurchaseModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="confirmPurchase()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">구매하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Point Modal -->
+    <div id="lowPointModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeLowPointModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500 dark:text-red-400 text-3xl">
+                    <i data-lucide="alert-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">포인트가 부족해요</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">상품을 구매하려면 포인트 충전이 필요합니다.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeLowPointModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="goToCharge()" class="flex-1 py-3 rounded-xl bg-electricPurple text-white font-bold hover:bg-purple-600 transition">충전하러 가기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 'p1', name: '스타벅스 아메리카노', price: 4500, icon: '☕️', desc: 'Tall Size', category: 'cafe', validity: '93일', usage: '전국 스타벅스 매장' },
+            { id: 'p2', name: 'GS25 3천원권', price: 3000, icon: '🏪', desc: '모바일 상품권', category: 'store', validity: '365일', usage: 'GS25 전 매장' },
+            { id: 'p3', name: '배스킨라빈스 파인트', price: 9800, icon: '🍦', desc: '3가지 맛', category: 'food', validity: '93일', usage: '배스킨라빈스' },
+            { id: 'p4', name: 'CGV 영화관람권', price: 13000, icon: '🎬', desc: '2D 일반', category: 'culture', validity: '6개월', usage: 'CGV 전 지점' },
+            { id: 'p5', name: 'CU 5천원권', price: 5000, icon: '🏪', desc: '모바일 상품권', category: 'store', validity: '365일', usage: 'CU 전 매장' },
+            { id: 'p6', name: '교촌치킨 허니콤보', price: 23000, icon: '🍗', desc: '웨지감자 세트', category: 'food', validity: '93일', usage: '교촌치킨 (일부 매장 제외)' }
+        ];
+
+        let selectedProduct = null;
+        let currentCategory = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCommonUI(null);
+            renderShop();
+            initBottomSheetDrag('purchaseModal', closePurchaseModal);
+            initBottomSheetDrag('lowPointModal', closeLowPointModal);
+        });
+
+        function filterShop(category) {
+            currentCategory = category;
+            
+            const buttons = ['all', 'cafe', 'store', 'food', 'culture'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`filter-${btn}`);
+                if (btn === category) {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0';
+                } else {
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
+                }
+            });
+            renderShop();
+        }
+
+        function renderShop() {
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            const currentPoints = persona.points || 0;
+
+            document.getElementById('headerPoints').innerText = `${currentPoints.toLocaleString()} P`;
+
+            const listEl = document.getElementById('shopList');
+            
+            let filteredProducts = products;
+            if (currentCategory !== 'all') {
+                filteredProducts = products.filter(p => p.category === currentCategory);
+            }
+
+            if (filteredProducts.length === 0) {
+                listEl.innerHTML = `<div class="col-span-2 py-10 text-center text-gray-400 dark:text-gray-500">해당 카테고리의 상품이 없습니다.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filteredProducts.map(p => {
+                const canBuy = currentPoints >= p.price;
+                const opacityClass = canBuy ? '' : 'opacity-60 grayscale';
+                
+                return `
+                    <div onclick="${canBuy ? `openPurchaseModal('${p.id}')` : ''}" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center gap-3 cursor-pointer hover:shadow-md transition active:scale-95 ${opacityClass}">
+                        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700/50 rounded-2xl flex items-center justify-center text-3xl mb-1">
+                            ${p.icon}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-sm mb-0.5">${p.name}</h4>
+                            <p class="text-xs text-gray-400 mb-2">${p.desc}</p>
+                            <span class="text-sm font-bold ${canBuy ? 'text-electricPurple dark:text-purple-400' : 'text-gray-400'}">${p.price.toLocaleString()} P</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openPurchaseModal(id) {
+            selectedProduct = products.find(p => p.id === id);
+            if (!selectedProduct) return;
+
+            document.getElementById('modalIcon').innerText = selectedProduct.icon;
+            document.getElementById('modalTitle').innerText = selectedProduct.name;
+            document.getElementById('modalPrice').innerText = selectedProduct.price.toLocaleString();
+            document.getElementById('modalValidity').innerText = selectedProduct.validity || '별도 표기';
+            document.getElementById('modalUsage').innerText = selectedProduct.usage || '전국 매장';
+
+            const modal = document.getElementById('purchaseModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function closePurchaseModal() {
+            const modal = document.getElementById('purchaseModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+            selectedProduct = null;
+        }
+
+        function confirmPurchase() {
+            if (!selectedProduct) return;
+
+            const personaData = localStorage.getItem('trustFinPersona');
+            const persona = JSON.parse(personaData || '{}');
+            
+            if ((persona.points || 0) < selectedProduct.price) {
+                closePurchaseModal();
+                setTimeout(() => openLowPointModal(), 300);
+                return;
+            }
+
+            // 포인트 차감
+            persona.points -= selectedProduct.price;
+            localStorage.setItem('trustFinPersona', JSON.stringify(persona));
+
+            // 내역 저장
+            const history = JSON.parse(localStorage.getItem('trustFinPointHistory') || '[]');
+            const now = new Date();
+            const dateStr = `${now.getMonth() + 1}.${now.getDate()}`;
+            history.unshift({
+                title: selectedProduct.name,
+                date: dateStr,
+                amount: -selectedProduct.price,
+                type: 'use'
+            });
+            localStorage.setItem('trustFinPointHistory', JSON.stringify(history));
+
+            // 쿠폰함 저장 (간단 구현)
+            const coupons = JSON.parse(localStorage.getItem('trustFinCoupons') || '[]');
+            coupons.unshift({ ...selectedProduct, date: dateStr });
+            localStorage.setItem('trustFinCoupons', JSON.stringify(coupons));
+
+            closePurchaseModal();
+            renderShop();
+            showGlobalToast('구매가 완료되었습니다. 쿠폰함에서 확인하세요.');
+        }
+
+        function openLowPointModal() {
+            const modal = document.getElementById('lowPointModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+        }
+
+        function closeLowPointModal() {
+            const modal = document.getElementById('lowPointModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function goToCharge() {
+            closeLowPointModal();
+            setTimeout(() => {
+                location.href = 'point_charge.html';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
