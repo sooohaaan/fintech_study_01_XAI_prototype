@@ -25,15 +25,15 @@
                 <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
                     <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900 dark:text-white">내 소비</h1>
+                <h1 class="text-base font-bold text-gray-900 dark:text-white">내 소비</h1>
             </div>
         </header>
 
-        <main class="p-5 max-w-md mx-auto space-y-6">
+        <main class="p-4 max-w-md mx-auto space-y-2">
             <!-- Total Spending Summary -->
-            <div class="text-center py-4">
-                <p class="text-gray-500 text-sm mb-1">이번 달 총 소비</p>
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalSpending">0</span>원</h2>
+            <div class="text-center py-2">
+                <p class="text-gray-500 text-xs mb-1">이번 달 총 소비</p>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white"><span id="totalSpending">0</span>원</h2>
             </div>
 
             <div id="cardList" class="space-y-3">
@@ -41,13 +41,13 @@
             </div>
 
             <!-- Spending History Filter -->
-            <div class="mt-8">
-                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">최근 소비 내역</h3>
+            <div class="mt-4">
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4">최근 소비 내역</h3>
                 <div class="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
-                    <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-black text-white shadow-lg hover:bg-gray-700 transition whitespace-nowrap flex-shrink-0">전체</button>
-                    <button onclick="setFilter('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">식비</button>
-                    <button onclick="setFilter('shopping')" id="filter-shopping" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">쇼핑</button>
-                    <button onclick="setFilter('transport')" id="filter-transport" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">교통</button>
+                    <button onclick="setFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-full text-xs font-bold bg-black text-white shadow-lg hover:bg-gray-700 transition whitespace-nowrap flex-shrink-0">전체</button>
+                    <button onclick="setFilter('food')" id="filter-food" class="px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">식비</button>
+                    <button onclick="setFilter('shopping')" id="filter-shopping" class="px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">쇼핑</button>
+                    <button onclick="setFilter('transport')" id="filter-transport" class="px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">교통</button>
                 </div>
                 <div id="spendingList" class="space-y-0 bg-white dark:bg-gray-800 rounded-card shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
                     <!-- JS Rendering -->
@@ -72,12 +72,12 @@
             if (persona.id === 'guest') {
                 document.getElementById('totalSpending').innerText = '0';
                 cardListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-4 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="credit-card" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">카드 정보가 없습니다</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">카드를 연결하고 똑똑한 소비 관리를<br>시작해보세요.</p>
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2">카드 정보가 없습니다</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">카드를 연결하고 똑똑한 소비 관리를<br>시작해보세요.</p>
                         <button onclick="alert('준비 중인 기능입니다.')" class="w-full btn-awwwards font-bold py-3 rounded-card transition">
                             카드 연결하기
                         </button>
@@ -95,19 +95,19 @@
             cardListEl.innerHTML = cards.map((card, index) => {
                 total += card.amount;
                 return `
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-card border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-colors cursor-pointer active:scale-95 transform" onclick="goToCardDetail('${card.name}', '${card.number}', event)">
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-card border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-colors cursor-pointer active:scale-95" onclick="goToCardDetail('${card.name}', '${card.number}', event)">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
+                            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
                                 <img src="${getBankLogoUrl(card.bank)}" onerror="handleImageError(this, '${card.bank[0]}')" class="w-full h-full object-contain" alt="${card.bank}">
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 mb-0.5">
-                                    <span class="text-gray-400 text-[10px] tracking-tight">${card.name} (${card.number})</span>
+                                <p class="text-[10px] text-gray-500 mb-0.5">
+                                    <span class="text-gray-400 text-[8px] tracking-tight">${card.name} (${card.number})</span>
                                 </p>
-                                <p class="font-bold text-gray-900 dark:text-white text-lg"><span class="count-up" data-value="${card.amount}">0</span>원</p>
+                                <p class="font-bold text-gray-900 dark:text-white text-sm"><span class="count-up" data-value="${card.amount}">0</span>원</p>
                             </div>
                         </div>
-                        <button onclick="goToCardDetail('${card.name}', '${card.number}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1.5 rounded-card hover:bg-gray-200 dark:hover:bg-gray-600 transition">명세서</button>
+                        <button onclick="goToCardDetail('${card.name}', '${card.number}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold px-3 py-1 rounded-card hover:bg-gray-200 dark:hover:bg-gray-600 transition">명세서</button>
                     </div>
                 `;
             }).join('');
@@ -148,9 +148,9 @@
             buttons.forEach(btn => {
                 const el = document.getElementById(`filter-${btn}`);
                 if (btn === filter) {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-black text-white shadow-lg hover:bg-gray-700 transition whitespace-nowrap flex-shrink-0';
+                    el.className = 'px-3 py-1.5 rounded-full text-xs font-bold bg-black text-white shadow-lg hover:bg-gray-700 transition whitespace-nowrap flex-shrink-0';
                 } else {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
+                    el.className = 'px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
                 }
             });
             renderSpendingList();
@@ -181,18 +181,18 @@
             listEl.innerHTML = filtered.map(item => {
                 const categoryInfo = getCategoryInfo(item.category);
                 return `
-                    <div class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer active:scale-95 transform transition-transform">
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer active:scale-95 transform transition-transform">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full ${categoryInfo.bg} flex items-center justify-center ${categoryInfo.text} flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full ${categoryInfo.bg} flex items-center justify-center ${categoryInfo.text} flex-shrink-0">
                                 <i data-lucide="${categoryInfo.icon}" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-400 mb-0.5">${item.date} · ${item.card}</p>
-                                <p class="font-bold text-gray-900 dark:text-white">${item.desc}</p>
+                                <p class="text-[10px] text-gray-400 mb-0.5">${item.date} · ${item.card}</p>
+                                <p class="text-xs font-bold text-gray-900 dark:text-white">${item.desc}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="font-bold text-gray-900 dark:text-white">-${item.amount.toLocaleString()}원</p>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">-${item.amount.toLocaleString()}원</p>
                         </div>
                     </div>
                 `;

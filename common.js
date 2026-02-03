@@ -264,7 +264,7 @@ function renderBottomNav(activePage) {
 
     nav.innerHTML = items.map(item => {
         const isActive = activePage === item.id;
-        const colorClass = isActive ? 'text-deepBlue dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300';
+        const colorClass = isActive ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300';
         const hrefAttr = item.link ? `href="${item.link}"` : `onclick="${item.action}"`;
         const tag = item.link ? 'a' : 'button';
 

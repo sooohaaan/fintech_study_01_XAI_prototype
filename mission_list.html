@@ -20,21 +20,21 @@
         <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
             <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
         </button>
-        <h1 class="text-lg font-bold text-gray-900 dark:text-white">진행 중인 미션</h1>
+        <h1 class="text-base font-bold text-gray-900 dark:text-white">진행 중인 미션</h1>
     </header>
 
-    <main class="p-5 max-w-md mx-auto">
+    <main class="p-4 max-w-md mx-auto">
         <!-- Summary -->
-        <div id="missionSummary" class="mb-6"></div>
+        <div id="missionSummary" class="mb-4"></div>
 
         <!-- Tabs -->
-        <div class="relative flex bg-gray-200 dark:bg-gray-800 rounded-full p-1 mb-6 h-12">
+        <div class="relative flex bg-gray-200 dark:bg-gray-800 rounded-full p-1 mb-4 h-10">
             <div id="tab-bg" class="absolute top-1 bottom-1 left-1 bg-white dark:bg-gray-700 rounded-full shadow-sm tab-bg"></div>
-            <button onclick="switchTab('ongoing')" id="tab-ongoing" class="flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300">진행 중</button>
-            <button onclick="switchTab('completed')" id="tab-completed" class="flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300">완료</button>
+            <button onclick="switchTab('ongoing')" id="tab-ongoing" class="flex-1 relative z-10 text-xs font-bold text-gray-900 dark:text-white transition-colors duration-300">진행 중</button>
+            <button onclick="switchTab('completed')" id="tab-completed" class="flex-1 relative z-10 text-xs font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300">완료</button>
         </div>
 
-        <div id="missionListContainer" class="space-y-4">
+        <div id="missionListContainer" class="space-y-3">
             <!-- JS Rendering -->
         </div>
     </main>
@@ -62,8 +62,8 @@
 
             if (tab === 'ongoing') {
                 tabBg.style.transform = 'translateX(0%)';
-                ongoingTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300';
-                completedTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
+                ongoingTab.className = 'flex-1 relative z-10 text-xs font-bold text-gray-900 dark:text-white transition-colors duration-300';
+                completedTab.className = 'flex-1 relative z-10 text-xs font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
             } else {
                 tabBg.style.transform = 'translateX(100%)'; // 100% 이동 (width가 50%이므로 남은 공간만큼 이동)
                 // padding 보정: p-1 (4px) 고려하여 정확한 위치 계산 필요하지만, 
@@ -77,8 +77,8 @@
                 // p-1이 있으므로 내부 공간 기준 100% 이동이 맞음.
                 
                 // 텍스트 색상 변경
-                ongoingTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
-                completedTab.className = 'flex-1 relative z-10 text-sm font-bold text-gray-900 dark:text-white transition-colors duration-300';
+                ongoingTab.className = 'flex-1 relative z-10 text-xs font-bold text-gray-500 dark:text-gray-400 transition-colors duration-300';
+                completedTab.className = 'flex-1 relative z-10 text-xs font-bold text-gray-900 dark:text-white transition-colors duration-300';
             }
             
             renderMissionList();
@@ -137,13 +137,19 @@
 
             // (2) D-day 실시간 계산
             missions.forEach(m => {
-                if (m.deadline) {
-                    const now = new Date();
-                    const deadline = new Date(m.deadline);
-                    const diffTime = deadline - now;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    m.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
+                if (!m.deadline) {
+                    m.deadline = Date.now() + (30 * 24 * 60 * 60 * 1000); // 기본 30일
                 }
+                
+                const now = new Date();
+                now.setHours(0, 0, 0, 0); // 시간 초기화 (날짜 기준 계산)
+                
+                const deadline = new Date(m.deadline);
+                deadline.setHours(0, 0, 0, 0);
+                
+                const diffTime = deadline - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                m.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
             });
 
             // 총 획득 가능 포인트 계산 (진행 중인 미션 기준)
@@ -158,13 +164,13 @@
 
             if (summaryContainer) {
                 summaryContainer.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-4 shadow-lg border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">총 획득 가능 포인트</p>
-                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white"><span id="totalPotentialPoints">0</span> P</h2>
+                            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">총 획득 가능 포인트</p>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white"><span id="totalPotentialPoints">0</span> P</h2>
                         </div>
-                        <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-                            <i data-lucide="gift" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
+                        <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
+                            <i data-lucide="gift" class="w-5 h-5 text-purple-600 dark:text-purple-400"></i>
                         </div>
                     </div>
                 `;
@@ -204,7 +210,7 @@
 
                 let highRewardBadge = '';
                 if (rewards.isHighReward) {
-                    highRewardBadge = `<span class="text-[10px] font-bold text-white bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded inline-flex items-center shadow-sm"><i data-lucide="flame" class="w-3 h-3 mr-0.5"></i>High Reward</span>`;
+                    highRewardBadge = `<span class="text-[8px] font-bold text-white bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded inline-flex items-center shadow-sm"><i data-lucide="flame" class="w-3 h-3 mr-0.5"></i>High Reward</span>`;
                 }
 
                 let colorClass;
@@ -222,37 +228,47 @@
                 
                 const badgeContent = isCompleted ? '<i data-lucide="check-circle" class="w-3 h-3 mr-1"></i>완료' : m.dday;
 
+                // Social Proof Data
+                const peopleCount = Math.floor(Math.random() * 2000) + 100;
+                const loanType = m.title.includes('주택') ? '주택담보' : (m.title.includes('사업') ? '사업자' : '신용');
+
                 const subMissionsHtml = m.subMissions ? m.subMissions.map(sub => `
                     <div class="flex items-start gap-2">
                         <div class="w-3.5 h-3.5 rounded-full border ${sub.status === 'completed' ? 'bg-gray-400 border-gray-400' : (sub.status === 'active' ? 'border-deepBlue dark:border-blue-400 bg-white dark:bg-gray-800' : 'border-gray-300 dark:border-gray-500')} flex items-center justify-center flex-shrink-0 mt-0.5">
                             ${sub.status === 'completed' ? '<i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>' : (sub.status === 'active' ? '<div class="w-1.5 h-1.5 rounded-full bg-deepBlue dark:bg-blue-400"></div>' : '')}
                         </div>
-                        <span class="text-xs text-gray-600 dark:text-gray-300 ${sub.status === 'completed' ? 'line-through opacity-50' : ''} leading-snug">${sub.text}</span>
+                        <span class="text-[10px] text-gray-600 dark:text-gray-300 ${sub.status === 'completed' ? 'line-through opacity-50' : ''} leading-snug">${sub.text}</span>
                     </div>
-                `).join('') : '<p class="text-xs text-gray-400">세부 미션이 없습니다.</p>';
+                `).join('') : '<p class="text-[10px] text-gray-400">세부 미션이 없습니다.</p>';
 
                 return `
-                    <div onclick="toggleMission('${m.id}')" class="bg-white dark:bg-gray-800 p-6 rounded-card shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-all duration-300 overflow-hidden group">
+                    <div onclick="toggleMission('${m.id}')" class="bg-white dark:bg-gray-800 p-4 rounded-card shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-all duration-300 overflow-hidden group">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex gap-1.5 flex-wrap">
-                                <span class="text-[10px] font-bold ${colorClass} px-2 py-1 rounded inline-flex items-center">${badgeContent}</span>
-                                <span class="text-[10px] font-bold text-electricPurple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded inline-flex items-center">+${rewardPoints.toLocaleString()}P</span>
+                                <span class="text-[8px] font-bold ${colorClass} px-2 py-1 rounded inline-flex items-center">${badgeContent}</span>
+                                <span class="text-[8px] font-bold text-electricPurple bg-purple-50 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded inline-flex items-center">+${rewardPoints.toLocaleString()}P</span>
                                 ${highRewardBadge}
                             </div>
-                            <span class="text-[10px] font-bold text-gray-400 mt-0.5">${m.progress}%</span>
+                            <span class="text-[8px] font-bold text-gray-400 mt-0.5">${m.progress}%</span>
                         </div>
-                        <h4 class="font-bold text-gray-900 dark:text-white mb-1">${m.title}</h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">${m.desc}</p>
+                        <h4 class="font-bold text-sm text-gray-900 dark:text-white mb-1">${m.title}</h4>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3">${m.desc}</p>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5">
                             <div class="${barColor} h-1.5 rounded-full transition-all duration-1000" style="width: ${m.progress}%"></div>
+                        </div>
+
+                        <!-- Social Proof -->
+                        <div class="mt-3 pt-2 border-t border-gray-100 dark:border-gray-700 flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-gray-400">
+                            <i data-lucide="trending-up" class="w-3 h-3 text-gray-400"></i>
+                            나와 같은 미션을 <span class="font-bold text-gray-700 dark:text-gray-300">${peopleCount.toLocaleString()}명</span>이 완료하여 ${loanType}대출을 받았어요.
                         </div>
                         
                         <!-- Accordion Content -->
                         <div id="accordion-${m.id}" class="hidden opacity-0 transition-opacity duration-300">
-                            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-3">
+                            <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 space-y-2">
                                 ${subMissionsHtml}
                             </div>
-                            <button onclick="event.stopPropagation(); location.href='mission_detail.html?id=${m.id}'" class="w-full mt-4 py-3 bg-gray-50 dark:bg-gray-700/50 text-deepBlue dark:text-blue-400 text-xs font-bold rounded-card hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <button onclick="event.stopPropagation(); location.href='mission_detail.html?id=${m.id}'" class="w-full mt-3 py-2 bg-gray-50 dark:bg-gray-700/50 text-deepBlue dark:text-blue-400 text-[10px] font-bold rounded-card hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                 미션 관리하기
                             </button>
                         </div>
@@ -277,11 +293,11 @@
                 const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
                 
                 container.innerHTML = sortedDates.map(date => `
-                    <div class="mb-6">
-                        <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 px-1 flex items-center gap-2">
+                    <div class="mb-4">
+                        <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 px-1 flex items-center gap-2">
                             <i data-lucide="calendar" class="w-4 h-4"></i> ${date}
                         </h3>
-                        <div class="space-y-4">
+                        <div class="space-y-3">
                             ${groups[date].map(m => createCardHtml(m)).join('')}
                         </div>
                     </div>

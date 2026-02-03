@@ -189,17 +189,19 @@
             }
 
             // D-day 실시간 계산
-            if (!currentMission.deadline && currentMission.id === 'mission_housing') {
-                currentMission.deadline = Date.now() + (90 * 24 * 60 * 60 * 1000);
+            if (!currentMission.deadline) {
+                currentMission.deadline = Date.now() + (30 * 24 * 60 * 60 * 1000); // 기본 30일
             }
 
-            if (currentMission.deadline) {
-                const now = new Date();
-                const deadline = new Date(currentMission.deadline);
-                const diffTime = deadline - now;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                currentMission.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
-            }
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            
+            const deadline = new Date(currentMission.deadline);
+            deadline.setHours(0, 0, 0, 0);
+
+            const diffTime = deadline - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            currentMission.dday = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : '종료');
 
             renderUI(0, null);
         }
