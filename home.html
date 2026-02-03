@@ -48,7 +48,7 @@
     <!-- Progress Modal -->
     <div id="progressModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeProgressModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400">
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-3xl p-4 text-xs text-gray-500 dark:text-gray-400 space-y-3">
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-card p-4 text-xs text-gray-500 dark:text-gray-400 space-y-3">
                     <div id="step1" class="flex items-center gap-3 transition-all duration-300 opacity-50">
                         <div class="icon-box"><i data-lucide="circle" class="w-4 h-4"></i></div>
                         <span>신용점수 조회</span>
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <button onclick="closeProgressModal()" class="w-full mt-6 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+            <button onclick="closeProgressModal()" class="w-full mt-6 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 rounded-card hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                 닫기
             </button>
         </div>
@@ -94,13 +94,13 @@
     <!-- Credit Score Detail Modal -->
     <div id="creditScoreModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeCreditScoreModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[85vh] flex flex-col">
+        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up h-[85vh] flex flex-col">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 flex-shrink-0"></div>
             
             <!-- Tabs -->
-            <div class="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6 flex-shrink-0">
-                <button onclick="switchCreditScoreTab('kcb')" id="tab-kcb" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-all">KCB</button>
-                <button onclick="switchCreditScoreTab('nice')" id="tab-nice" class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">NICE</button>
+            <div class="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-card mb-6 flex-shrink-0">
+                <button onclick="switchCreditScoreTab('kcb')" id="tab-kcb" class="flex-1 py-2 text-sm font-bold rounded-card bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm transition-all">KCB</button>
+                <button onclick="switchCreditScoreTab('nice')" id="tab-nice" class="flex-1 py-2 text-sm font-bold rounded-card text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">NICE</button>
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1">
@@ -125,7 +125,7 @@
                 <!-- Score Trend Chart -->
                 <div class="mb-8">
                     <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">점수 변동 추이</h3>
-                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-3xl p-4 border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-card p-4 border border-gray-100 dark:border-gray-700">
                         <div class="relative h-32 w-full">
                             <svg id="scoreTrendChart" class="w-full h-full overflow-visible"></svg>
                             <!-- Tooltip -->
@@ -145,7 +145,7 @@
                 </div>
                 
                 <!-- Tip -->
-                <div id="creditScoreTip" class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-3xl border border-blue-100 dark:border-blue-800 transition-all duration-500">
+                <div id="creditScoreTip" class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-card border border-blue-100 dark:border-blue-800 transition-all duration-500">
                     <h4 class="font-bold text-deepBlue dark:text-blue-400 text-sm mb-2">💡 신용점수 올리기 팁</h4>
                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                         신용카드를 한도 대비 30~50% 수준으로 꾸준히 사용하고, 통신비나 공과금을 성실하게 납부하면 점수 상승에 도움이 됩니다.
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <button onclick="closeCreditScoreModal()" class="w-full mt-4 bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition flex-shrink-0">
+            <button onclick="closeCreditScoreModal()" class="w-full mt-4 bg-black text-white font-bold py-3 rounded-card hover:bg-gray-700 transition flex-shrink-0">
                 확인
             </button>
         </div>
@@ -162,18 +162,18 @@
     <!-- Score Criteria Modal -->
     <div id="scoreCriteriaModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeScoreCriteriaModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <h3 id="criteriaTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">평가 기준</h3>
             <p id="criteriaDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6">내용</p>
-            <button onclick="closeScoreCriteriaModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
+            <button onclick="closeScoreCriteriaModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-card hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
     </div>
 
     <!-- Spending Detail Modal -->
     <div id="spendingModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeSpendingModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-2">
@@ -302,7 +302,7 @@
             </div>
             <div id="creditScoreSection" class="flex gap-3">
                 <!-- KCB -->
-                <div class="flex-1 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-900 dark:text-white">
@@ -319,16 +319,16 @@
                         <p class="text-xs text-gray-400 mt-1">상위 <span id="creditScorePercentKCB">0</span>%</p>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
-                        <div id="creditScoreBarKCB" class="bg-deepBlue h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        <div id="creditScoreBarKCB" class="bg-gradient-to-r from-blue-600 to-blue-400 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
 
                 <!-- NICE -->
-                <div class="flex-1 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform" onclick="openCreditScoreModal()">
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-900 dark:text-white">
-                                <i data-lucide="shield" class="w-3 h-3"></i>
+                                <i data-lucide="shield-check" class="w-3 h-3"></i>
                             </div>
                             <span class="text-xs font-bold text-gray-500 dark:text-gray-400">NICE</span>
                         </div>
@@ -341,13 +341,13 @@
                         <p class="text-xs text-gray-400 mt-1">상위 <span id="creditScorePercentNICE">0</span>%</p>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
-                        <div id="creditScoreBarNICE" class="bg-gray-400 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        <div id="creditScoreBarNICE" class="bg-gradient-to-r from-gray-400 to-gray-300 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
             
             <!-- Credit Score Tip Banner -->
-            <div id="creditScoreTipBanner" onclick="openCreditScoreModal(true)" class="mt-3 bg-gray-50 dark:bg-gray-800 rounded-3xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition-transform border border-gray-100 dark:border-gray-700 shadow-lg">
+            <div id="creditScoreTipBanner" onclick="openCreditScoreModal(true)" class="mt-3 bg-gray-50 dark:bg-gray-800 rounded-card p-4 flex items-center justify-between cursor-pointer active:scale-95 transition-transform border border-gray-100 dark:border-gray-700 shadow-lg">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center text-gray-900 dark:text-white shadow-sm">
                         <i data-lucide="lightbulb" class="w-5 h-5"></i>
@@ -380,22 +380,22 @@
     <!-- Transfer Modal -->
     <div id="transferModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTransferModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">송금하기</h3>
             <p id="transferBankName" class="text-sm text-gray-500 mb-4">은행 계좌에서 송금</p>
             
             <div class="mb-6">
                 <label class="block text-xs font-bold text-gray-500 mb-1">보낼 금액</label>
-                <div class="flex items-center border-b-2 border-gray-200 dark:border-gray-600 focus-within:border-deepBlue transition">
-                    <input type="number" id="transferAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-2 outline-none bg-transparent dark:text-white">
+                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-card px-4 bg-gray-50 dark:bg-gray-700/30 focus-within:border-deepBlue transition">
+                    <input type="number" id="transferAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-3 outline-none bg-transparent dark:text-white">
                     <span class="text-gray-900 dark:text-white font-bold">원</span>
                 </div>
             </div>
 
             <div class="flex gap-3">
-                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">보내기</button>
+                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-card bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-card bg-black text-white font-bold hover:bg-gray-700 transition transform active:scale-95">보내기</button>
             </div>
         </div>
     </div>
@@ -524,7 +524,7 @@
             // 헤더 UI 렌더링
             if (headerMissionInfo) {
                 headerMissionInfo.innerHTML = `
-                    <div class="flex-1 flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl px-3 h-9 border border-gray-100 dark:border-gray-700">
+                    <div class="flex-1 flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-card px-3 h-9 border border-gray-100 dark:border-gray-700">
                         <div class="flex items-baseline gap-1.5 flex-shrink-0">
                             <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400">AI 미션</span>
                             <span class="text-sm font-bold text-gray-900 dark:text-white leading-none">${totalProgress}%</span>
@@ -538,7 +538,7 @@
                         </div>
                     </div>
 
-                    <button onclick="event.stopPropagation(); location.href='point_history.html'" class="flex items-center justify-center gap-1 bg-purple-50 dark:bg-purple-900/20 px-3 h-9 rounded-2xl hover:bg-purple-100 dark:hover:bg-purple-900/40 transition flex-shrink-0 min-w-[50px] border border-purple-100 dark:border-purple-900/30">
+                    <button onclick="event.stopPropagation(); location.href='point_history.html'" class="flex items-center justify-center gap-1 bg-purple-50 dark:bg-purple-900/20 px-3 h-9 rounded-card hover:bg-purple-100 dark:hover:bg-purple-900/40 transition flex-shrink-0 min-w-[50px] border border-purple-100 dark:border-purple-900/30">
                         <span class="text-[10px] font-bold text-electricPurple dark:text-purple-400">P</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white">${(persona.points || 0).toLocaleString()}</span>
                     </button>
@@ -572,7 +572,7 @@
             if (mainAccount) {
                 const eyeIcon = isBalanceHidden ? 'eye-off' : 'eye';
                 accountListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
                         <!-- 상단: 총 보유 자산 -->
                         <div class="mb-4">
                             <div class="flex items-center gap-2 mb-1">
@@ -615,13 +615,13 @@
                 `;
             } else {
                 accountListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 100ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="wallet" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">계좌를 개설해보세요</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">TrustFin의 투명한 금융 서비스를<br>경험해보실 수 있습니다.</p>
-                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-card hover:bg-blue-800 transition">
                             계좌 개설하기
                         </button>
                     </div>
@@ -655,13 +655,13 @@
                     
                     if (section) {
                         section.innerHTML = `
-                            <div class="w-full bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 500ms">
+                            <div class="w-full bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                                 <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                                     <i data-lucide="shield-alert" class="w-8 h-8"></i>
                                 </div>
                                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">신용점수 정보가 없습니다</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">간편 인증으로 내 신용점수를<br>무료로 조회해보세요.</p>
-                                <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                                <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-black text-white font-bold py-3 rounded-card hover:bg-gray-700 transition">
                                     내 신용점수 조회하기
                                 </button>
                             </div>
@@ -811,13 +811,13 @@
             // 게스트이거나 계좌가 없는 경우
             if (!persona.accounts || persona.accounts.length === 0 || persona.id === 'guest') {
                 section.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 300ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="credit-card" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">소비 내역이 없습니다</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">카드를 연결하고 똑똑한 소비 관리를<br>시작해보세요.</p>
-                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-black text-white font-bold py-3 rounded-card hover:bg-gray-700 transition">
                             카드 연결하기
                         </button>
                     </div>
@@ -866,7 +866,7 @@
             const eyeIcon = isSpendingHidden ? 'eye-off' : 'eye';
 
             const html = `
-                <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors opacity-0 animate-slide-in-right cursor-pointer active:scale-95 transform transition-transform" style="animation-delay: 300ms">
+                <div onclick="openSpendingModal()" class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform">
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-gray-500 dark:text-gray-400">이번 달 총 소비</span>
@@ -880,7 +880,7 @@
                         ${isSpendingHidden ? '******' : currentMonth.toLocaleString() + '원'}
                     </h2>
                     <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-4 overflow-hidden">
-                        <div id="spendingProgressBar" class="${progressColor} h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                        <div id="spendingProgressBar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
                     </div>
                     <p class="text-xs text-gray-400 mt-2 flex items-center">예산 대비 ${budgetPercent}% 사용 ${warningIcon}</p>
                 </div>
@@ -949,13 +949,13 @@
             // 게스트 모드 처리
             if (currentPersonaId === 'guest') {
                 loanSection.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center opacity-0 animate-slide-in-right" style="animation-delay: 700ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="coins" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">대출 내역이 없습니다</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">내 조건에 딱 맞는 최저 금리 상품을<br>AI가 투명하게 분석해드립니다.</p>
-                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-card hover:bg-blue-800 transition">
                             내 한도 조회하기
                         </button>
                     </div>
@@ -1034,7 +1034,7 @@
             // 렌더링
             if (myLoans.length === 0) {
                 loanSection.innerHTML = `
-                    <div class="bg-gray-900 dark:bg-white rounded-3xl p-6 shadow-lg text-white dark:text-gray-900 awwwards-card">
+                    <div class="bg-gray-900 dark:bg-white rounded-card p-6 shadow-lg text-white dark:text-gray-900 awwwards-card">
                         <div class="flex items-start gap-4 mb-4">
                             <div class="bg-white/10 dark:bg-gray-900/10 p-3 rounded-full text-white dark:text-gray-900 backdrop-blur-sm">
                                 <i data-lucide="sparkles" class="w-6 h-6"></i>
@@ -1044,7 +1044,7 @@
                                 <p class="text-xs text-gray-400 dark:text-gray-600 mt-1">내 조건에 딱 맞는 최저 금리 상품을<br>AI가 투명하게 분석해드립니다.</p>
                             </div>
                         </div>
-                        <button onclick="location.href='loan_input.html'" class="w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition active:scale-95 flex justify-center items-center gap-2 shadow-sm">
+                        <button onclick="location.href='loan_input.html'" class="w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-bold py-3 rounded-card hover:bg-gray-100 dark:hover:bg-gray-800 transition active:scale-95 flex justify-center items-center gap-2 shadow-sm">
                             <span>대출받기</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
@@ -1052,7 +1052,7 @@
                 `;
             } else {
                 loanSection.innerHTML = `
-                    <div onclick="location.href='my_loans.html'" class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform awwwards-card">
+                    <div onclick="location.href='my_loans.html'" class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer active:scale-95 transform transition-transform awwwards-card">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-gray-500 dark:text-gray-400">총 대출 잔액</span>
                             <span class="text-xs font-bold text-white bg-deepBlue px-2 py-1 rounded">보유 ${myLoans.length}건</span>
@@ -1269,30 +1269,30 @@
             const inactiveClass = 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200';
 
             if (tab === 'kcb') {
-                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
-                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${activeClass}`;
+                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${inactiveClass}`;
             } else {
-                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
-                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                kcbTab.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${inactiveClass}`;
+                niceTab.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${activeClass}`;
             }
 
             // 상세 평가 항목 업데이트
             const analysisItems = document.getElementById('scoreAnalysisItems');
             if (tab === 'kcb') {
                 analysisItems.innerHTML = `
-                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-card flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">연체 없이 성실하게 상환 중</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
                     </div>
-                    <div onclick="openScoreCriteriaModal('debt')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('debt')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-card flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-electricPurple dark:text-purple-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">부채 수준</p><p class="text-xs text-gray-500 dark:text-gray-400">소득 대비 적절한 수준</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
                     </div>
                 `;
             } else {
                 analysisItems.innerHTML = `
-                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('payment')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-card flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-deepBlue dark:text-blue-400"><i data-lucide="calendar-check" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">상환 이력</p><p class="text-xs text-gray-500 dark:text-gray-400">최근 1년 연체 기록 없음</p></div></div><span class="text-sm font-bold text-electricPurple dark:text-purple-400">양호</span>
                     </div>
-                    <div onclick="openScoreCriteriaModal('creditType')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                    <div onclick="openScoreCriteriaModal('creditType')" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-card flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div><div><p class="font-bold text-gray-900 dark:text-white">신용 형태</p><p class="text-xs text-gray-500 dark:text-gray-400">체크카드 사용 비중 높음</p></div></div><span class="text-sm font-bold text-deepBlue dark:text-blue-400">우수</span>
                     </div>
                 `;

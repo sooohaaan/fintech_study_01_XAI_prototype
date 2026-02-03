@@ -60,9 +60,9 @@
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 if (t === filter) {
-                    btn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                    btn.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${activeClass}`;
                 } else {
-                    btn.className = `flex-1 py-2 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                    btn.className = `flex-1 py-2 text-sm font-bold rounded-card transition-all ${inactiveClass}`;
                 }
             });
             renderHistoryList();

@@ -33,7 +33,7 @@
         <main class="p-5 max-w-md mx-auto">
             <!-- Category Filter -->
             <div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-                <button onclick="filterShop('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0">전체</button>
+                <button onclick="filterShop('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-black text-white transition shadow-sm whitespace-nowrap flex-shrink-0">전체</button>
                 <button onclick="filterShop('cafe')" id="filter-cafe" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">카페</button>
                 <button onclick="filterShop('store')" id="filter-store" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">편의점</button>
                 <button onclick="filterShop('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">외식</button>
@@ -69,7 +69,7 @@
             <p class="text-xs text-gray-400 text-center mb-6">구매 후 취소할 수 없습니다.</p>
             <div class="flex gap-3">
                 <button onclick="closePurchaseModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="confirmPurchase()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">구매하기</button>
+                <button onclick="confirmPurchase()" class="flex-1 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-700 transition">구매하기</button>
             </div>
         </div>
     </div>
@@ -88,7 +88,7 @@
             </div>
             <div class="flex gap-3">
                 <button onclick="closeLowPointModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="goToCharge()" class="flex-1 py-3 rounded-xl bg-electricPurple text-white font-bold hover:bg-purple-600 transition">충전하러 가기</button>
+                <button onclick="goToCharge()" class="flex-1 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-700 transition">충전하러 가기</button>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@
             buttons.forEach(btn => {
                 const el = document.getElementById(`filter-${btn}`);
                 if (btn === category) {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-deepBlue text-white transition shadow-sm whitespace-nowrap flex-shrink-0';
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-black text-white transition shadow-sm whitespace-nowrap flex-shrink-0';
                 } else {
                     el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
                 }

@@ -19,10 +19,15 @@ if (typeof tailwind !== 'undefined') {
                         500: '#6D6D6D',
                         600: '#5D5D5D',
                         700: '#4F4F4F',
-                        800: '#1A1A1A', /* Awwwards Dark Card */
-                        900: '#0D0D0D', /* Awwwards Dark Bg */
+                        800: '#222222', /* Awwwards Dark Card */
+                        900: '#222222', /* Awwwards Dark Bg */
                     },
+                    black: '#222222',
+                    white: '#ffffff',
                     deepBlue: '#4353FF', /* Awwwards Electric Blue */
+            },
+            borderRadius: {
+                'card': '14px',
                 },
                 boxShadow: {
                     'md': '0 3px 4px -1px rgb(0 0 0 / 0.1), 0 1px 3px -1px rgb(0 0 0 / 0.1)',
@@ -104,6 +109,8 @@ function injectGlobalStyles() {
         body {
             font-family: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
             letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body, body *:not(script):not(style) {
@@ -112,9 +119,15 @@ function injectGlobalStyles() {
             transition-duration: 300ms;
         }
 
+        /* Hide Scrollbar Globally for App-like feel */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
         /* --- Awwwards Style Implementation --- */
         :root {
-            --primary-black: #0D0D0D;
+            --primary-black: #222222;
             --accent-color: #4353FF;
             --bg-light: #F3F3F3;
             --bg-card: #FFFFFF;
@@ -127,8 +140,8 @@ function injectGlobalStyles() {
         /* Dark Mode Variables */
         html.dark {
             --primary-black: #ffffff;
-            --bg-light: #0D0D0D;
-            --bg-card: #1A1A1A;
+            --bg-light: #222222;
+            --bg-card: #222222;
             --text-main: #FFFFFF;
             --text-sub: #999999;
         }
@@ -387,13 +400,20 @@ function showGlobalToast(message) {
 // 은행 로고 URL 반환
 function getBankLogoUrl(bankName) {
     const logoMap = {
-        '국민은행': 'https://logo.clearbit.com/kbstar.com',
-        '신한은행': 'https://logo.clearbit.com/shinhan.com',
-        '우리은행': 'https://logo.clearbit.com/wooribank.com',
-        '하나은행': 'https://logo.clearbit.com/kebhana.com',
-        '카카오뱅크': 'https://logo.clearbit.com/kakaobank.com',
-        '토스뱅크': 'https://logo.clearbit.com/toss.im',
-        '현대캐피탈': 'https://logo.clearbit.com/hyundaicapital.com'
+        '국민은행': 'https://static.toss.im/icons/png/4x/icon-bank-kb.png',
+        '신한은행': 'https://static.toss.im/icons/png/4x/icon-bank-shinhan.png',
+        '우리은행': 'https://static.toss.im/icons/png/4x/icon-bank-woori.png',
+        '하나은행': 'https://static.toss.im/icons/png/4x/icon-bank-hana.png',
+        '카카오뱅크': 'https://static.toss.im/icons/png/4x/icon-bank-kakaobank.png',
+        '토스뱅크': 'https://static.toss.im/icons/png/4x/icon-bank-toss.png',
+        '현대캐피탈': 'https://static.toss.im/icons/png/4x/icon-card-hyundai.png',
+        '삼성카드': 'https://static.toss.im/icons/png/4x/icon-card-samsung.png',
+        '현대카드': 'https://static.toss.im/icons/png/4x/icon-card-hyundai.png',
+        '신한카드': 'https://static.toss.im/icons/png/4x/icon-card-shinhan.png',
+        '국민카드': 'https://static.toss.im/icons/png/4x/icon-card-kb.png',
+        '롯데카드': 'https://static.toss.im/icons/png/4x/icon-card-lotte.png',
+        '우리카드': 'https://static.toss.im/icons/png/4x/icon-card-woori.png',
+        '하나카드': 'https://static.toss.im/icons/png/4x/icon-card-hana.png'
     };
     return logoMap[bankName] || `https://via.placeholder.com/40?text=${bankName ? bankName[0] : 'B'}`;
 }
@@ -466,8 +486,8 @@ function toggleBackgroundScale(isOpen) {
             appContent.style.borderRadius = '16px';
             appContent.style.opacity = '0.8';
             appContent.style.overflow = 'hidden';
-            document.body.style.backgroundColor = '#000'; // 깊이감을 위한 검은 배경
-            setMetaThemeColor('#000000');
+            document.body.style.backgroundColor = '#222222'; // 깊이감을 위한 검은 배경
+            setMetaThemeColor('#222222');
         } else {
             appContent.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s, opacity 0.4s';
             appContent.style.transform = '';

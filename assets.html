@@ -53,7 +53,7 @@
         </div>
 
         <!-- Asset Graph (Donut Chart) -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-card shadow-lg border border-gray-100 dark:border-gray-700 transition-colors">
             <h3 class="font-bold text-gray-900 dark:text-white mb-6">자산 구성</h3>
             
             <div class="flex items-center justify-center mb-8">
@@ -117,7 +117,7 @@
 
             <div class="flex gap-3">
                 <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">보내기</button>
+                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-700 transition">보내기</button>
             </div>
         </div>
     </div>
@@ -160,13 +160,13 @@
                 document.getElementById('investRatioText').innerText = '0%';
 
                 assetListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-card p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="wallet" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">자산 정보가 없습니다</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">계좌를 연결하고 내 자산을<br>한눈에 관리해보세요.</p>
-                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-deepBlue text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-700 transition">
                             계좌 연결하기
                         </button>
                     </div>
@@ -188,7 +188,7 @@
                 const shimmerEffect = isTarget ? `<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent animate-shimmer pointer-events-none z-0"></div>` : '';
 
                 return `
-                    <div onclick="goToAccountDetail('${acc.bank}')" class="${containerClass} p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-all duration-500 cursor-pointer active:scale-95 transform transition-transform">
+                    <div onclick="goToAccountDetail('${acc.bank}')" class="${containerClass} p-6 rounded-card border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-all duration-500 cursor-pointer active:scale-95 transform transition-transform">
                         ${shimmerEffect}
                         <div class="flex items-center gap-4 relative z-10">
                             <div class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
