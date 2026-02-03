@@ -399,18 +399,18 @@ const ApplicationManager = {
         };
 
         modal.innerHTML = `
-            <div style="background: white; padding: 2rem; border-radius: 1.5rem 1.5rem 0 0; width: 100%; max-width: 448px; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); animation: slideUp 0.3s ease-out forwards;">
+            <div style="background: var(--bg-card); padding: 2rem; border-radius: 1.5rem 1.5rem 0 0; width: 100%; max-width: 448px; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
                 <style>
                     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
                     @keyframes slideDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
                 </style>
-                <div style="width: 48px; height: 6px; background-color: #e5e7eb; border-radius: 9999px; margin: 0 auto 1.5rem auto;"></div>
-                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">${productName}</h3>
-                <p style="margin-bottom: 1rem; color: #4b5563;">심사가 진행 중입니다. 잠시만 기다려주세요.</p>
-                <div style="width: 100%; background: #e5e7eb; height: 0.75rem; border-radius: 9999px; overflow: hidden;">
-                    <div id="progress-bar" style="width: 0%; height: 100%; background: #1D4ED8; transition: width 0.2s linear;"></div>
+                <div style="width: 48px; height: 6px; background-color: var(--text-sub); opacity: 0.2; border-radius: 9999px; margin: 0 auto 1.5rem auto;"></div>
+                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: var(--text-main);">${productName}</h3>
+                <p style="margin-bottom: 1rem; color: var(--text-sub);">심사가 진행 중입니다. 잠시만 기다려주세요.</p>
+                <div style="width: 100%; background: var(--text-sub); opacity: 0.1; height: 0.75rem; border-radius: 9999px; overflow: hidden;">
+                    <div id="progress-bar" style="width: 0%; height: 100%; background: var(--accent-color); transition: width 0.2s linear;"></div>
                 </div>
-                <p id="progress-text" style="text-align: right; margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">0%</p>
+                <p id="progress-text" style="text-align: right; margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-sub);">0%</p>
             </div>
         `;
 

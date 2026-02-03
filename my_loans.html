@@ -74,7 +74,7 @@
                 </div>
                 <div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
                     <span class="text-gray-500 dark:text-gray-400">적용 금리</span>
-                    <span id="modalLoanRate" class="font-bold text-electricPurple dark:text-purple-400">0.0%</span>
+                    <span id="modalLoanRate" class="font-bold text-deepBlue dark:text-blue-400">0.0%</span>
                 </div>
                 <div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
                     <span class="text-gray-500 dark:text-gray-400">만기일</span>
@@ -230,16 +230,16 @@
 
                     if (isPending) {
                         statusText = '대출 심사 중';
-                        statusClass = 'text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300';
+                        statusClass = 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400';
                         icon = 'loader-2';
                         iconAnim = 'animate-spin';
                         descText = '심사가 진행 중입니다';
                         
-                        step1Class = "bg-blue-500 animate-pulse"; step2Class = inactiveBar; step3Class = inactiveBar;
+                        step1Class = "bg-amber-500 animate-pulse"; step2Class = inactiveBar; step3Class = inactiveBar;
                         step1Text = activeText; step2Text = inactiveText; step3Text = inactiveText;
                     } else if (isActive) {
                         statusText = '대출금 입금 완료';
-                        statusClass = 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300';
+                        statusClass = 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400';
                         icon = 'check';
                         iconAnim = '';
                         descText = '이용 중인 상품입니다';
@@ -248,16 +248,16 @@
                         const mockAmount = 30000000; 
                         totalLoanAmount += mockAmount;
                         
-                        step1Class = activeBar; step2Class = activeBar; step3Class = activeBar;
+                        step1Class = "bg-emerald-500"; step2Class = "bg-emerald-500"; step3Class = "bg-emerald-500";
                         step1Text = activeText; step2Text = activeText; step3Text = activeText;
                     } else {
                         statusText = '대출 심사 완료';
-                        statusClass = 'text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-300';
+                        statusClass = 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300';
                         icon = 'check-circle-2';
                         iconAnim = '';
                         descText = '클릭하여 상세 정보 확인';
                         
-                        step1Class = activeBar; step2Class = currentBar; step3Class = inactiveBar;
+                        step1Class = activeBar; step2Class = activeBar; step3Class = inactiveBar;
                         step1Text = activeText; step2Text = activeText; step3Text = inactiveText;
                     }
 
@@ -391,12 +391,12 @@
             selectedPurpose = purpose;
             
             document.querySelectorAll('.survey-option').forEach(el => {
-                el.classList.remove('border-deepBlue', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900/20');
+                el.classList.remove('border-deepBlue', 'bg-gray-100', 'dark:border-blue-500', 'dark:bg-gray-700');
                 const icon = el.querySelector('svg') || el.querySelector('i');
                 if (icon) icon.classList.add('opacity-0');
             });
             
-            element.classList.add('border-deepBlue', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900/20');
+            element.classList.add('border-deepBlue', 'bg-gray-100', 'dark:border-blue-500', 'dark:bg-gray-700');
             const targetIcon = element.querySelector('svg') || element.querySelector('i');
             if (targetIcon) targetIcon.classList.remove('opacity-0');
 
@@ -464,8 +464,8 @@
             const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
             defs.innerHTML = `
                 <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.2"/>
-                    <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+                    <stop offset="0%" stop-color="#4353FF" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#4353FF" stop-opacity="0"/>
                 </linearGradient>
             `;
             svg.appendChild(defs);
@@ -487,7 +487,7 @@
             const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
             line.setAttribute("points", points);
             line.setAttribute("fill", "none");
-            line.setAttribute("stroke", "#7C3AED"); // electricPurple
+            line.setAttribute("stroke", "#4353FF"); // Deep Blue
             line.setAttribute("stroke-width", "3");
             line.setAttribute("stroke-linecap", "round");
             line.setAttribute("stroke-linejoin", "round");
@@ -504,7 +504,7 @@
                 circle.setAttribute("cy", y);
                 circle.setAttribute("r", "4");
                 circle.setAttribute("fill", "#fff");
-                circle.setAttribute("stroke", "#7C3AED");
+                circle.setAttribute("stroke", "#4353FF");
                 circle.setAttribute("stroke-width", "2");
                 circle.setAttribute("class", "opacity-0 transition-opacity duration-500");
                 circle.style.transitionDelay = `${i * 100 + 500}ms`;

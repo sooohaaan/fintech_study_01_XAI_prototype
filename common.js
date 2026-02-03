@@ -10,9 +10,19 @@ if (typeof tailwind !== 'undefined') {
         theme: {
             extend: {
                 colors: {
-                    deepBlue: '#1D4ED8',
-                    electricPurple: '#7C3AED',
-                    softBlue: '#EFF6FF'
+                    gray: {
+                        50: '#F3F3F3',  /* Awwwards Light Bg */
+                        100: '#E7E7E7',
+                        200: '#D1D1D1',
+                        300: '#B0B0B0',
+                        400: '#888888',
+                        500: '#6D6D6D',
+                        600: '#5D5D5D',
+                        700: '#4F4F4F',
+                        800: '#1A1A1A', /* Awwwards Dark Card */
+                        900: '#0D0D0D', /* Awwwards Dark Bg */
+                    },
+                    deepBlue: '#4353FF', /* Awwwards Electric Blue */
                 },
                 boxShadow: {
                     'md': '0 3px 4px -1px rgb(0 0 0 / 0.1), 0 1px 3px -1px rgb(0 0 0 / 0.1)',
@@ -21,7 +31,7 @@ if (typeof tailwind !== 'undefined') {
                     '2xl': '0 18px 35px -8px rgb(0 0 0 / 0.25)',
                 },
                 fontFamily: {
-                    sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    sans: ['Pretendard', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
                 },
                 animation: {
                     'slide-in-right': 'slideInRight 0.5s ease-out forwards',
@@ -65,6 +75,7 @@ function initCommonUI(activePage) {
     renderBottomNav(activePage);
     updateNotificationBadge();
     if (window.lucide) window.lucide.createIcons();
+    initAwwwardsEffects(); // Initialize Awwwards style effects
 }
 
 // 테마 초기화
@@ -88,10 +99,115 @@ function injectGlobalStyles() {
     const style = document.createElement('style');
     style.id = styleId;
     style.textContent = `
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+        body {
+            font-family: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            letter-spacing: -0.015em;
+        }
+
         body, body *:not(script):not(style) {
             transition-property: background-color, border-color, color, fill, stroke, text-decoration-color;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 300ms;
+        }
+
+        /* --- Awwwards Style Implementation --- */
+        :root {
+            --primary-black: #0D0D0D;
+            --accent-color: #4353FF;
+            --bg-light: #F3F3F3;
+            --bg-card: #FFFFFF;
+            --text-main: #0D0D0D;
+            --text-sub: #666666;
+            --font-main: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Dark Mode Variables */
+        html.dark {
+            --primary-black: #ffffff;
+            --bg-light: #0D0D0D;
+            --bg-card: #1A1A1A;
+            --text-main: #FFFFFF;
+            --text-sub: #999999;
+        }
+
+        /* 1. Navigation Bar Styles */
+        .awwwards-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            height: 4rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: transparent;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+            font-family: var(--font-main);
+            letter-spacing: -0.02em;
+        }
+        .awwwards-nav.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .dark .awwwards-nav.scrolled {
+            background-color: rgba(31, 41, 55, 0.95);
+        }
+
+        /* Hover Line Animation */
+        .nav-item-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-item-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-item-link:hover::after {
+            width: 100%;
+        }
+
+        /* 2. Card UI Animation */
+        .awwwards-card {
+            transition: var(--transition-smooth) !important;
+            will-change: transform, box-shadow;
+        }
+        .awwwards-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        /* Utility for GSAP reveal */
+        .reveal-on-scroll {
+            opacity: 0; /* Hidden initially */
+        }
+
+        /* 3. Awwwards Button Style */
+        .btn-awwwards {
+            background-color: var(--primary-black);
+            color: var(--bg-card);
+            border: 1px solid var(--primary-black);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-awwwards:hover {
+            background-color: transparent;
+            color: var(--primary-black);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        html.dark .btn-awwwards:hover {
+            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
         }
     `;
     document.head.appendChild(style);
@@ -474,4 +590,68 @@ function submitTransfer() {
             if (typeof refreshData === 'function') refreshData();
         }
     }
+}
+
+// --- Awwwards Style Logic ---
+
+function initAwwwardsEffects() {
+    initNavScrollEffect();
+    initGSAPAnimations();
+}
+
+// 1. Navigation Scroll Effect
+function initNavScrollEffect() {
+    const nav = document.querySelector('.awwwards-nav');
+    if (!nav) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+}
+
+// 3. GSAP Scroll Reveal
+function initGSAPAnimations() {
+    // Load GSAP CDN dynamically
+    if (!window.gsap) {
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js";
+        script.onload = () => {
+            const stScript = document.createElement('script');
+            stScript.src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js";
+            stScript.onload = () => {
+                gsap.registerPlugin(ScrollTrigger);
+                runGSAPLogic();
+            };
+            document.head.appendChild(stScript);
+        };
+        document.head.appendChild(script);
+    } else {
+        runGSAPLogic();
+    }
+}
+
+function runGSAPLogic() {
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    if (elements.length === 0) return;
+
+    elements.forEach((el, index) => {
+        gsap.fromTo(el, 
+            { y: 60, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 1.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+    });
 }

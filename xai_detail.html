@@ -20,15 +20,22 @@
     <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
 
     <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
-        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
-            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
-        </button>
-        <h1 class="text-lg font-bold text-gray-900 dark:text-white">AI 상세 리포트</h1>
-    </header>
+    <nav class="awwwards-nav">
+        <div class="flex items-center gap-2 w-full max-w-md mx-auto relative justify-center">
+            <button onclick="history.back()" class="absolute left-0 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">AI 상세 리포트</h1>
+            <!-- Desktop Menu (Hidden on mobile, shown for demo) -->
+            <div class="hidden md:flex absolute right-0 gap-6 text-sm font-bold text-gray-600 dark:text-gray-300">
+                <a href="#" class="nav-item-link">Home</a>
+                <a href="#" class="nav-item-link">Analysis</a>
+            </div>
+        </div>
+    </nav>
 
     <!-- Sticky Process Flow Indicator -->
-    <div class="sticky top-16 z-10 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 py-3 transition-colors duration-300">
+    <div class="sticky top-16 z-10 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 py-3 transition-colors duration-300 mt-16">
         <div class="max-w-md mx-auto px-6">
             <div class="flex items-center justify-between relative px-2">
                 <!-- Connecting Line -->
@@ -42,14 +49,14 @@
                 
                 <!-- Step 2: Explanation -->
                 <button onclick="scrollToSection('section-explanation')" class="flex flex-col items-center bg-gray-50 dark:bg-gray-900 px-2 z-10 transition-transform active:scale-95">
-                    <div class="w-8 h-8 rounded-full bg-electricPurple text-white flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">2</div>
-                    <span class="text-[10px] font-bold text-electricPurple dark:text-purple-400">설명 (LIME)</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">2</div>
+                    <span class="text-[10px] font-bold text-gray-900 dark:text-white">설명 (LIME)</span>
                 </button>
                 
                 <!-- Step 3: Prescription -->
                 <button onclick="scrollToSection('prescriptionSection')" class="flex flex-col items-center bg-gray-50 dark:bg-gray-900 px-2 z-10 transition-transform active:scale-95">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">3</div>
-                    <span class="text-[10px] font-bold text-yellow-600 dark:text-yellow-500">처방 (Action)</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center font-bold text-xs mb-1 shadow-md ring-4 ring-gray-50 dark:ring-gray-900">3</div>
+                    <span class="text-[10px] font-bold text-gray-900 dark:text-white">처방 (Action)</span>
                 </button>
             </div>
         </div>
@@ -69,13 +76,13 @@
         </div>
 
         <!-- 3. XAI Analysis (Progress Bars) -->
-        <div id="section-explanation" class="mb-8 scroll-mt-36">
+        <div id="section-explanation" class="mb-8 scroll-mt-36 reveal-on-scroll">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                <i data-lucide="bar-chart-2" class="w-5 h-5 text-electricPurple dark:text-purple-400"></i>
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-deepBlue"></i>
                 상세 분석 결과
             </h3>
 
-            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5 awwwards-card">
                 <div id="analysisContainer" class="space-y-6">
                     <!-- Dynamic Content -->
                 </div>
@@ -115,12 +122,12 @@
         </div>
 
         <!-- 3.2 Feedback Section (New) -->
-        <div id="feedbackSection" class="mb-8 scroll-mt-36 hidden">
+        <div id="feedbackSection" class="mb-8 scroll-mt-36 hidden reveal-on-scroll">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                <i data-lucide="message-circle-question" class="w-5 h-5 text-blue-500"></i>
+                <i data-lucide="message-circle-question" class="w-5 h-5 text-deepBlue"></i>
                 조건이 만족스러우신가요?
             </h3>
-            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5 awwwards-card">
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
                     현재 제안된 금리와 한도에 대해 의견을 알려주세요.<br>
                     AI가 고객님의 니즈에 맞춰 새로운 목표를 설계해드립니다.
@@ -128,32 +135,32 @@
                 <div class="grid grid-cols-1 gap-3">
                     <button onclick="handleFeedback('satisfied')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
                         <span class="text-sm font-bold text-gray-700 dark:text-gray-200">만족해요, 이대로 진행할게요</span>
-                        <i data-lucide="thumbs-up" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                        <i data-lucide="thumbs-up" class="w-4 h-4 text-gray-400 group-hover:text-deepBlue transition-colors"></i>
                     </button>
                     <button onclick="handleFeedback('limit')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
                         <span class="text-sm font-bold text-gray-700 dark:text-gray-200">한도가 더 필요해요</span>
-                        <i data-lucide="trending-up" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                        <i data-lucide="trending-up" class="w-4 h-4 text-gray-400 group-hover:text-deepBlue transition-colors"></i>
                     </button>
                     <button onclick="handleFeedback('rate')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
                         <span class="text-sm font-bold text-gray-700 dark:text-gray-200">금리가 더 낮았으면 해요</span>
-                        <i data-lucide="percent" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                        <i data-lucide="percent" class="w-4 h-4 text-gray-400 group-hover:text-deepBlue transition-colors"></i>
                     </button>
                     <button onclick="handleFeedback('period')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
                         <span class="text-sm font-bold text-gray-700 dark:text-gray-200">대출 기간을 연장하고 싶어요</span>
-                        <i data-lucide="calendar-clock" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                        <i data-lucide="calendar-clock" class="w-4 h-4 text-gray-400 group-hover:text-deepBlue transition-colors"></i>
                     </button>
                     <button onclick="handleFeedback('method')" class="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-left flex items-center justify-between group transition-all">
                         <span class="text-sm font-bold text-gray-700 dark:text-gray-200">상환 방식을 변경하고 싶어요</span>
-                        <i data-lucide="refresh-ccw" class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                        <i data-lucide="refresh-ccw" class="w-4 h-4 text-gray-400 group-hover:text-deepBlue transition-colors"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- 3.5. AI Prescription (Action Plan) - Updated Section -->
-        <div id="prescriptionSection" class="mb-8 hidden scroll-mt-36">
+        <div id="prescriptionSection" class="mb-8 hidden scroll-mt-36 reveal-on-scroll">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                <span class="w-6 h-6 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-500 flex items-center justify-center text-xs font-bold">3</span>
+                <span class="w-6 h-6 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-bold">3</span>
                 AI Action Plan
             </h3>
             <div id="prescriptionList" class="space-y-3">
@@ -162,17 +169,17 @@
         </div>
 
         <!-- 4. Comprehensive Opinion (Card UI) -->
-        <div class="mb-8">
+        <div class="mb-8 reveal-on-scroll">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-                    <i data-lucide="sparkles" class="w-5 h-5 text-electricPurple"></i>
+                    <i data-lucide="sparkles" class="w-5 h-5 text-deepBlue"></i>
                     AI 종합 의견
                 </h3>
                 <button onclick="shareResult()" class="text-gray-400 hover:text-deepBlue dark:hover:text-blue-400 transition p-1">
                     <i data-lucide="share-2" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-lg p-5 awwwards-card">
                 <p id="aiOpinion" class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed">
                     분석 중입니다...
                 </p>
@@ -183,7 +190,7 @@
 
     <!-- Bottom Fixed Button -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
-        <button onclick="showCompleteModal()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95">
+        <button onclick="showCompleteModal()" class="w-full btn-awwwards font-bold py-4 rounded-xl shadow-lg active:scale-95">
             이 상품으로 대출 신청하기
         </button>
     </div>
@@ -200,10 +207,10 @@
                 연소득 대비 연간 갚아야 할 대출 원리금(원금+이자)의 비율을 의미합니다.<br>
                 금융당국 규제에 따라 DSR 40% 초과 시 추가 대출이 제한될 수 있습니다.
             </p>
-            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-3xl text-xs space-y-2 mb-6">
-                <div class="flex justify-between"><span class="text-green-600 dark:text-green-400 font-bold">40% 미만</span><span class="text-gray-500 dark:text-gray-400">안정적</span></div>
-                <div class="flex justify-between"><span class="text-orange-500 dark:text-orange-400 font-bold">40% ~ 70%</span><span class="text-gray-500 dark:text-gray-400">주의 (한도 제한 가능)</span></div>
-                <div class="flex justify-between"><span class="text-red-500 dark:text-red-400 font-bold">70% 이상</span><span class="text-gray-500 dark:text-gray-400">위험 (대출 불가 가능성)</span></div>
+            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-3xl text-xs space-y-2 mb-6">
+                <div class="flex justify-between"><span class="text-emerald-600 dark:text-emerald-400 font-bold">40% 미만</span><span class="text-gray-500 dark:text-gray-400">안정적</span></div>
+                <div class="flex justify-between"><span class="text-amber-500 dark:text-amber-400 font-bold">40% ~ 70%</span><span class="text-gray-500 dark:text-gray-400">주의 (한도 제한 가능)</span></div>
+                <div class="flex justify-between"><span class="text-rose-500 dark:text-rose-400 font-bold">70% 이상</span><span class="text-gray-500 dark:text-gray-400">위험 (대출 불가 가능성)</span></div>
             </div>
             <button onclick="closeDsrInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
@@ -229,7 +236,7 @@
             </div>
 
             <!-- Result Area -->
-            <div id="calcResultArea" class="hidden bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-4 mb-6 text-center border border-blue-100 dark:border-blue-800">
+            <div id="calcResultArea" class="hidden bg-gray-50 dark:bg-gray-800 rounded-3xl p-4 mb-6 text-center border border-gray-200 dark:border-gray-700">
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">예상 DSR</p>
                 <h2 class="text-3xl font-bold text-deepBlue dark:text-blue-400 mb-2"><span id="calcDsrValue">0</span>%</h2>
                 <p id="calcDsrStatus" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
@@ -249,7 +256,7 @@
     <!-- Processing Overlay -->
     <div id="processingOverlay" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl flex flex-col items-center transform transition-transform scale-95">
-            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-deepBlue dark:text-blue-400">
+            <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4 text-deepBlue dark:text-blue-400">
                 <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">신청 처리 중</h3>
@@ -262,7 +269,7 @@
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeCompleteModal()"></div>
         <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md text-center shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
-            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400">
+            <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-deepBlue dark:text-blue-400">
                 <i data-lucide="check-circle" class="w-8 h-8"></i>
             </div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">신청 완료</h2>
@@ -382,15 +389,15 @@
 
             // 색상 매핑
             const factorColors = {
-                '기본 점수': '#9CA3AF', // gray-400
-                '신용점수': '#3B82F6', // blue-500
-                '소득': '#10B981', // emerald-500
-                '자산': '#059669', // emerald-600
-                '직업': '#8B5CF6', // violet-500
-                'AI 분석': '#D946EF', // fuchsia-500
-                '대출목적': '#F59E0B', // amber-500
-                'DSR': '#EF4444', // red-500
-                '규제 미적용': '#06B6D4' // cyan-500
+                '기본 점수': '#E5E5E5',
+                '신용점수': '#3B82F6', // Blue
+                '소득': '#10B981', // Emerald
+                '자산': '#059669', // Emerald Dark
+                '직업': '#8B5CF6', // Violet
+                'AI 분석': '#D946EF', // Fuchsia
+                '대출목적': '#F59E0B', // Amber
+                'DSR': '#EF4444', // Rose
+                '규제 미적용': '#06B6D4' // Cyan
             };
 
             // 기본 점수 항목 추가
@@ -417,7 +424,7 @@
             } else {
                 product.contributions.forEach((item, index) => {
                     const isPositive = item.value > 0;
-                    const colorClass = isPositive ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400';
+                    const colorClass = isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400';
                     const sign = item.value > 0 ? '+' : '';
                     const dotColor = factorColors[item.factor] || '#6B7280';
 
@@ -500,25 +507,25 @@
                 
                 prescriptionList.innerHTML = counterfactuals.map((item, index) => `
                     ${item.type === 'mission' ? `
-                        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-5 rounded-3xl border border-indigo-100 dark:border-indigo-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-5 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
                             <div class="flex gap-3 items-start">
                                 <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-xl shadow-sm">
                                     🎯
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm mb-1">AI 맞춤 미션 (${intent === 'limit' ? '한도 상향' : (intent === 'rate' ? '금리 인하' : (intent === 'period' ? '기간 연장' : (intent === 'method' ? '상환 변경' : '추천')))})</h4>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-sm mb-1">AI 맞춤 미션 (${intent === 'limit' ? '한도 상향' : (intent === 'rate' ? '금리 인하' : (intent === 'period' ? '기간 연장' : (intent === 'method' ? '상환 변경' : '추천')))})</h4>
                                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">${item.text}</p>
                                 </div>
                             </div>
-                            <button onclick="handleAction('${item.action}', '${item.text.replace(/'/g, "\\'")}', '${item.label}')" class="w-full mt-1 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-bold py-3 rounded-lg border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition flex justify-center items-center gap-2 text-sm shadow-sm">
+                            <button onclick="handleAction('${item.action}', '${item.text.replace(/'/g, "\\'")}', '${item.label}')" class="w-full mt-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition flex justify-center items-center gap-2 text-sm shadow-sm">
                                 <span>${item.label}</span>
                                 <i data-lucide="flag" class="w-4 h-4"></i>
                             </button>
                         </div>
                     ` : `
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-yellow-200 dark:border-yellow-800 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right" style="animation-delay: ${100 + (index * 200)}ms">
                             <div class="flex gap-3 items-start">
-                                <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center flex-shrink-0 text-yellow-600 dark:text-yellow-400">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 text-gray-900 dark:text-white">
                                     <i data-lucide="check-square" class="w-4 h-4"></i>
                                 </div>
                                 <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug pt-1">${item.text}</p>
@@ -868,9 +875,9 @@
             document.getElementById('calcDsrValue').innerText = dsr;
             
             const statusEl = document.getElementById('calcDsrStatus');
-            if (dsr < 40) statusEl.innerHTML = '<span class="text-green-600 dark:text-green-400">안정적입니다.</span> 추가 대출이 가능합니다.';
-            else if (dsr < 70) statusEl.innerHTML = '<span class="text-orange-500 dark:text-orange-400">주의 단계입니다.</span> 한도가 제한될 수 있습니다.';
-            else statusEl.innerHTML = '<span class="text-red-500 dark:text-red-400">위험 단계입니다.</span> 추가 대출이 어려울 수 있습니다.';
+            if (dsr < 40) statusEl.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400">안정적입니다.</span> 추가 대출이 가능합니다.';
+            else if (dsr < 70) statusEl.innerHTML = '<span class="text-amber-500 dark:text-amber-400">주의 단계입니다.</span> 한도가 제한될 수 있습니다.';
+            else statusEl.innerHTML = '<span class="text-rose-500 dark:text-rose-400">위험 단계입니다.</span> 추가 대출이 어려울 수 있습니다.';
 
             document.getElementById('calcResultArea').classList.remove('hidden');
             if (navigator.vibrate) navigator.vibrate(10);
