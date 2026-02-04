@@ -22,21 +22,24 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
     <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
-        <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
-            <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
-        </button>
-        <h1 class="text-lg font-bold text-gray-900 dark:text-white">미션 상세</h1>
-        <button id="headerListBtn" onclick="location.href='mission_list.html'" class="absolute right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
-            <i data-lucide="list" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
-        </button>
+    <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md h-14 sticky top-0 z-20 shadow-sm dark:shadow-gray-900/50 transition-colors duration-300">
+        <div class="max-w-md mx-auto h-full flex items-center justify-center px-4 relative">
+            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">미션 상세</h1>
+            <button id="headerListBtn" onclick="location.href='mission_list.html'" class="absolute right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                <i data-lucide="list" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+            </button>
+        </div>
     </header>
 
-    <main class="p-5 max-w-md mx-auto space-y-6">
+    <main class="p-4 max-w-md mx-auto space-y-6">
         <!-- Mission Info Card -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
             <div id="completedBadge" class="hidden absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm z-10">
                 MISSION CLEAR
             </div>
@@ -73,15 +76,15 @@
 
         <!-- Sub Missions -->
         <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4 px-1">세부 미션</h3>
+            <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4 px-1">세부 미션</h3>
             <div id="subMissionList" class="space-y-3">
                 <!-- JS Rendering -->
             </div>
         </div>
 
         <!-- Point Contribution Graph -->
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700">
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">포인트 기여도</h3>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-4">포인트 기여도</h3>
             <div class="relative pt-1">
                 <div class="flex mb-2 items-center justify-between">
                     <div>
@@ -112,7 +115,7 @@
         </div>
 
         <!-- Give Up Button -->
-        <button id="actionBtn" onclick="giveUpMission()" class="w-full py-4 text-sm text-red-500 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition">
+        <button id="actionBtn" onclick="giveUpMission()" class="w-full py-4 text-sm text-red-500 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition">
             미션 포기하기
         </button>
 
@@ -122,17 +125,18 @@
             </button>
         </div>
     </main>
+    </div>
 
     <!-- Give Up Confirmation Modal -->
     <div id="giveUpModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeGiveUpModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
-            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">정말 포기하시겠습니까?</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">현재까지의 진행 상황이 모두 삭제되며,<br>복구할 수 없습니다.</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">현재까지의 진행 상황이 모두 삭제되며,<br>복구할 수 없습니다.</p>
             <div class="flex gap-3">
-                <button onclick="closeGiveUpModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="confirmGiveUp()" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition">포기하기</button>
+                <button onclick="closeGiveUpModal()" class="flex-1 py-4 rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="confirmGiveUp()" class="flex-1 py-4 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 transition">포기하기</button>
             </div>
         </div>
     </div>
@@ -299,7 +303,7 @@
                 iconEl.innerHTML = '<i data-lucide="trophy" class="w-8 h-8"></i>';
                 
                 actionBtn.innerText = '목록으로 돌아가기';
-                actionBtn.className = 'w-full py-4 text-sm text-gray-600 dark:text-gray-300 font-bold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition';
+                actionBtn.className = 'w-full py-4 text-sm text-white dark:text-gray-900 font-bold bg-gray-900 dark:bg-white hover:bg-black dark:hover:bg-gray-200 rounded-2xl transition shadow-lg';
                 actionBtn.onclick = () => location.href = 'mission_list.html?tab=completed';
                 
                 const listLink = document.getElementById('listLink');
@@ -335,7 +339,7 @@
                     statusClass = 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800 shadow-sm';
                     icon = 'play-circle';
                     iconClass = 'text-deepBlue dark:text-blue-400';
-                    btnHtml = `<button onclick="updateSubMission('${sub.id}', 'completed')" class="bg-deepBlue text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-blue-800 transition">완료하기</button>`;
+                    btnHtml = `<button onclick="updateSubMission('${sub.id}', 'completed')" class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-black dark:hover:bg-gray-200 transition shadow-sm">완료하기</button>`;
                 } else {
                     statusClass = 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700';
                     icon = 'circle';
@@ -363,7 +367,7 @@
                 }
 
                 return `
-                    <div class="p-4 rounded-3xl border ${statusClass} flex justify-between items-center transition-all">
+                    <div class="p-4 rounded-2xl border ${statusClass} flex justify-between items-center transition-all">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
                             <i data-lucide="${icon}" class="w-5 h-5 ${iconClass} flex-shrink-0"></i>
                             <div class="flex items-center flex-wrap gap-y-1">

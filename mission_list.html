@@ -164,7 +164,7 @@
 
             if (summaryContainer) {
                 summaryContainer.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-card p-4 shadow-lg border border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                         <div>
                             <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">총 획득 가능 포인트</p>
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white"><span id="totalPotentialPoints">0</span> P</h2>
@@ -242,7 +242,7 @@
                 `).join('') : '<p class="text-[10px] text-gray-400">세부 미션이 없습니다.</p>';
 
                 return `
-                    <div onclick="toggleMission('${m.id}')" class="bg-white dark:bg-gray-800 p-4 rounded-card shadow-lg border border-gray-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-all duration-300 overflow-hidden group">
+                    <div onclick="toggleMission('${m.id}')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer active:scale-95 transition-all duration-300 overflow-hidden group">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex gap-1.5 flex-wrap">
                                 <span class="text-[8px] font-bold ${colorClass} px-2 py-1 rounded inline-flex items-center">${badgeContent}</span>
@@ -268,7 +268,7 @@
                             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 space-y-2">
                                 ${subMissionsHtml}
                             </div>
-                            <button onclick="event.stopPropagation(); location.href='mission_detail.html?id=${m.id}'" class="w-full mt-3 py-2 bg-gray-50 dark:bg-gray-700/50 text-deepBlue dark:text-blue-400 text-[10px] font-bold rounded-card hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <button onclick="event.stopPropagation(); location.href='mission_detail.html?id=${m.id}'" class="w-full mt-3 py-2 bg-gray-50 dark:bg-gray-700/50 text-deepBlue dark:text-blue-400 text-[10px] font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                 미션 관리하기
                             </button>
                         </div>

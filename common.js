@@ -25,6 +25,7 @@ if (typeof tailwind !== 'undefined') {
                     black: '#222222',
                     white: '#ffffff',
                     deepBlue: '#4353FF', /* Awwwards Electric Blue */
+                    electricPurple: '#7C3AED', /* Awwwards Electric Purple */
             },
             borderRadius: {
                 'card': '14px',

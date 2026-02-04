@@ -20,24 +20,26 @@
 <body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
     <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top pb-24">
         <!-- Header -->
-        <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
-            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
-            </button>
-            <h1 class="text-lg font-bold text-gray-900 dark:text-white">포인트 상점</h1>
-            <div class="absolute right-4 flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 px-3 py-1.5 rounded-full">
-                <span class="text-xs font-bold text-electricPurple dark:text-purple-400" id="headerPoints">0 P</span>
+        <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md h-14 sticky top-0 z-20 shadow-sm dark:shadow-gray-900/50 transition-colors duration-300">
+            <div class="max-w-md mx-auto h-full flex items-center justify-center px-4 relative">
+                <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                    <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+                </button>
+                <h1 class="text-lg font-bold text-gray-900 dark:text-white">포인트 상점</h1>
+                <div class="absolute right-4 flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 px-3 py-1.5 rounded-full">
+                    <span class="text-xs font-bold text-electricPurple dark:text-purple-400" id="headerPoints">0 P</span>
+                </div>
             </div>
         </header>
 
-        <main class="p-5 max-w-md mx-auto">
+        <main class="p-4 max-w-md mx-auto space-y-6">
             <!-- Category Filter -->
-            <div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-                <button onclick="filterShop('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-black text-white transition shadow-sm whitespace-nowrap flex-shrink-0">전체</button>
-                <button onclick="filterShop('cafe')" id="filter-cafe" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">카페</button>
-                <button onclick="filterShop('store')" id="filter-store" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">편의점</button>
-                <button onclick="filterShop('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">외식</button>
-                <button onclick="filterShop('culture')" id="filter-culture" class="px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0">문화</button>
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                <button onclick="filterShop('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-bold bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md transition-all whitespace-nowrap flex-shrink-0">전체</button>
+                <button onclick="filterShop('cafe')" id="filter-cafe" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all whitespace-nowrap flex-shrink-0">카페</button>
+                <button onclick="filterShop('store')" id="filter-store" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all whitespace-nowrap flex-shrink-0">편의점</button>
+                <button onclick="filterShop('food')" id="filter-food" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all whitespace-nowrap flex-shrink-0">외식</button>
+                <button onclick="filterShop('culture')" id="filter-culture" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all whitespace-nowrap flex-shrink-0">문화</button>
             </div>
 
             <div class="grid grid-cols-2 gap-4" id="shopList">
@@ -49,27 +51,34 @@
     <!-- Purchase Confirm Modal -->
     <div id="purchaseModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closePurchaseModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
-            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
-            <div class="text-center mb-6">
-                <div id="modalIcon" class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-sm">🎁</div>
-                <h3 id="modalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-1">상품명</h3>
-                <p class="text-electricPurple dark:text-purple-400 font-bold text-xl"><span id="modalPrice">0</span> P</p>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-6 text-sm space-y-2">
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">유효기간</span>
-                    <span id="modalValidity" class="font-bold text-gray-900 dark:text-white">-</span>
+        <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
+            
+            <div class="text-center mb-8">
+                <div class="relative w-24 h-24 mx-auto mb-6">
+                    <div class="absolute inset-0 bg-purple-100 dark:bg-purple-900/30 rounded-full blur-xl opacity-70"></div>
+                    <div id="modalIcon" class="relative w-full h-full bg-white dark:bg-gray-700 rounded-3xl flex items-center justify-center text-5xl shadow-lg border border-gray-100 dark:border-gray-600">🎁</div>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">사용처</span>
-                    <span id="modalUsage" class="font-bold text-gray-900 dark:text-white">-</span>
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 dark:text-white mb-2">상품명</h3>
+                <div class="inline-flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded-full">
+                    <span class="text-electricPurple dark:text-purple-400 font-bold text-lg"><span id="modalPrice">0</span> P</span>
                 </div>
             </div>
-            <p class="text-xs text-gray-400 text-center mb-6">구매 후 취소할 수 없습니다.</p>
+
+            <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-5 mb-8 space-y-3 border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">유효기간</span>
+                    <span id="modalValidity" class="text-sm font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+                <div class="w-full h-px bg-gray-200 dark:bg-gray-600/50"></div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">사용처</span>
+                    <span id="modalUsage" class="text-sm font-bold text-gray-900 dark:text-white">-</span>
+                </div>
+            </div>
             <div class="flex gap-3">
-                <button onclick="closePurchaseModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="confirmPurchase()" class="flex-1 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-700 transition">구매하기</button>
+                <button onclick="closePurchaseModal()" class="flex-1 py-4 rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="confirmPurchase()" class="flex-1 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-black dark:hover:bg-gray-200 transition shadow-lg shadow-gray-200 dark:shadow-none">구매하기</button>
             </div>
         </div>
     </div>
@@ -77,18 +86,22 @@
     <!-- Low Point Modal -->
     <div id="lowPointModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeLowPointModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
-            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500 dark:text-red-400 text-3xl">
-                    <i data-lucide="alert-circle" class="w-8 h-8"></i>
+        <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
+            
+            <div class="text-center mb-8">
+                <div class="relative w-24 h-24 mx-auto mb-6">
+                    <div class="absolute inset-0 bg-red-100 dark:bg-red-900/30 rounded-full blur-xl opacity-70"></div>
+                    <div class="relative w-full h-full bg-white dark:bg-gray-700 rounded-3xl flex items-center justify-center text-red-500 dark:text-red-400 shadow-lg border border-gray-100 dark:border-gray-600">
+                        <i data-lucide="alert-circle" class="w-10 h-10"></i>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">포인트가 부족해요</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">상품을 구매하려면 포인트 충전이 필요합니다.</p>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">포인트가 부족해요</h3>
+                <p class="text-gray-500 dark:text-gray-400">상품을 구매하려면 포인트 충전이 필요합니다.</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="closeLowPointModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="goToCharge()" class="flex-1 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-700 transition">충전하러 가기</button>
+                <button onclick="closeLowPointModal()" class="flex-1 py-4 rounded-2xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="goToCharge()" class="flex-1 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-black dark:hover:bg-gray-200 transition shadow-lg shadow-gray-200 dark:shadow-none">충전하러 가기</button>
             </div>
         </div>
     </div>
@@ -120,9 +133,9 @@
             buttons.forEach(btn => {
                 const el = document.getElementById(`filter-${btn}`);
                 if (btn === category) {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-black text-white transition shadow-sm whitespace-nowrap flex-shrink-0';
+                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md transition-all whitespace-nowrap flex-shrink-0';
                 } else {
-                    el.className = 'px-4 py-2 rounded-full text-sm font-bold bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm whitespace-nowrap flex-shrink-0';
+                    el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all whitespace-nowrap flex-shrink-0';
                 }
             });
             renderShop();
@@ -152,7 +165,7 @@
                 const opacityClass = canBuy ? '' : 'opacity-60 grayscale';
                 
                 return `
-                    <div onclick="${canBuy ? `openPurchaseModal('${p.id}')` : ''}" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center gap-3 cursor-pointer hover:shadow-md transition active:scale-95 ${opacityClass}">
+                    <div onclick="${canBuy ? `openPurchaseModal('${p.id}')` : ''}" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center gap-3 cursor-pointer hover:shadow-md transition active:scale-95 ${opacityClass}">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700/50 rounded-2xl flex items-center justify-center text-3xl mb-1">
                             ${p.icon}
                         </div>
