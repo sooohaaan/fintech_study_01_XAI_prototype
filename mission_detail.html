@@ -27,7 +27,7 @@
     <!-- Header -->
     <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md h-14 sticky top-0 z-20 shadow-sm dark:shadow-gray-900/50 transition-colors duration-300">
         <div class="max-w-md mx-auto h-full flex items-center justify-center px-4 relative">
-            <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+            <button onclick="handleBack()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
                 <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
             </button>
             <h1 class="text-lg font-bold text-gray-900 dark:text-white">미션 상세</h1>
@@ -150,6 +150,15 @@
             loadMission();
             initBottomSheetDrag('giveUpModal', closeGiveUpModal);
         });
+
+        function handleBack() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from') === 'result') {
+                location.href = 'mission_list.html';
+            } else {
+                history.back();
+            }
+        }
 
         function loadMission() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -284,7 +293,17 @@
             currentMission.progress = progress;
 
             animateProgressText(document.getElementById('missionProgressText'), progress, prevProgress);
-            document.getElementById('missionProgressBar').style.width = `${progress}%`;
+            
+            const progressBar = document.getElementById('missionProgressBar');
+            let gradientClass = 'bg-gradient-to-r from-blue-400 to-deepBlue dark:from-blue-400 dark:to-blue-600';
+
+            if (currentMission.color === 'purple') {
+                gradientClass = 'bg-gradient-to-r from-purple-400 to-electricPurple dark:from-purple-400 dark:to-purple-600';
+            } else if (currentMission.color === 'red') {
+                gradientClass = 'bg-gradient-to-r from-red-400 to-red-600 dark:from-red-400 dark:to-red-600';
+            }
+            progressBar.className = `${gradientClass} h-full rounded-full progress-bar-bounce shadow-sm relative overflow-hidden`;
+            progressBar.style.width = `${progress}%`;
 
             // 완료 상태 처리
             const isCompleted = progress >= 100;
@@ -308,6 +327,16 @@
                 
                 const listLink = document.getElementById('listLink');
                 if (listLink) listLink.classList.add('hidden');
+            } else {
+                let iconBgClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400';
+                if (currentMission.color === 'purple') {
+                    iconBgClass = 'bg-purple-50 dark:bg-purple-900/30 text-electricPurple dark:text-purple-400';
+                } else if (currentMission.color === 'red') {
+                    iconBgClass = 'bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400';
+                }
+                
+                iconEl.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl ${iconBgClass}`;
+                iconEl.innerHTML = '🎯';
             }
 
             const listEl = document.getElementById('subMissionList');
@@ -467,11 +496,11 @@
                     let confettiColors = ['#1D4ED8', '#7C3AED', '#10B981', '#F59E0B']; // 기본 (알록달록)
 
                     if (currentMission.color === 'blue') {
-                        confettiColors = ['#1D4ED8', '#3B82F6', '#60A5FA', '#2563EB'];
+                        confettiColors = ['#4353FF', '#3B82F6', '#60A5FA', '#2563EB'];
                     } else if (currentMission.color === 'red') {
                         confettiColors = ['#EF4444', '#DC2626', '#F87171', '#B91C1C'];
                     } else if (currentMission.color === 'purple') {
-                        confettiColors = ['#7C3AED', '#6D28D9', '#8B5CF6', '#5B21B6'];
+                        confettiColors = ['#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD'];
                     }
 
                     confetti({

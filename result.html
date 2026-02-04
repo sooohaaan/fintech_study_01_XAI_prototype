@@ -96,6 +96,25 @@
 
     </main>
 
+    <!-- Mission Confirm Modal -->
+    <div id="missionConfirmModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeMissionConfirmModal()"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+            <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-electricPurple dark:text-purple-400 text-3xl">
+                    <i data-lucide="flag" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">미션에 도전하시겠습니까?</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">달성 시 알림을 보내드립니다.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeMissionConfirmModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="confirmMissionChallenge()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">도전하기</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', () => {
@@ -111,6 +130,9 @@
                 loadingEl.classList.add('hidden');
                 renderResults();
             }, 800);
+
+            // 모달 드래그 기능 초기화
+            initBottomSheetDrag('missionConfirmModal', closeMissionConfirmModal);
 
             // 2. 결과 렌더링 함수
             function renderResults() {
@@ -386,51 +408,12 @@
             }
         }
 
+        let pendingMissionData = null;
+
         function handleAction(actionType, missionText, missionTitle) {
             if (actionType === 'mission_challenge') {
-                if (confirm('이 미션에 도전하시겠습니까?\n달성 시 알림을 보내드립니다.')) {
-                    const missionId = `mission_${Date.now()}`;
-                    
-                    let subMissions = [
-                        { id: 'sub1', text: '미션 가이드 확인하기', status: 'ready' },
-                        { id: 'sub2', text: '실천 후 인증하기', status: 'ready' }
-                    ];
-
-                    // 미션 제목에 따라 세부 미션 맞춤 설정 (간소화)
-                    if (missionTitle && missionTitle.includes('한도')) {
-                        subMissions = [
-                            { id: 'sub_l_1', text: '부채 비율 5% 줄이기', status: 'ready' },
-                            { id: 'sub_l_2', text: '신용점수 20점 올리기', status: 'ready' }
-                        ];
-                    } else if (missionTitle && missionTitle.includes('금리')) {
-                        subMissions = [
-                            { id: 'sub_r_1', text: '마이데이터 자산 연결하기', status: 'ready' },
-                            { id: 'sub_r_2', text: '우대금리 조건 달성', status: 'ready' }
-                        ];
-                    }
-
-                    const newMission = {
-                        id: missionId,
-                        title: missionTitle || '금융 목표 도전',
-                        desc: missionText,
-                        dday: 'D-60',
-                        deadline: Date.now() + (60 * 24 * 60 * 60 * 1000),
-                        progress: 0,
-                        color: 'purple',
-                        subMissions: subMissions
-                    };
-                    
-                    const missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
-                    if (!missions.some(m => m.desc === missionText)) {
-                        missions.push(newMission);
-                        localStorage.setItem('trustFinMissions', JSON.stringify(missions));
-                        location.href = `mission_detail.html?id=${missionId}`;
-                    } else {
-                        alert('이미 도전 중인 미션입니다.');
-                        const existing = missions.find(m => m.desc === missionText);
-                        if (existing) location.href = `mission_detail.html?id=${existing.id}`;
-                    }
-                }
+                pendingMissionData = { text: missionText, title: missionTitle };
+                openMissionConfirmModal();
                 return;
             }
             if (actionType === 'dsr_calc') {
@@ -438,6 +421,78 @@
                 alert('DSR 계산 기능은 상세 리포트 화면에서 이용 가능합니다.');
                 return;
             }
+        }
+
+        function openMissionConfirmModal() {
+            const modal = document.getElementById('missionConfirmModal');
+            const content = modal.querySelector('.bg-white');
+            content.classList.add('animate-slide-up');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(true);
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function closeMissionConfirmModal() {
+            const modal = document.getElementById('missionConfirmModal');
+            const content = modal.querySelector('.bg-white');
+            
+            content.classList.remove('animate-slide-up');
+            content.classList.add('animate-slide-down');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                content.classList.remove('animate-slide-down');
+                document.body.style.overflow = '';
+                if (typeof toggleBackgroundScale === 'function') toggleBackgroundScale(false);
+            }, 300);
+        }
+
+        function confirmMissionChallenge() {
+            if (!pendingMissionData) return;
+            
+            const { text: missionText, title: missionTitle } = pendingMissionData;
+            const missionId = `mission_${Date.now()}`;
+            
+            let subMissions = [
+                { id: 'sub1', text: '미션 가이드 확인하기', status: 'ready' },
+                { id: 'sub2', text: '실천 후 인증하기', status: 'ready' }
+            ];
+
+            if (missionTitle && missionTitle.includes('한도')) {
+                subMissions = [
+                    { id: 'sub_l_1', text: '부채 비율 5% 줄이기', status: 'ready' },
+                    { id: 'sub_l_2', text: '신용점수 20점 올리기', status: 'ready' }
+                ];
+            } else if (missionTitle && missionTitle.includes('금리')) {
+                subMissions = [
+                    { id: 'sub_r_1', text: '마이데이터 자산 연결하기', status: 'ready' },
+                    { id: 'sub_r_2', text: '우대금리 조건 달성', status: 'ready' }
+                ];
+            }
+
+            const newMission = {
+                id: missionId,
+                title: missionTitle || '금융 목표 도전',
+                desc: missionText,
+                dday: 'D-60',
+                deadline: Date.now() + (60 * 24 * 60 * 60 * 1000),
+                progress: 0,
+                color: 'purple',
+                subMissions: subMissions
+            };
+            
+            const missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+            if (!missions.some(m => m.desc === missionText)) {
+                missions.push(newMission);
+                localStorage.setItem('trustFinMissions', JSON.stringify(missions));
+                location.href = `mission_detail.html?id=${missionId}&from=result`;
+            } else {
+                alert('이미 도전 중인 미션입니다.');
+                const existing = missions.find(m => m.desc === missionText);
+                if (existing) location.href = `mission_detail.html?id=${existing.id}&from=result`;
+            }
+            
+            closeMissionConfirmModal();
         }
     </script>
 

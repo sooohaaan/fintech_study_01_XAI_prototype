@@ -8,151 +8,128 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="common.js"></script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col justify-center items-center p-6 py-12 select-none transition-colors duration-300">
+<body class="text-gray-800 dark:text-gray-100 font-sans select-none transition-colors duration-300 bg-black">
+    <div id="app-content" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-out origin-top flex flex-col justify-center items-center p-6 py-12">
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white">TrustFin 체험하기</h2>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">체험할 페르소나를 선택해주세요.</p>
+            <p class="mt-2 text-gray-500 dark:text-gray-400">체험할 페르소나를 선택해주세요.</p>
         </div>
         
         <div class="space-y-4">
             <!-- Persona 1 -->
-            <button onclick="selectPersona(1)" class="w-full relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-blue-100 dark:hover:ring-blue-900">
-                <!-- Background Decoration -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div class="relative z-10 flex flex-col h-full">
-                    <!-- Header -->
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 text-xs font-bold">01</span>
-                                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase">Social Newcomer</span>
+            <button onclick="selectPersona(1)" class="w-full relative bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 group text-left hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-xl active:scale-[0.98]">
+                <!-- Header -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-2xl shadow-sm">👨</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">김철수 <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-1">29세</span></h3>
+                                <p class="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wide">Social Newcomer</p>
                             </div>
-                            <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-1">김철수</h3>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">사회초년생 · 29세</p>
-                        </div>
-                        <div class="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 shadow-sm border border-blue-200 dark:border-blue-800 flex items-center justify-center text-deepBlue dark:text-blue-400 transition-all duration-300">
-                            <span class="text-3xl">👨</span>
+                            <span class="text-[10px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full">01</span>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Info Grid -->
-                    <div class="space-y-2 flex-1">
-                        <!-- Financials -->
-                        <div class="bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl p-4 border border-blue-100 dark:border-blue-800/30 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
-                            <div class="flex items-center gap-2 mb-3 opacity-70">
-                                <i data-lucide="wallet" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
-                                <span class="text-[10px] font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wide">Financials</span>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">연소득</p>
-                                    <p class="text-base font-bold text-gray-900 dark:text-white">2,600<span class="text-xs font-normal text-gray-500 ml-0.5">만원</span></p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">총 자산</p>
-                                    <p class="text-base font-bold text-gray-900 dark:text-white">500<span class="text-xs font-normal text-gray-500 ml-0.5">만원</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Credit & Debt -->
-                        <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-100 dark:border-gray-700 group-hover:border-blue-100 dark:group-hover:border-blue-800/30 transition-colors">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2 opacity-70">
-                                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i>
-                                    <span class="text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Credit Score</span>
-                                </div>
-                                <span class="text-xs font-bold text-deepBlue dark:text-blue-400 bg-white dark:bg-gray-600 px-2 py-0.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-500">740점</span>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-500 dark:text-gray-400">DSR / DTI</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">15.2% / 28.5%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-                                    <div class="bg-deepBlue h-full rounded-full" style="width: 74%"></div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">연소득</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">2,500만원</p>
                     </div>
-                    
-                    <!-- Hover Action -->
-                    <div class="mt-4 flex items-center justify-end border-t border-gray-100 dark:border-gray-700 pt-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="flex items-center text-sm font-bold text-deepBlue dark:text-blue-400 gap-1 group-hover:gap-2 transition-all">
-                            시작하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">신용점수</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">740점</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">총 자산</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">300만원</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">DSR</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">15.2%</p>
+                    </div>
+                </div>
+
+                <!-- Persona DNA -->
+                <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-3 border border-gray-100 dark:border-gray-700 text-left">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"></i>
+                        <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Persona DNA</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">🎓 대졸 신입</span>
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">📉 금융 이력 부족</span>
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">💳 체크카드 위주</span>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <div class="flex items-start gap-1.5">
+                            <i data-lucide="database" class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400">Data Source: 고용노동부 2025</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight mt-0.5">최저시급(10,030원) 연봉 환산, 자산 형성 초기 단계 반영</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </button>
 
             <!-- Persona 2 -->
-            <button onclick="selectPersona(2)" class="w-full relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-500 group text-left hover:-translate-y-2 overflow-hidden ring-1 ring-transparent hover:ring-purple-100 dark:hover:ring-purple-900">
-                <!-- Background Decoration -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div class="relative z-10 flex flex-col h-full">
-                    <!-- Header -->
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300 text-xs font-bold">02</span>
-                                <span class="text-xs font-bold text-purple-600 dark:text-purple-400 tracking-wider uppercase">Career Pro</span>
+            <button onclick="selectPersona(2)" class="w-full relative bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 group text-left hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-xl active:scale-[0.98]">
+                <!-- Header -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-2xl shadow-sm">👩</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">이영희 <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-1">32세</span></h3>
+                                <p class="text-xs text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wide">Career Pro</p>
                             </div>
-                            <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-1">이영희</h3>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">경력직 · 32세</p>
-                        </div>
-                        <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/30 shadow-sm border border-purple-200 dark:border-purple-800 flex items-center justify-center text-electricPurple dark:text-purple-400 transition-all duration-300">
-                            <span class="text-3xl">👩</span>
+                            <span class="text-[10px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-1 rounded-full">02</span>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Info Grid -->
-                    <div class="space-y-2 flex-1">
-                        <!-- Financials -->
-                        <div class="bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl p-4 border border-purple-100 dark:border-purple-800/30 group-hover:bg-purple-50 dark:group-hover:bg-purple-900/20 transition-colors">
-                            <div class="flex items-center gap-2 mb-3 opacity-70">
-                                <i data-lucide="wallet" class="w-4 h-4 text-purple-600 dark:text-purple-400"></i>
-                                <span class="text-[10px] font-bold text-purple-900 dark:text-purple-300 uppercase tracking-wide">Financials</span>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">연소득</p>
-                                    <p class="text-base font-bold text-gray-900 dark:text-white">4,600<span class="text-xs font-normal text-gray-500 ml-0.5">만원</span></p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">총 자산</p>
-                                    <p class="text-base font-bold text-gray-900 dark:text-white">3,550<span class="text-xs font-normal text-gray-500 ml-0.5">만원</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Credit & Debt -->
-                        <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-100 dark:border-gray-700 group-hover:border-purple-100 dark:group-hover:border-purple-800/30 transition-colors">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2 opacity-70">
-                                    <i data-lucide="shield-check" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i>
-                                    <span class="text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Credit Score</span>
-                                </div>
-                                <span class="text-xs font-bold text-electricPurple dark:text-purple-400 bg-white dark:bg-gray-600 px-2 py-0.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-500">950점</span>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-500 dark:text-gray-400">DSR / DTI</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">24.8% / 32.1%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-                                    <div class="bg-electricPurple h-full rounded-full" style="width: 95%"></div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">연소득</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">5,200만원</p>
                     </div>
-                    
-                    <!-- Hover Action -->
-                    <div class="mt-4 flex items-center justify-end border-t border-gray-100 dark:border-gray-700 pt-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="flex items-center text-sm font-bold text-electricPurple dark:text-purple-400 gap-1 group-hover:gap-2 transition-all">
-                            시작하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">신용점수</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">950점</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">총 자산</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">1억 2,000만원</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">DSR</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">24.8%</p>
+                    </div>
+                </div>
+
+                <!-- Persona DNA -->
+                <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-3 border border-gray-100 dark:border-gray-700 text-left">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"></i>
+                        <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Persona DNA</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">💼 5년차 대리</span>
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">📈 우량 신용</span>
+                        <span class="text-[10px] font-medium bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-500">💳 신용카드 위주</span>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <div class="flex items-start gap-1.5">
+                            <i data-lucide="database" class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400">Data Source: 통계청 2023</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight mt-0.5">30대 평균 순자산(1.2억) 및 경력직 임금 상승 반영</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,6 +149,7 @@
                 <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"></i>
             </button>
         </div>
+    </div>
     </div>
 
     <!-- Loading Overlay -->
@@ -224,10 +202,10 @@
             if (id === 1) {
                 persona = {
                     id: 'persona1',
-                    name: '김철수', age: 29, job: 'regular', income: 2600, creditScore: 740, dsr: 15.2,
+                    name: '김철수', age: 29, job: 'regular', income: 2500, creditScore: 740, dsr: 15.2,
                     points: 0,
                     accounts: [
-                        { bank: '국민은행', balance: 5000000, accountNumber: '123-456-7890' }
+                        { bank: '국민은행', balance: 3000000, accountNumber: '123-456-7890' }
                     ],
                     cards: [
                         { bank: '현대캐피탈', name: '현대카드 M BOOST', number: '1234', amount: 850000 }
@@ -237,12 +215,12 @@
             } else {
                 persona = {
                     id: 'persona2',
-                    name: '이영희', age: 32, job: 'regular', income: 4600, creditScore: 950, dsr: 24.8,
+                    name: '이영희', age: 32, job: 'regular', income: 5200, creditScore: 950, dsr: 24.8,
                     points: 0,
                     accounts: [
-                        { bank: '국민은행', balance: 30000000, accountNumber: '123-456-1111' },
-                        { bank: '신한은행', balance: 5000000, accountNumber: '110-222-333333' },
-                        { bank: '하나은행', balance: 500000, accountNumber: '333-444-555555' }
+                        { bank: '국민은행', balance: 80000000, accountNumber: '123-456-1111' },
+                        { bank: '신한은행', balance: 35000000, accountNumber: '110-222-333333' },
+                        { bank: '하나은행', balance: 5000000, accountNumber: '333-444-555555' }
                     ],
                     cards: [
                         { bank: '신한은행', name: '신한카드 Deep Dream', number: '5678', amount: 1200000 },
