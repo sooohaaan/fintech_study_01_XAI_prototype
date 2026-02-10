@@ -46,19 +46,19 @@
                 <p class="text-gray-500 dark:text-gray-400 mt-2 text-xs">목적에 맞는 최적의 상품을 추천해드립니다.</p>
             </div>
             <div class="space-y-3 mt-6">
-                <button type="button" onclick="selectPurpose('living', this)" class="survey-option w-full p-3 rounded-card border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
+                <button type="button" onclick="selectPurpose('living', this)" class="survey-option w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
                     <span class="text-gray-700 dark:text-gray-300 text-sm">생활비</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 transition-opacity"></i>
                 </button>
-                <button type="button" onclick="selectPurpose('refinance', this)" class="survey-option w-full p-3 rounded-card border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
+                <button type="button" onclick="selectPurpose('refinance', this)" class="survey-option w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
                     <span class="text-gray-700 dark:text-gray-300 text-sm">대환대출 (갈아타기)</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 transition-opacity"></i>
                 </button>
-                <button type="button" onclick="selectPurpose('housing', this)" class="survey-option w-full p-3 rounded-card border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
+                <button type="button" onclick="selectPurpose('housing', this)" class="survey-option w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
                     <span class="text-gray-700 dark:text-gray-300 text-sm">주택/전세 자금</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 transition-opacity"></i>
                 </button>
-                <button type="button" onclick="selectPurpose('business', this)" class="survey-option w-full p-3 rounded-card border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
+                <button type="button" onclick="selectPurpose('business', this)" class="survey-option w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center group bg-white dark:bg-gray-800">
                     <span class="text-gray-700 dark:text-gray-300 text-sm">사업 자금</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 transition-opacity"></i>
                 </button>
@@ -89,7 +89,7 @@
                         <i data-lucide="link" class="w-2 h-2"></i> 국세청 자동 연동
                     </span>
                 </div>
-                <input type="tel" inputmode="numeric" enterkeyhint="next" id="income" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')" placeholder="예: 5,000" class="w-full text-sm font-bold border border-gray-200 dark:border-gray-700 rounded-card px-4 py-3 bg-white dark:bg-gray-800 focus:border-black dark:focus:border-white outline-none transition placeholder-gray-300 dark:placeholder-gray-600 dark:text-white" required>
+                <input type="tel" inputmode="numeric" enterkeyhint="next" id="income" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')" placeholder="예: 5,000" class="w-full text-sm font-bold border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 focus:border-black dark:focus:border-white outline-none transition placeholder-gray-300 dark:placeholder-gray-600 dark:text-white" required>
             </div>
 
             <!-- Credit Score -->
@@ -100,7 +100,7 @@
                         <i data-lucide="link" class="w-2 h-2"></i> KCB 자동 연동
                     </span>
                 </div>
-                <input type="tel" inputmode="numeric" enterkeyhint="done" id="creditScore" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')" placeholder="예: 850" class="w-full text-sm font-bold border border-gray-200 dark:border-gray-700 rounded-card px-4 py-3 bg-white dark:bg-gray-800 focus:border-black dark:focus:border-white outline-none transition placeholder-gray-300 dark:placeholder-gray-600 dark:text-white" required>
+                <input type="tel" inputmode="numeric" enterkeyhint="done" id="creditScore" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')" placeholder="예: 850" class="w-full text-sm font-bold border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 focus:border-black dark:focus:border-white outline-none transition placeholder-gray-300 dark:placeholder-gray-600 dark:text-white" required>
             </div>
 
             <!-- Employment Type -->
@@ -111,7 +111,7 @@
                         <i data-lucide="link" class="w-2 h-2"></i> 건강보험공단 연동
                     </span>
                 </div>
-                <div onclick="openEmploymentModal()" class="w-full border border-gray-200 dark:border-gray-700 rounded-card px-4 py-3 bg-white dark:bg-gray-800 cursor-pointer flex justify-between items-center hover:border-black dark:hover:border-white transition group">
+                <div onclick="openEmploymentModal()" class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 cursor-pointer flex justify-between items-center hover:border-black dark:hover:border-white transition group">
                     <span id="selectedEmploymentText" class="text-sm font-bold text-gray-900 dark:text-white transition">직장인</span>
                     <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition group-hover:text-black dark:group-hover:text-white"></i>
                 </div>
@@ -126,7 +126,7 @@
                         <i data-lucide="link" class="w-2 h-2"></i> 마이데이터 연동
                     </span>
                 </div>
-                <div onclick="openAccountModal()" class="w-full border border-gray-200 dark:border-gray-700 rounded-card px-4 py-3 bg-white dark:bg-gray-800 cursor-pointer flex justify-between items-center hover:border-black dark:hover:border-white transition group">
+                <div onclick="openAccountModal()" class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 cursor-pointer flex justify-between items-center hover:border-black dark:hover:border-white transition group">
                     <span id="selectedAccountText" class="text-sm font-bold text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition">계좌를 선택해주세요</span>
                     <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition group-hover:text-black dark:group-hover:text-white"></i>
                 </div>
@@ -138,7 +138,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white">약관 및 동의</h3>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-card border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div onclick="toggleAllTerms()" class="p-4 border-b border-gray-200 dark:border-gray-600 flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition">
                         <div id="checkAll" class="w-6 h-6 rounded-full border-2 border-gray-300 dark:border-gray-500 flex items-center justify-center transition-colors">
                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
@@ -187,7 +187,7 @@
 
     <!-- Analysis Loading Overlay -->
     <div id="analysisLoading" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-card shadow-2xl flex flex-col items-center text-center max-w-xs w-full mx-6 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center text-center max-w-xs w-full mx-6 animate-slide-up">
             <div class="relative w-16 h-16 mb-6">
                 <div class="absolute inset-0 border-4 border-gray-100 dark:border-gray-700 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-black dark:border-white rounded-full border-t-transparent animate-spin"></div>
@@ -217,19 +217,19 @@
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 flex-shrink-0"></div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex-shrink-0">고용 형태를 선택해주세요</h3>
             <div class="flex-1 overflow-y-auto space-y-3 pb-6">
-                <div onclick="selectEmploymentType('regular', '직장인')" class="p-4 rounded-card border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
+                <div onclick="selectEmploymentType('regular', '직장인')" class="p-4 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
                     <span class="font-bold text-gray-900 dark:text-white">직장인</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
-                <div onclick="selectEmploymentType('business_owner', '사업자')" class="p-4 rounded-card border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
+                <div onclick="selectEmploymentType('business_owner', '사업자')" class="p-4 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
                     <span class="font-bold text-gray-900 dark:text-white">사업자</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
-                <div onclick="selectEmploymentType('freelancer', '프리랜서')" class="p-4 rounded-card border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
+                <div onclick="selectEmploymentType('freelancer', '프리랜서')" class="p-4 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
                     <span class="font-bold text-gray-900 dark:text-white">프리랜서</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
-                <div onclick="selectEmploymentType('unemployed', '기타')" class="p-4 rounded-card border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
+                <div onclick="selectEmploymentType('unemployed', '기타')" class="p-4 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex items-center justify-between group">
                     <span class="font-bold text-gray-900 dark:text-white">기타</span>
                     <i data-lucide="check" class="w-5 h-5 text-black dark:text-white opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
@@ -246,7 +246,7 @@
             <div id="termContent" class="flex-1 overflow-y-auto text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4 pr-2 whitespace-pre-line">
                 약관 내용...
             </div>
-            <button onclick="agreeCurrentTerm()" class="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-700 transition flex-shrink-0">동의하고 닫기</button>
+            <button onclick="agreeCurrentTerm()" class="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition flex-shrink-0">동의하고 닫기</button>
         </div>
     </div>
 
@@ -454,7 +454,7 @@
                         const checkIcon = isSelected ? '<i data-lucide="check" class="w-5 h-5 text-black dark:text-white"></i>' : '';
 
                         return `
-                        <div onclick="selectAccount('${acc.accountNumber}', '${acc.bank}')" class="p-4 rounded-card border ${borderClass} bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex justify-between items-center">
+                        <div onclick="selectAccount('${acc.accountNumber}', '${acc.bank}')" class="p-4 rounded-xl border ${borderClass} bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition flex justify-between items-center">
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-white dark:bg-gray-600 flex items-center justify-center border border-gray-200 dark:border-gray-500 overflow-hidden">
                                     <img src="${getBankLogoUrl(acc.bank)}" onerror="handleImageError(this, '${acc.bank[0]}')" class="w-full h-full object-cover" alt="${acc.bank}">

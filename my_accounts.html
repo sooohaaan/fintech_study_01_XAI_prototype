@@ -34,22 +34,22 @@
     <!-- Transfer Modal -->
     <div id="transferModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeTransferModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-card p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-6 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">송금하기</h3>
             <p id="transferBankName" class="text-sm text-gray-500 mb-4">은행 계좌에서 송금</p>
             
             <div class="mb-6">
                 <label class="block text-xs font-bold text-gray-500 mb-1">보낼 금액</label>
-                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-card px-4 bg-gray-50 dark:bg-gray-700/30 focus-within:border-deepBlue transition">
+                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-xl px-4 bg-gray-50 dark:bg-gray-700/30 focus-within:border-deepBlue transition">
                     <input type="number" id="transferAmount" placeholder="금액 입력" class="w-full text-lg font-bold py-3 outline-none bg-transparent dark:text-white">
                     <span class="text-gray-900 dark:text-white font-bold">원</span>
                 </div>
             </div>
 
             <div class="flex gap-3">
-                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-card bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-card bg-black text-white font-bold hover:bg-gray-700 transition">보내기</button>
+                <button onclick="closeTransferModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
+                <button onclick="submitTransfer()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition shadow-md active:scale-95">보내기</button>
             </div>
         </div>
     </div>
@@ -75,13 +75,13 @@
             if (persona.id === 'guest') {
                 animateCountUp(document.getElementById('totalAsset'), 0);
                 accountListEl.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-card p-4 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 dark:text-gray-500">
                             <i data-lucide="wallet" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2">계좌 정보가 없습니다</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">계좌를 개설하고 안전하게<br>자산을 관리해보세요.</p>
-                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-black text-white font-bold py-3 rounded-card hover:bg-gray-700 transition">
+                        <button onclick="alert('준비 중인 기능입니다.')" class="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-700 transition">
                             계좌 개설하기
                         </button>
                     </div>
@@ -95,7 +95,7 @@
             accountListEl.innerHTML = persona.accounts.map((acc, index) => {
                 total += acc.balance;
                 return `
-                    <div onclick="goToAccountDetail('${acc.bank}')" class="bg-white dark:bg-gray-800 p-4 rounded-card border border-gray-100 dark:border-gray-700 shadow-lg flex justify-between items-center transition-colors cursor-pointer active:scale-95 transform">
+                    <div onclick="goToAccountDetail('${acc.bank}')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex justify-between items-center transition-colors cursor-pointer active:scale-95 transform">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-100 dark:border-gray-600 overflow-hidden">
                                 <img src="${getBankLogoUrl(acc.bank)}" onerror="handleImageError(this, '${acc.bank[0]}')" class="w-full h-full object-cover" alt="${acc.bank}">
@@ -109,7 +109,7 @@
                                 <p class="font-bold text-gray-900 dark:text-white text-sm"><span class="count-up" data-value="${acc.balance}">0</span>원</p>
                             </div>
                         </div>
-                        <button onclick="openTransferModal('${acc.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold px-3 py-1.5 rounded-card hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
+                        <button onclick="openTransferModal('${acc.bank}', event)" class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">송금</button>
                     </div>
                 `;
             }).join('');

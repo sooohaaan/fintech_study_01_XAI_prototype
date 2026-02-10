@@ -676,3 +676,46 @@ function runGSAPLogic() {
         );
     });
 }
+
+/**
+ * [New] 미션 자동 추적 및 완료 처리 로직
+ * 사용자의 현재 상태(persona)와 미션의 tracking 조건을 비교하여 자동 완료 처리
+ */
+function checkMissionProgress() {
+    const personaData = localStorage.getItem('trustFinPersona');
+    if (!personaData) return;
+    
+    const persona = JSON.parse(personaData);
+    let missions = JSON.parse(localStorage.getItem('trustFinMissions') || '[]');
+    let changed = false;
+
+    missions.forEach(mission => {
+        if (mission.subMissions) {
+            mission.subMissions.forEach(sub => {
+                // 미완료 상태이고 추적 조건이 있는 경우 검사
+                if (sub.status !== 'completed' && sub.tracking) {
+                    const { key, operator, value } = sub.tracking;
+                    const userValue = persona[key]; // 예: persona.creditScore, persona.dsr
+
+                    if (userValue !== undefined) {
+                        let passed = false;
+                        if (operator === 'gte') passed = userValue >= value;      // 이상
+                        else if (operator === 'lte') passed = userValue <= value; // 이하
+                        else if (operator === 'eq') passed = userValue === value; // 일치
+
+                        if (passed) {
+                            sub.status = 'completed';
+                            changed = true;
+                            // 완료 알림 표시
+                            showGlobalToast(`🎉 미션 달성! '${sub.text}' 완료`);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    if (changed) {
+        localStorage.setItem('trustFinMissions', JSON.stringify(missions));
+    }
+}

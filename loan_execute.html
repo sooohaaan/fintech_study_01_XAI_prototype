@@ -91,7 +91,7 @@
 
     <!-- Bottom Fixed Button -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto z-40 transition-colors">
-        <button id="executeBtn" onclick="executeLoan()" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold py-4 rounded-2xl shadow-lg hover:bg-black dark:hover:bg-gray-200 transition active:scale-95 flex justify-center items-center gap-2">
+        <button id="executeBtn" onclick="executeLoan()" class="w-full bg-deepBlue text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-800 transition active:scale-95 flex justify-center items-center gap-2">
             <span>대출금 입금받기</span>
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
         </button>
@@ -101,7 +101,7 @@
     <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeAuthModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md text-center shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-8 w-full max-w-md text-center shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">본인 인증</h3>
             <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">안전한 대출 실행을 위해<br>지문을 스캔하여 인증해주세요.</p>
@@ -121,7 +121,7 @@
     <!-- Deposit Success Modal -->
     <div id="successModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeSuccessModal()"></div>
-        <div id="successModalContent" class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md text-center shadow-2xl relative z-10 transform translate-y-full transition-transform duration-300">
+        <div id="successModalContent" class="bg-white dark:bg-gray-800 rounded-t-2xl p-8 w-full max-w-md text-center shadow-2xl relative z-10 transform translate-y-full transition-transform duration-300">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
             <div class="w-24 h-24 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600 dark:text-green-400">
                 <i data-lucide="check" class="w-10 h-10"></i>
@@ -131,7 +131,7 @@
                 신청하신 대출금이 입금되었습니다.<br>
                 <span class="text-gray-900 dark:text-white font-bold text-2xl mt-2 block"><span id="successAmount">0</span>원</span>
             </p>
-            <button onclick="location.href='assets.html'" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold py-4 rounded-2xl hover:bg-black dark:hover:bg-gray-200 transition shadow-lg">
+            <button onclick="location.href='assets.html'" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold py-4 rounded-xl hover:bg-black dark:hover:bg-gray-200 transition shadow-lg">
                 확인
             </button>
         </div>
@@ -151,11 +151,11 @@
     <!-- Info Modal (Generic) -->
     <div id="infoModal" class="fixed inset-0 z-50 hidden flex items-end justify-center">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" onclick="closeInfoModal()"></div>
-        <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-8 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
+        <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-8 w-full max-w-md shadow-2xl relative z-10 animate-slide-up">
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-8"></div>
             <h3 id="infoModalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-4">정보</h3>
             <p id="infoModalDesc" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 whitespace-pre-line">내용</p>
-            <button onclick="closeInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-4 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
+            <button onclick="closeInfoModal()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-bold py-4 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">확인</button>
         </div>
     </div>
 

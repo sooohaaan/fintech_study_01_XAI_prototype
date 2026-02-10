@@ -22,7 +22,7 @@
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans pb-24 select-none transition-colors duration-300">
 
     <!-- Header (Back Button Included) -->
-    <header class="bg-white dark:bg-gray-800 h-16 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
+    <header class="bg-white dark:bg-gray-800 h-14 sticky top-0 z-20 flex items-center justify-center shadow-sm dark:shadow-gray-900/50 px-4 relative transition-colors duration-300">
         <button onclick="history.back()" class="absolute left-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
             <i data-lucide="arrow-left" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
         </button>
@@ -57,7 +57,7 @@
                 <i data-lucide="message-circle-question" class="w-4 h-4 text-deepBlue"></i>
                 조건이 불만족스러우신가요?
             </h3>
-            <div class="bg-white dark:bg-gray-800 rounded-card border border-gray-200 dark:border-gray-700 shadow-lg p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
                 <p class="text-xs text-gray-600 dark:text-gray-300 mb-3">
                     추천된 상품들의 금리와 한도가 아쉬우신가요?<br>
                     AI가 고객님의 니즈에 맞춰 새로운 목표를 설계해드립니다.
@@ -110,7 +110,7 @@
             </div>
             <div class="flex gap-3">
                 <button onclick="closeMissionConfirmModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">취소</button>
-                <button onclick="confirmMissionChallenge()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition">도전하기</button>
+                <button onclick="confirmMissionChallenge()" class="flex-1 py-3 rounded-xl bg-deepBlue text-white font-bold hover:bg-blue-800 transition shadow-md active:scale-95">도전하기</button>
             </div>
         </div>
     </div>
@@ -179,11 +179,11 @@
                         ];
                         rankBadge = `<div class="w-[calc(100%+1.5rem)] -mx-3 -mt-3 mb-3 py-1.5 text-center text-xs font-bold ${bgColors[index]} rounded-t-card">${index + 1}순위 추천 상품</div>`;
                     }
-
+                    
                     return `
-                    <div class="bg-white dark:bg-gray-800 rounded-card p-3 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${index * 150}ms">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-3 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${index * 150}ms">
                         
-                        ${rankBadge}
+                        ${rankBadge.replace('rounded-t-card', 'rounded-t-2xl')}
 
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex items-center gap-3">
@@ -382,7 +382,7 @@
                 prescriptionSection.classList.add('animate-slide-up');
                 
                 prescriptionList.innerHTML = `
-                    <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-card border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right">
+                    <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col gap-3 opacity-0 animate-slide-in-right">
                         <div class="flex gap-3 items-start">
                             <div class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-xl shadow-sm">
                                 🎯
