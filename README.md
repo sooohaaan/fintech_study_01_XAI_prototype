@@ -5,41 +5,93 @@
 
 ## 🎨 프로젝트 컨셉 & 디자인
 *   **Core Value**: Trust & Transparent (신뢰와 투명성)
-*   **Theme Color**:
-    *   `Deep Blue (#1D4ED8)`: 금융의 신뢰감과 안정감
-    *   `Electric Purple (#7C3AED)`: AI 분석 및 인사이트 강조 (Point)
-*   **UX Strategy**:
-    *   **White-box Visualization**: 복잡한 심사 과정을 Progress Bar와 차트로 시각화
-    *   **Actionable Feedback**: 결과에 대한 단순 통보가 아닌, 개선을 위한 구체적인 행동(Mission) 유도
-    *   **Persona Simulation**: 다양한 사용자 상황(사회초년생, 직장인 등)을 가정한 시나리오 체험
+*   **Theme Color Palette**:
+    *   **Brand Identity**:
+        *   `Deep Blue (#4353FF)`: **Primary Action**. 버튼, 활성 탭, 중요 강조 텍스트. (Awwwards Style Electric Blue)
+        *   `Electric Purple (#7C3AED)`: **Secondary Action**. AI 분석 결과, 포인트/리워드, 게이미피케이션 요소.
+    *   **Background & Surface**:
+        *   `Off-White (#F3F3F3)`: **Light Bg**. 눈이 편안한 부드러운 배경 (Gray-50).
+        *   `Rich Black (#222222)`: **Dark Bg & Card**. 깊이감 있는 다크 모드 배경 및 카드 (Gray-900/800).
+        *   `Pure White (#FFFFFF)`: **Light Card**. 카드 및 모달 배경.
+    *   **Typography (Text)**:
+        *   `Jet Black (#0D0D0D)`: **Light Main Text**. 가독성을 위한 메인 텍스트.
+        *   `Dark Gray (#666666)`: **Light Sub Text**. 설명 및 보조 텍스트.
+    *   **Functional (Semantic)**:
+        *   `Emerald Green (#10B981)`: **Success**. 미션 완료, 긍정적 수치, 상승 추세.
+        *   `Rose Red (#F43F5E)`: **Danger/Error**. 경고, 하락 추세, 필수 입력 누락.
+        *   `Amber Orange (#F59E0B)`: **Warning**. 주의 단계.
+*   **Design Philosophy (Awwwards Style)**:
+    *   **Glassmorphism**: 헤더와 모달에 배경 블러(`backdrop-blur`)를 적용하여 깊이감과 현대적인 느낌 전달.
+    *   **iOS-like Motion**: 모달 오픈 시 배경이 뒤로 밀리는(`scale(0.92)`) 3D 효과와 바텀시트 드래그 닫기 제스처 구현.
+    *   **Micro-interactions**: 버튼 클릭 시 `scale-95` 축소 효과, 숫자 카운트 업, 햅틱 피드백(진동) 등 섬세한 반응형 UX.
+    *   **Data Visualization**: 복잡한 심사 과정을 Progress Bar, SVG 차트, Stacked Bar 등으로 직관적 시각화.
+    *   **Dark Mode**: 시스템 설정에 따른 다크 모드 자동 전환 및 고대비 색상 최적화.
 
 ## 🛠 기술 스택 (Tech Stack)
 *   **Frontend**: HTML5, CSS3
 *   **Styling**: Tailwind CSS (CDN) - 다크 모드 및 반응형 지원
 *   **Scripting**: Vanilla JavaScript (ES6+)
 *   **Icons**: Lucide Icons
-*   **Libraries**: Canvas Confetti (폭죽 효과), GSAP (스크롤 애니메이션)
+*   **Libraries**: `GSAP` (스크롤 리빌 애니메이션), `Canvas Confetti` (축하 폭죽 효과)
 *   **Data Storage**: Browser LocalStorage (서버 없이 데이터 흐름 및 상태 유지)
 
-## 📂 주요 기능 및 파일 구성
+## 🗂️ 폴더 구조 (Directory Structure)
+```
+📦 fintech_study_01_XAI_prototype
+ ┣ 📜 index.html          # 인트로 및 시작 페이지
+ ┣ 📜 login.html          # 페르소나 선택 (로그인)
+ ┣ 📜 home.html           # 메인 대시보드
+ ┣ 📜 my_spending.html    # 소비 분석 상세
+ ┣ 📜 my_loans.html       # 내 대출 관리
+ ┣ 📜 notification.html   # 알림 센터
+ ┣ 📜 assets.html         # 자산 관리 및 송금
+ ┣ 📜 loan_input.html     # 대출 정보 입력
+ ┣ 📜 result.html         # AI 추천 결과 목록
+ ┣ 📜 xai_detail.html     # AI 상세 리포트 & DSR 계산기
+ ┣ 📜 loan_execute.html   # 대출 실행 및 전자 서명
+ ┣ 📜 mission_list.html   # 미션 목록
+ ┣ 📜 mission_detail.html # 미션 상세 및 포기/완료 처리
+ ┣ 📜 point_shop.html     # 포인트 상점
+ ┣ 📜 common.js           # 공통 UI, 테마, 유틸리티 함수
+ ┗ 📜 RecommendLogic.js   # 대출 추천, 심사, 미션 로직
+```
+
+##  주요 기능 및 파일 구성
 
 ### 1. 핵심 로직 & XAI (`RecommendLogic.js`, `xai_detail.html`)
-*   **Rule-based XAI**: 사용자 데이터(신용점수, 소득, 자산 등)와 상품 특성을 매칭하여 점수를 산출하는 알고리즘 구현.
+*   **Rule-based XAI**: 사용자 데이터(신용점수, 소득, 자산, DSR 등)와 상품 특성을 매칭하여 점수를 산출하는 알고리즘 구현.
+*   **DSR(총부채원리금상환비율) 분석**: 규제 적용 상품 여부와 사용자 DSR 수치를 분석하여 대출 한도(LTI vs DSR) 및 금리를 정밀하게 산출.
 *   **LIME 시뮬레이션**: 각 변수가 결과에 미친 영향(가점/감점)을 `contributions` 배열로 산출하여 시각화.
 *   **Counterfactual Explanations**: "신용점수가 50점 더 높았다면?"과 같은 반사실적 설명을 통해 개선 팁 제공.
 *   **Dynamic NLG**: 상황에 맞는 AI 종합 의견 텍스트 자동 생성.
+*   **DSR 계산기**: 사용자가 직접 연소득과 부채를 입력하여 DSR을 계산해볼 수 있는 시뮬레이션 모달 제공.
 
 ### 2. 사용자 경험 (User Experience)
+*   **Awwwards Style UI**: GSAP 기반의 스크롤 인터랙션, 3D 모달 스케일 효과, 부드러운 화면 전환 등 고품질 인터랙션 적용 (`common.js`).
 *   **`login.html` (페르소나 선택)**: 김철수(사회초년생), 이영희(경력직), 게스트 등 다양한 상황을 즉시 체험 가능.
-*   **`home.html` (대시보드)**: 신용점수, 소비 현황, 대출 진행 상태를 한눈에 파악.
+*   **`home.html` (대시보드)**: KCB/NICE 신용점수 탭 전환, 소비 예산 경고 툴팁, 대출 진행 상태 등 핵심 정보 시각화.
 *   **`assets.html` (자산 관리)**: 도넛 차트를 활용한 자산 포트폴리오 시각화 및 송금 시뮬레이션.
 *   **`my_spending.html` (소비 분석)**: 카테고리별 지출 내역 및 전월 대비 증감 분석.
+*   **`my_loans.html` (대출 관리)**: 보유 중인 대출의 잔액, 금리, 상환 일정을 한눈에 관리.
+*   **`notification.html` (알림 센터)**: 대출 심사 결과, 미션 달성, 입금 내역 등 주요 알림 모아보기.
 
 ### 3. 게이미피케이션 (Gamification)
+*   **멤버십 레벨 시스템**: 미션 달성 포인트에 따라 레벨(Lv.1 ~ Lv.5)이 상승하며, 레벨별 대출 금리 추가 할인 혜택 제공.
+*   **자동 미션 추적 (`checkMissionProgress`)**: 사용자의 신용점수, 자산 변동 등을 실시간으로 감지하여 관련 미션 자동 완료 처리.
+*   **맞춤형 미션 제안**: 사용자의 구체적 니즈(한도 상향, 금리 인하 등)에 맞춰 동적으로 생성되는 미션 시스템.
 *   **`mission_list.html` & `mission_detail.html`**: 금융 목표 달성을 위한 미션(신용점수 올리기 등) 제공.
-*   **`point_shop.html`**: 미션 달성으로 획득한 포인트로 가상 상품 구매 경험.
+*   **`point_shop.html`**: 획득한 포인트로 카페, 편의점 등 다양한 카테고리의 가상 상품 구매 경험 제공.
 
-### 4. 대출 프로세스 (Loan Process)
+### 4. 데이터 관리 (LocalStorage)
+이 프로젝트는 별도의 백엔드 없이 브라우저 저장소를 활용하여 데이터를 관리합니다.
+*   `trustFinPersona`: 로그인한 사용자(페르소나)의 기본 정보 (소득, 신용점수, 자산 등)
+*   `trustFinUserData`: 대출 심사를 위해 사용자가 입력한 데이터
+*   `trustFinMissions`: 사용자가 진행 중이거나 완료한 미션 목록 및 상태
+*   `trustFinMyLoans`: 신청한 대출 상품 및 심사 상태 목록
+*   `trustFinPointHistory`: 포인트 획득 및 사용 내역
+*   `trustFinNotifications`: 알림 내역
+
+### 5. 대출 프로세스 (Loan Process)
 *   **`loan_input.html`**: 대출 목적 및 정보 입력 (유효성 검사 포함).
 *   **`result.html`**: AI 추천 상품 리스트 및 매칭 점수 확인.
 *   **`loan_execute.html`**: 최종 금리/한도 확인 및 지문 인식(시뮬레이션)을 통한 대출 실행.
